@@ -53,10 +53,11 @@ function Header({
 }) {
   return (
     <button
+      type="button"
       onClick={onToggle}
-      className="group flex w-full items-center gap-1.5 px-2.5 py-1.5 text-left font-mono text-[11px] hover:bg-accent/40"
+      className="group flex w-full cursor-pointer items-center gap-1.5 px-2.5 py-1.5 text-left font-mono text-[11px] transition-colors duration-[var(--motion-duration-fast)] hover:bg-accent/40"
     >
-      <span className="inline-flex h-4 w-4 items-center justify-center rounded text-muted-foreground group-hover:text-foreground">
+      <span className="inline-flex h-4 w-4 items-center justify-center rounded text-muted-foreground transition-transform duration-[var(--motion-duration-fast)] group-hover:text-foreground">
         {open ? (
           <ChevronDown className="h-3 w-3" />
         ) : (
@@ -78,6 +79,28 @@ function Header({
         {kind === "array" ? `${count}` : `{${count}}`}
       </span>
     </button>
+  );
+}
+
+function CollapsibleBody({
+  open,
+  children,
+  className,
+}: {
+  open: boolean;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "grid transition-[grid-template-rows] duration-[var(--motion-duration-normal)] ease-[var(--motion-ease-out)]",
+        open ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
+        className
+      )}
+    >
+      <div className="overflow-hidden">{children}</div>
+    </div>
   );
 }
 
@@ -143,7 +166,9 @@ function ObjectTable({
         kind="object"
         count={entries.length}
       />
-      {open && <div className="border-t border-border">{body}</div>}
+      <CollapsibleBody open={open} className="border-t border-border">
+        {body}
+      </CollapsibleBody>
     </div>
   );
 }
@@ -250,7 +275,7 @@ function ArrayTable({
           {processed.map((i) => {
             const row = value[i] as Record<string, unknown>;
             return (
-              <tr key={i} className="group align-top hover:bg-accent/30">
+              <tr key={i} className="group align-top transition-colors duration-[var(--motion-duration-fast)] hover:bg-accent/30">
                 <td className="w-10 border-y border-r border-border bg-muted/30 px-2 py-1.5 text-right text-[10px] text-muted-foreground">
                   {i + 1}
                 </td>
@@ -291,7 +316,7 @@ function ArrayTable({
     <table className="w-full border-collapse font-mono text-[12px]">
       <tbody>
         {value.map((v, i) => (
-          <tr key={i} className="align-top hover:bg-accent/30">
+          <tr key={i} className="align-top transition-colors duration-[var(--motion-duration-fast)] hover:bg-accent/30">
             <td className="w-10 border-y border-r border-border bg-muted/30 px-2 py-1.5 text-right text-[10px] text-muted-foreground">
               {i + 1}
             </td>
@@ -357,7 +382,7 @@ function ArrayTable({
           </div>
         </div>
       )}
-      {(label === undefined || open) && body}
+      {label === undefined ? body : <CollapsibleBody open={open}>{body}</CollapsibleBody>}
     </div>
   );
 }

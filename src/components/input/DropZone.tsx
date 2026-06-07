@@ -3,7 +3,7 @@ import { useWorkspace } from "@/store/workspace";
 import { Braces, Upload, ClipboardPaste } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PasteDialog } from "./PasteDialog";
-import { motion } from "framer-motion";
+import { m } from "@/lib/motion/framer";
 
 export function DropZone() {
   const loadJson = useWorkspace((s) => s.loadJson);
@@ -51,7 +51,7 @@ export function DropZone() {
       onDragLeave={() => setOver(false)}
       onDrop={onDrop}
     >
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25 }}
@@ -102,7 +102,7 @@ export function DropZone() {
         <p className="mt-6 text-[11px] text-muted-foreground">
           Files stay in your browser. Nothing is uploaded.
         </p>
-      </motion.div>
+      </m.div>
       <PasteDialog open={pasteOpen} onOpenChange={setPasteOpen} />
     </div>
   );

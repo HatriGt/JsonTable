@@ -3,6 +3,8 @@ import { useWorkspace } from "@/store/workspace";
 import { prettyPrint, tokenizeLine, type Token } from "@/lib/json/highlight";
 import { Copy, Minimize2, Maximize2, CheckCircle2, ChevronDown, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
+import { PaneHeader } from "@/components/layout/PaneHeader";
+import { IconButton } from "@/components/ui/icon-button";
 import { cn } from "@/lib/utils";
 
 export function JsonSource() {
@@ -44,38 +46,38 @@ export function JsonSource() {
 
   return (
     <div className="flex h-full flex-col bg-[var(--source-bg)]">
-      <div className="flex h-9 shrink-0 items-center justify-between border-b border-border/70 bg-card/60 px-3">
-        <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-          <span className="font-bold text-foreground">JSON</span>
-          <span className="text-muted-foreground/70">·</span>
-          <span className="inline-flex items-center gap-1 text-success">
-            <CheckCircle2 className="h-3 w-3" /> valid
-          </span>
-          <span className="text-muted-foreground/70">·</span>
-          <span>{lines.length.toLocaleString()} lines</span>
-        </div>
-        <div className="flex items-center gap-0.5">
-          <IconBtn
-            title={compact ? "Format" : "Minify"}
-            onClick={() => setCompact((c) => !c)}
-          >
-            {compact ? (
-              <Maximize2 className="h-3.5 w-3.5" />
-            ) : (
-              <Minimize2 className="h-3.5 w-3.5" />
-            )}
-          </IconBtn>
-          <IconBtn
-            title="Copy JSON"
-            onClick={() => {
-              navigator.clipboard.writeText(text);
-              toast.success("Copied to clipboard");
-            }}
-          >
-            <Copy className="h-3.5 w-3.5" />
-          </IconBtn>
-        </div>
-      </div>
+      <PaneHeader
+        title="JSON"
+        meta={
+          <>
+            <CheckCircle2 className="h-3 w-3 text-success" /> valid ·{" "}
+            {lines.length.toLocaleString()} lines
+          </>
+        }
+        actions={
+          <>
+            <IconButton
+              title={compact ? "Format" : "Minify"}
+              onClick={() => setCompact((c) => !c)}
+            >
+              {compact ? (
+                <Maximize2 className="h-3.5 w-3.5" />
+              ) : (
+                <Minimize2 className="h-3.5 w-3.5" />
+              )}
+            </IconButton>
+            <IconButton
+              title="Copy JSON"
+              onClick={() => {
+                navigator.clipboard.writeText(text);
+                toast.success("Copied to clipboard");
+              }}
+            >
+              <Copy className="h-3.5 w-3.5" />
+            </IconButton>
+          </>
+        }
+      />
       <div className="relative flex-1 overflow-auto font-mono text-[12.5px] leading-[1.65]">
         <div className="py-3">
           {lines.map((line, i) => {
@@ -85,7 +87,7 @@ export function JsonSource() {
             return (
               <div
                 key={i}
-                className="group flex min-h-[1.65em] items-start hover:bg-accent/20"
+                className="group flex min-h-[1.65em] items-start transition-colors duration-[var(--motion-duration-fast)] hover:bg-accent/20"
               >
                 <div className="sticky left-0 z-10 flex shrink-0 select-none items-start gap-0.5 bg-[var(--source-bg)] pl-3 pr-1 text-right text-muted-foreground/60 tabular-nums group-hover:bg-accent/20">
                   <span className="inline-block w-7">{i + 1}</span>
@@ -93,10 +95,11 @@ export function JsonSource() {
                     type="button"
                     onClick={foldable ? () => toggleFold(i) : undefined}
                     className={cn(
-                      "inline-flex h-[1.65em] w-3 items-center justify-center text-muted-foreground/70 transition-opacity",
+                      "inline-flex h-[1.65em] w-3 items-center justify-center text-muted-foreground/70 transition-[opacity,transform,color] duration-[var(--motion-duration-fast)]",
                       foldable
                         ? "cursor-pointer opacity-70 hover:text-foreground"
-                        : "pointer-events-none opacity-0"
+                        : "pointer-events-none opacity-0",
+                      isCollapsed && "rotate-0"
                     )}
                     aria-label={isCollapsed ? "Expand" : "Collapse"}
                   >
@@ -113,7 +116,7 @@ export function JsonSource() {
                     <TokenSpan key={j} tok={tok} />
                   ))}
                   {isCollapsed && foldable && (
-                    <span className="ml-1 rounded bg-muted/60 px-1.5 text-[10px] text-muted-foreground">
+                    <span className="ml-1 rounded bg-muted/60 px-1.5 text-[10px] text-muted-foreground transition-opacity duration-[var(--motion-duration-fast)]">
                       … {closerFor(line)}
                     </span>
                   )}
@@ -178,29 +181,4 @@ function TokenSpan({ tok }: { tok: Token }) {
     default:
       return <span>{tok.v}</span>;
   }
-}
-
-function IconBtn({
-  children,
-  onClick,
-  title,
-  active,
-}: {
-  children: React.ReactNode;
-  onClick?: () => void;
-  title: string;
-  active?: boolean;
-}) {
-  return (
-    <button
-      title={title}
-      onClick={onClick}
-      className={cn(
-        "flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-foreground",
-        active && "bg-accent text-foreground"
-      )}
-    >
-      {children}
-    </button>
-  );
 }

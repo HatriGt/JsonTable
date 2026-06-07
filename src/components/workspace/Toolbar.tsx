@@ -1,8 +1,11 @@
 import { useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { m, AnimatePresence } from "@/lib/motion/framer";
 import { useWorkspace } from "@/store/workspace";
 import { useTheme } from "@/store/theme";
 import { Button } from "@/components/ui/button";
+import { formatBytes } from "@/lib/format";
+import { motionTransition } from "@/lib/motion/presets";
 import {
   ClipboardPaste,
   Upload,
@@ -33,26 +36,38 @@ export function Toolbar() {
   const ThemeIcon = theme === "dark" ? Moon : theme === "light" ? Sun : Monitor;
 
   return (
-    <div className="flex h-12 shrink-0 items-center justify-between gap-2 border-b border-border bg-card/60 px-3 backdrop-blur">
+    <div className="flex h-12 shrink-0 items-center justify-between gap-2 border-b border-border bg-card/60 px-3 backdrop-blur-sm">
       <div className="flex min-w-0 items-center gap-2">
-        <Link to="/" className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-brand/15 text-brand">
+        <Link
+          to="/"
+          className="group flex cursor-pointer items-center gap-2 transition-opacity duration-[var(--motion-duration-fast)] hover:opacity-90"
+        >
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-brand/15 text-brand transition-transform duration-[var(--motion-duration-fast)] group-hover:scale-105">
             <Braces className="h-4 w-4" />
           </div>
           <span className="text-sm font-semibold tracking-tight">JSON‑Table</span>
         </Link>
-        {doc && (
-          <span className="ml-3 truncate text-xs text-muted-foreground">
-            {doc.name} · {formatBytes(doc.sizeBytes)}
-          </span>
-        )}
+        <AnimatePresence mode="wait">
+          {doc && (
+            <m.span
+              key={doc.name}
+              initial={{ opacity: 0, x: -6 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -6 }}
+              transition={motionTransition.fast}
+              className="ml-3 truncate rounded-md border border-border/60 bg-background/50 px-2 py-0.5 font-mono text-xs text-muted-foreground"
+            >
+              {doc.name} · {formatBytes(doc.sizeBytes)}
+            </m.span>
+          )}
+        </AnimatePresence>
       </div>
       <div className="flex items-center gap-1.5">
         <Button
           size="sm"
           variant="ghost"
           onClick={() => setPasteOpen(true)}
-          className="h-8 gap-1.5 text-xs"
+          className="h-8 cursor-pointer gap-1.5 text-xs transition-transform duration-[var(--motion-duration-fast)] active:scale-95"
         >
           <ClipboardPaste className="h-3.5 w-3.5" />
           Paste
@@ -61,7 +76,7 @@ export function Toolbar() {
           size="sm"
           variant="ghost"
           onClick={() => fileRef.current?.click()}
-          className="h-8 gap-1.5 text-xs"
+          className="h-8 cursor-pointer gap-1.5 text-xs transition-transform duration-[var(--motion-duration-fast)] active:scale-95"
         >
           <Upload className="h-3.5 w-3.5" />
           Open
@@ -71,7 +86,7 @@ export function Toolbar() {
             size="sm"
             variant="ghost"
             onClick={reset}
-            className="h-8 gap-1.5 text-xs text-muted-foreground"
+            className="h-8 cursor-pointer gap-1.5 text-xs text-muted-foreground transition-transform duration-[var(--motion-duration-fast)] active:scale-95"
           >
             <Trash2 className="h-3.5 w-3.5" />
             Clear
@@ -81,7 +96,7 @@ export function Toolbar() {
         <Button
           size="icon"
           variant="ghost"
-          className="h-8 w-8"
+          className="h-8 w-8 cursor-pointer transition-transform duration-[var(--motion-duration-fast)] active:scale-95"
           onClick={() => setTheme(nextTheme)}
           title={`Theme: ${theme}`}
         >
@@ -98,10 +113,4 @@ export function Toolbar() {
       <PasteDialog open={pasteOpen} onOpenChange={setPasteOpen} />
     </div>
   );
-}
-
-function formatBytes(n: number) {
-  if (n < 1024) return `${n} B`;
-  if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
-  return `${(n / (1024 * 1024)).toFixed(2)} MB`;
 }

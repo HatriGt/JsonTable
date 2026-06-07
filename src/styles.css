@@ -73,6 +73,14 @@
 
 :root {
   --radius: 0.625rem;
+  --motion-duration-instant: 0ms;
+  --motion-duration-fast: 120ms;
+  --motion-duration-normal: 220ms;
+  --motion-duration-slow: 360ms;
+  --motion-duration-slower: 500ms;
+  --motion-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
+  --motion-stagger-step: 60ms;
   --background: oklch(0.985 0.003 250);
   --foreground: oklch(0.16 0.02 260);
   --card: oklch(1 0 0);
@@ -201,6 +209,60 @@
   box-shadow:
     0 0 0 1px color-mix(in oklab, var(--brand) 30%, transparent),
     0 20px 60px -20px color-mix(in oklab, var(--brand) 50%, transparent);
+}
+
+@utility transition-pane {
+  transition-property: color, background-color, border-color, opacity, transform, box-shadow;
+  transition-duration: var(--motion-duration-normal);
+  transition-timing-function: var(--motion-ease-out);
+}
+
+@utility animate-shake {
+  animation: shake 0.45s var(--motion-ease-out);
+}
+
+@utility animate-pulse-soft {
+  animation: pulse-soft 2s var(--motion-ease-in-out) infinite;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-4px);
+  }
+  40%,
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.72;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration-fast: 0ms;
+    --motion-duration-normal: 0ms;
+    --motion-duration-slow: 0ms;
+    --motion-duration-slower: 0ms;
+    --motion-stagger-step: 0ms;
+  }
+
+  .animate-shake,
+  .animate-pulse-soft {
+    animation: none;
+  }
 }
 
 :root {
