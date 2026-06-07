@@ -1,0 +1,10 @@
+# JSON-Table
+
+> Turn any JSON into a navigable tree and a sortable, filterable spreadsheet. Local-first, fast, free.
+
+JSON-Table is a browser-based developer utility that renders arbitrary JSON as a two-pane workspace: a formatted tree on the left and a virtualized, filterable grid on the right. Files never leave the browser.
+
+## Pages
+
+- [Home](/): Overview, features, and paste-to-open entry point.
+- [Workspace](/app): The interactive JSON tree + table viewer with per-column filters, column reordering, and inline cell editing.
