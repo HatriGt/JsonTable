@@ -87,10 +87,10 @@ export function EmptyState() {
           animate={over ? { scale: 1.01 } : { scale: 1 }}
           transition={motionTransition.fast}
           className={cn(
-            "relative mx-auto w-full max-w-2xl rounded-2xl border border-dashed p-10 text-center backdrop-blur transition-[border-color,background-color,box-shadow] duration-[var(--motion-duration-normal)]",
+            "relative mx-auto w-full max-w-2xl rounded-2xl border border-dashed p-10 text-center surface-panel shadow-premium transition-[border-color,box-shadow] duration-[var(--motion-duration-normal)]",
             over
               ? "border-brand bg-brand/5 shadow-lg shadow-brand/10"
-              : "border-border/80 bg-card/40",
+              : "border-border/80",
             error && "animate-shake border-destructive/50"
           )}
         >
@@ -156,8 +156,8 @@ export function EmptyState() {
       {recents.length > 0 && (
         <div className="relative mt-8 w-full max-w-2xl">
           <div className="mb-2 flex items-center justify-between px-1">
-            <h3 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-              Recent
+            <h3 className="mb-2 text-xs font-medium text-muted-foreground">
+              Recent files
             </h3>
           </div>
           <Stagger className="grid grid-cols-1 gap-2 sm:grid-cols-2">

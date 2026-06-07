@@ -1,11 +1,9 @@
 import { m, useReducedMotion } from "@/lib/motion/framer";
 import {
   ChevronDown,
-  ChevronRight,
   Filter,
   GripVertical,
   MoreVertical,
-  Sparkles,
 } from "lucide-react";
 import { useMountAnimation } from "@/hooks/use-mount-animation";
 import { motionTransition } from "@/lib/motion/presets";
@@ -36,12 +34,12 @@ export function PreviewMock({ compact = false }: Props) {
       </div>
 
       <div className="grid flex-1 grid-cols-[240px_1fr] overflow-hidden">
-        <div className="border-r border-border bg-[var(--source-bg)] p-2 font-mono text-[11px] leading-5">
-          <div className="mb-2 flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-            <span className="font-bold text-foreground">JSON</span>
-            <span>·</span>
-            <span className="text-success">valid</span>
+        <div className="border-r border-border bg-[var(--source-bg)]">
+          <div className="flex h-10 items-center gap-2 border-b border-border bg-[var(--pane-header)] px-3">
+            <span className="text-sm font-medium">Source</span>
+            <span className="text-xs text-muted-foreground">· 12 lines</span>
           </div>
+          <div className="p-2 font-mono text-[11px] leading-5">
           <SourceLine n={1} indent={0} tokens={[{ t: "punct", v: "{" }]} />
           <SourceLine n={2} indent={1} tokens={[{ t: "key", v: '"users"' }, { t: "punct", v: ": [" }]} open />
           <SourceLine n={3} indent={2} tokens={[{ t: "punct", v: "{" }]} />
@@ -54,23 +52,21 @@ export function PreviewMock({ compact = false }: Props) {
           <SourceLine n={10} indent={2} tokens={[{ t: "key", v: '"version"' }, { t: "punct", v: ": " }, { t: "string", v: '"2.4"' }]} />
           <SourceLine n={11} indent={1} tokens={[{ t: "punct", v: "}" }]} />
           <SourceLine n={12} indent={0} tokens={[{ t: "punct", v: "}" }]} />
+          </div>
         </div>
 
         <div className="flex flex-col overflow-hidden">
-          <div className="flex items-center justify-between border-b border-border bg-background/40 px-3 py-1.5">
-            <div className="flex items-center gap-1 font-mono text-[11px] text-muted-foreground">
-              <span className="font-bold text-foreground">GRID</span>
-              <ChevronRight className="h-3 w-3 opacity-50" />
-              <span className="rounded bg-brand/10 px-1.5 py-0.5 text-brand">users</span>
-              <span className="ml-1 rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
-                array · 3
+          <div className="flex h-10 items-center justify-between border-b border-border bg-[var(--pane-header)] px-3">
+            <div className="flex items-center gap-2 text-sm">
+              <span className="font-medium">Grid</span>
+              <span className="rounded-md bg-brand/10 px-1.5 py-0.5 text-[10px] font-medium text-brand">
+                users · 3 rows
               </span>
             </div>
-            <div className="flex items-center gap-2 font-mono text-[10px] text-muted-foreground">
-              <span className="inline-flex items-center gap-1 rounded border border-border bg-card/60 px-1.5 py-0.5">
-                <Sparkles className="h-2.5 w-2.5 text-brand" /> 1 filter
+            <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+              <span className="inline-flex items-center gap-1 rounded-md border border-border bg-card/60 px-1.5 py-0.5">
+                <Filter className="h-2.5 w-2.5 text-brand" /> 1 filter
               </span>
-              <span>3 rows · 4 cols</span>
             </div>
           </div>
           <div className="flex-1 overflow-hidden">
@@ -87,10 +83,8 @@ export function PreviewMock({ compact = false }: Props) {
                     >
                       <div className="flex items-center gap-1.5">
                         <GripVertical className="h-3 w-3 text-muted-foreground/60" />
-                        <span className="underline decoration-dotted decoration-muted-foreground/40 underline-offset-[3px]">
-                          {c.k}
-                        </span>
-                        <span className="rounded bg-muted px-1 text-[9px] text-muted-foreground">
+                        <span className="text-xs font-medium">{c.k}</span>
+                        <span className="rounded bg-muted/80 px-1 text-[9px] text-muted-foreground">
                           {c.t}
                         </span>
                         <div className="ml-auto flex items-center gap-0.5">

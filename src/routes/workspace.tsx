@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Workspace } from "@/components/workspace/Workspace";
 
-export const Route = createFileRoute("/app")({
+export const Route = createFileRoute("/workspace")({
   head: () => ({
     meta: [
       { title: "Workspace \u2014 JSON\u2011Table" },
@@ -15,13 +15,13 @@ export const Route = createFileRoute("/app")({
         property: "og:description",
         content: "Explore, search, sort, and filter JSON as a spreadsheet.",
       },
-      { property: "og:url", content: "/app" },
+      { property: "og:url", content: "/workspace" },
     ],
-    links: [{ rel: "canonical", href: "/app" }],
+    links: [{ rel: "canonical", href: "/workspace" }],
   }),
-  component: AppPage,
+  component: WorkspacePage,
 });
 
-function AppPage() {
+function WorkspacePage() {
   return <Workspace />;
 }

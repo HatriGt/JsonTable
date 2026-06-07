@@ -55,28 +55,21 @@ function Header({
     <button
       type="button"
       onClick={onToggle}
-      className="group flex w-full cursor-pointer items-center gap-1.5 px-2.5 py-1.5 text-left font-mono text-[11px] transition-colors duration-[var(--motion-duration-fast)] hover:bg-accent/40"
+      className="group flex w-full cursor-pointer items-center gap-2.5 px-3 py-2.5 text-left transition-colors duration-[var(--motion-duration-fast)] hover:bg-[var(--grid-row-hover)]"
     >
-      <span className="inline-flex h-4 w-4 items-center justify-center rounded text-muted-foreground transition-transform duration-[var(--motion-duration-fast)] group-hover:text-foreground">
-        {open ? (
-          <ChevronDown className="h-3 w-3" />
-        ) : (
-          <ChevronRight className="h-3 w-3" />
-        )}
+      <span className="inline-flex h-5 w-5 items-center justify-center rounded-md text-muted-foreground transition-colors group-hover:text-foreground">
+        {open ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
       </span>
-      <span className="rounded bg-muted/50 px-1 py-px font-mono text-[10px] text-muted-foreground">
-        {open ? "[−]" : "[+]"}
-      </span>
-      <span className="font-semibold text-foreground">{label}</span>
+      <span className="font-mono text-xs font-medium text-foreground">{label}</span>
       <span
         className={cn(
-          "rounded px-1.5 py-0.5 text-[10px] tabular-nums",
+          "rounded-md px-1.5 py-0.5 text-[10px] font-medium tabular-nums",
           kind === "array"
-            ? "bg-brand/15 text-brand"
+            ? "bg-brand/12 text-brand"
             : "bg-muted text-muted-foreground"
         )}
       >
-        {kind === "array" ? `${count}` : `{${count}}`}
+        {kind === "array" ? `${count} rows` : `${count} keys`}
       </span>
     </button>
   );
@@ -152,13 +145,13 @@ function ObjectTable({
 
   if (label === undefined) {
     return (
-      <div className="overflow-hidden rounded-md border border-border bg-card/40">
+      <div className="overflow-hidden rounded-xl border border-border/80 bg-card/40 shadow-premium">
         {body}
       </div>
     );
   }
   return (
-    <div className="overflow-hidden rounded-md border border-border bg-card/40">
+    <div className="overflow-hidden rounded-xl border border-border/80 bg-card/40 shadow-premium">
       <Header
         label={label}
         open={open}
@@ -254,7 +247,7 @@ function ArrayTable({
 
   const body = allObjects ? (
     <div>
-      <table className="w-max min-w-full border-collapse font-mono text-[12px]">
+      <table className="grid-table w-max min-w-full font-mono text-[12px]">
         <ColumnHeaderRow
           path={path}
           columns={orderedColumns}
@@ -275,8 +268,14 @@ function ArrayTable({
           {processed.map((i) => {
             const row = value[i] as Record<string, unknown>;
             return (
-              <tr key={i} className="group align-top transition-colors duration-[var(--motion-duration-fast)] hover:bg-accent/30">
-                <td className="w-10 border-y border-r border-border bg-muted/30 px-2 py-1.5 text-right text-[10px] text-muted-foreground">
+              <tr
+                key={i}
+                className={cn(
+                  "group align-top",
+                  i % 2 === 1 && "bg-[var(--grid-row-alt)]"
+                )}
+              >
+                <td className="grid-row-index grid-body-cell w-11 border-r border-border/60 px-2.5 py-2.5 text-right">
                   {i + 1}
                 </td>
                 {orderedColumns.map((c) => {
@@ -284,7 +283,7 @@ function ArrayTable({
                   return (
                     <td
                       key={c}
-                      className="border-y border-r border-border p-0 align-top"
+                      className="grid-body-cell border-r border-border/60 p-0 align-top transition-colors duration-[var(--motion-duration-fast)] group-hover:bg-[var(--grid-row-hover)]"
                     >
                       {isContainer(v) ? (
                         <div className="p-1.5">
@@ -317,7 +316,7 @@ function ArrayTable({
       <tbody>
         {value.map((v, i) => (
           <tr key={i} className="align-top transition-colors duration-[var(--motion-duration-fast)] hover:bg-accent/30">
-            <td className="w-10 border-y border-r border-border bg-muted/30 px-2 py-1.5 text-right text-[10px] text-muted-foreground">
+            <td className="w-10 border-b border-r border-border/80 bg-muted/40 px-2 py-2 text-right text-[10px] tabular-nums text-muted-foreground">
               {i + 1}
             </td>
             <td className="border-y border-border p-0">
@@ -347,7 +346,7 @@ function ArrayTable({
     : value.length;
 
   return (
-    <div className="overflow-hidden rounded-md border border-border bg-card/40">
+    <div className="overflow-hidden rounded-xl border border-border/80 bg-card/40 shadow-premium">
       {label !== undefined && (
         <div className="flex items-center justify-between border-b border-border bg-card/60">
           <Header
@@ -435,7 +434,7 @@ function PrimitiveCell({ value, path }: { value: unknown; path?: string }) {
           if (e.key === "Enter") commit();
           else if (e.key === "Escape") cancel();
         }}
-        className="block w-full bg-brand/8 px-2.5 py-1.5 font-mono text-[12px] text-foreground outline-none ring-1 ring-inset ring-brand/60"
+        className="block w-full bg-brand/10 px-2.5 py-2 font-mono text-[12px] text-foreground outline-none ring-2 ring-inset ring-brand/50"
       />
     );
   }
@@ -502,9 +501,9 @@ function ColumnHeaderRow({
   return (
     <thead className="sticky top-0 z-10">
       <tr>
-        <th className="w-10 border-y border-r border-border bg-muted/60 px-1 py-1.5 text-left backdrop-blur">
-          <span className="inline-flex h-5 w-7 items-center justify-center rounded bg-brand/15 text-brand">
-            <MoreHorizontal className="h-3 w-3" />
+        <th className="grid-header-cell grid-row-index sticky top-0 z-10 w-11 border-r border-border/60 px-2 py-2.5 text-left backdrop-blur-md">
+          <span className="inline-flex h-5 w-7 items-center justify-center rounded-md bg-brand/10 text-[10px] font-semibold text-brand">
+            #
           </span>
         </th>
         {columns.map((c) => {
@@ -543,9 +542,9 @@ function ColumnHeaderRow({
                 setOver(null);
               }}
               className={cn(
-                "group/h min-w-[160px] border-y border-r border-border bg-muted/60 px-2 py-1.5 text-left font-semibold text-foreground backdrop-blur",
+                "group/h grid-header-cell sticky top-0 z-10 min-w-[148px] border-r border-border/60 px-2.5 py-2 backdrop-blur-md",
                 dragging === c && "opacity-50",
-                isOver && "ring-2 ring-inset ring-brand/60"
+                isOver && "ring-2 ring-inset ring-brand/40"
               )}
             >
               <div className="flex items-center gap-1.5">
@@ -553,7 +552,7 @@ function ColumnHeaderRow({
                   <GripVertical className="h-3 w-3 shrink-0" />
                 </span>
                 <span
-                  className="flex-1 truncate font-mono text-[12px] font-medium text-foreground/90 underline decoration-dotted underline-offset-[3px]"
+                  className="flex-1 truncate font-mono text-xs font-medium text-foreground"
                   title={c}
                 >
                   {c}

@@ -1,31 +1,65 @@
 import type { ReactNode } from "react";
+import { PanelLeftClose, PanelRightClose } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { IconButton } from "@/components/ui/icon-button";
 
 type Props = {
   title: string;
+  icon?: ReactNode;
   meta?: ReactNode;
   actions?: ReactNode;
+  onHide?: () => void;
+  hideSide?: "left" | "right";
   className?: string;
 };
 
-export function PaneHeader({ title, meta, actions, className }: Props) {
+export function PaneHeader({
+  title,
+  icon,
+  meta,
+  actions,
+  onHide,
+  hideSide = "left",
+  className,
+}: Props) {
+  const HideIcon = hideSide === "left" ? PanelLeftClose : PanelRightClose;
+
   return (
     <div
       className={cn(
-        "flex h-9 shrink-0 items-center justify-between border-b border-border/70 bg-card/60 px-3 backdrop-blur-sm",
+        "flex h-11 shrink-0 items-center justify-between border-b border-border/80 bg-[var(--pane-header)] px-3",
+        "shadow-[inset_0_1px_0_color-mix(in_oklab,var(--foreground)_4%,transparent)]",
         className
       )}
     >
-      <div className="flex min-w-0 items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-        <span className="font-bold text-foreground">{title}</span>
-        {meta && (
-          <>
-            <span className="text-muted-foreground/70">·</span>
-            <span className="inline-flex items-center gap-1 truncate">{meta}</span>
-          </>
+      <div className="flex min-w-0 items-center gap-2.5">
+        {icon && (
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-brand/15 bg-brand/10 text-brand shadow-[inset_0_1px_0_color-mix(in_oklab,white_8%,transparent)]">
+            {icon}
+          </span>
+        )}
+        <div className="min-w-0">
+          <span className="text-[13px] font-semibold tracking-tight text-foreground">{title}</span>
+          {meta && (
+            <span className="mt-0.5 hidden truncate text-[11px] text-muted-foreground sm:block">
+              {meta}
+            </span>
+          )}
+        </div>
+      </div>
+      <div className="flex items-center gap-0.5 rounded-lg border border-border/60 bg-background/40 p-0.5">
+        {actions}
+        {onHide && (
+          <IconButton
+            title={`Hide ${title.toLowerCase()} pane`}
+            aria-label={`Hide ${title.toLowerCase()} pane`}
+            onClick={onHide}
+            className="h-7 w-7 rounded-md"
+          >
+            <HideIcon className="h-3.5 w-3.5" />
+          </IconButton>
         )}
       </div>
-      {actions && <div className="flex items-center gap-0.5">{actions}</div>}
     </div>
   );
 }

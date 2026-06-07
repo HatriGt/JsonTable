@@ -1,13 +1,13 @@
 import { useMemo, useState } from "react";
 import { useWorkspace } from "@/store/workspace";
 import { prettyPrint, tokenizeLine, type Token } from "@/lib/json/highlight";
-import { Copy, Minimize2, Maximize2, CheckCircle2, ChevronDown, ChevronRight } from "lucide-react";
+import { Code2, Copy, Minimize2, Maximize2, ChevronDown, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { PaneHeader } from "@/components/layout/PaneHeader";
 import { IconButton } from "@/components/ui/icon-button";
 import { cn } from "@/lib/utils";
 
-export function JsonSource() {
+export function JsonSource({ onHide }: { onHide?: () => void }) {
   const doc = useWorkspace((s) => s.doc);
   const [compact, setCompact] = useState(false);
 
@@ -47,13 +47,9 @@ export function JsonSource() {
   return (
     <div className="flex h-full flex-col bg-[var(--source-bg)]">
       <PaneHeader
-        title="JSON"
-        meta={
-          <>
-            <CheckCircle2 className="h-3 w-3 text-success" /> valid ·{" "}
-            {lines.length.toLocaleString()} lines
-          </>
-        }
+        title="Source"
+        icon={<Code2 className="h-3.5 w-3.5" />}
+        meta={`${lines.length.toLocaleString()} lines · valid`}
         actions={
           <>
             <IconButton
@@ -77,9 +73,11 @@ export function JsonSource() {
             </IconButton>
           </>
         }
+        hideSide="left"
+        onHide={onHide}
       />
-      <div className="relative flex-1 overflow-auto font-mono text-[12.5px] leading-[1.65]">
-        <div className="py-3">
+      <div className="relative flex-1 overflow-auto font-mono text-[12.5px] leading-[1.7]">
+        <div className="py-2">
           {lines.map((line, i) => {
             if (hidden.has(i)) return null;
             const foldable = folds.has(i);
@@ -87,10 +85,10 @@ export function JsonSource() {
             return (
               <div
                 key={i}
-                className="group flex min-h-[1.65em] items-start transition-colors duration-[var(--motion-duration-fast)] hover:bg-accent/20"
+                className="group flex min-h-[1.7em] items-start transition-colors duration-[var(--motion-duration-fast)] hover:bg-[color-mix(in_oklab,var(--brand)_6%,transparent)]"
               >
-                <div className="sticky left-0 z-10 flex shrink-0 select-none items-start gap-0.5 bg-[var(--source-bg)] pl-3 pr-1 text-right text-muted-foreground/60 tabular-nums group-hover:bg-accent/20">
-                  <span className="inline-block w-7">{i + 1}</span>
+                <div className="sticky left-0 z-10 flex shrink-0 select-none items-start gap-0.5 border-r border-[var(--gutter-border)] bg-[var(--source-bg)] pl-3 pr-2 text-right tabular-nums group-hover:bg-[color-mix(in_oklab,var(--brand)_6%,transparent)]">
+                  <span className="inline-block w-8 text-[11px] text-muted-foreground/50">{i + 1}</span>
                   <button
                     type="button"
                     onClick={foldable ? () => toggleFold(i) : undefined}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -24,16 +24,27 @@ export function PasteDialog({
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const loadJson = useWorkspace((s) => s.loadJson);
+  const clearError = useWorkspace((s) => s.clearError);
   const error = useWorkspace((s) => s.error);
+
+  useEffect(() => {
+    if (open) {
+      clearError();
+    } else {
+      setText("");
+      setLoading(false);
+    }
+  }, [open, clearError]);
 
   async function handleLoad() {
     setLoading(true);
+    clearError();
     const ok = await loadJson("pasted.json", text);
     setLoading(false);
     if (ok) {
       setText("");
       onOpenChange(false);
-      onLoaded?.();
+      window.setTimeout(() => onLoaded?.(), 200);
     }
   }
 
@@ -78,7 +89,7 @@ export function PasteDialog({
           <Button
             onClick={handleLoad}
             disabled={!text.trim() || loading}
-            className="cursor-pointer gap-2 transition-transform duration-[var(--motion-duration-fast)] active:scale-95"
+            className="cursor-pointer gap-2"
           >
             {loading && <Loader2 className="h-4 w-4 animate-spin" />}
             Load JSON

@@ -8,32 +8,42 @@ import {
   Code2,
   Filter,
   Github,
-  KeyRound,
   Lock,
-  Search,
+  Shield,
   Sparkles,
   Table2,
+  Upload,
   Zap,
 } from "lucide-react";
 import { PreviewMock } from "./PreviewMock";
 import { PasteDialog } from "@/components/input/PasteDialog";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useWorkspace } from "@/store/workspace";
 import { SAMPLE_JSON } from "@/lib/json/sample";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { Stagger, StaggerItem } from "@/components/motion/Stagger";
 
 export function Landing() {
+  const navigate = useNavigate();
+  const [pasteOpen, setPasteOpen] = useState(false);
+
   return (
     <div className="min-h-dvh bg-background text-foreground">
       <Nav />
       <main id="main-content">
-        <Hero />
-        <LogoStrip />
+        <Hero onOpenPaste={() => setPasteOpen(true)} />
+        <TrustStrip />
         <FeatureGrid />
-        <PreviewSection />
+        <WorkflowSection />
         <CtaSection />
       </main>
       <Footer />
+      <PasteDialog
+        open={pasteOpen}
+        onOpenChange={setPasteOpen}
+        onLoaded={() => navigate({ to: "/workspace" })}
+      />
     </div>
   );
 }
@@ -50,55 +60,54 @@ function Nav() {
 
   return (
     <header
-      className={`sticky top-0 z-40 border-b transition-[background-color,box-shadow,border-color] duration-[var(--motion-duration-normal)] ease-[var(--motion-ease-out)] backdrop-blur-xl ${
+      className={`sticky top-0 z-40 border-b transition-[background-color,box-shadow,border-color] duration-[var(--motion-duration-normal)] ${
         scrolled
-          ? "border-border/80 bg-background/85 shadow-sm shadow-black/5"
-          : "border-transparent bg-background/60"
+          ? "border-border bg-background/90 shadow-sm backdrop-blur-xl"
+          : "border-transparent bg-background/70 backdrop-blur-md"
       }`}
     >
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-5">
-        <Link to="/" className="group flex cursor-pointer items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-brand/15 text-brand transition-transform duration-[var(--motion-duration-fast)] group-hover:scale-105">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
+        <Link to="/" className="group flex cursor-pointer items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand/12 text-brand transition-transform duration-[var(--motion-duration-fast)] group-hover:scale-105">
             <Braces className="h-4 w-4" />
           </div>
           <span className="text-sm font-semibold tracking-tight">JSON‑Table</span>
         </Link>
-        <nav className="hidden items-center gap-7 text-[13px] text-muted-foreground md:flex">
-          <a href="#features" className="cursor-pointer transition-colors duration-[var(--motion-duration-fast)] hover:text-foreground">
+        <nav className="hidden items-center gap-6 text-sm text-muted-foreground md:flex">
+          <a href="#features" className="cursor-pointer transition-colors hover:text-foreground">
             Features
           </a>
-          <a href="#preview" className="cursor-pointer transition-colors duration-[var(--motion-duration-fast)] hover:text-foreground">
-            Preview
+          <a href="#workflow" className="cursor-pointer transition-colors hover:text-foreground">
+            Workflow
           </a>
           <a
             href="https://github.com"
             target="_blank"
-            rel="noreferrer"
-            className="flex cursor-pointer items-center gap-1.5 transition-colors duration-[var(--motion-duration-fast)] hover:text-foreground"
+            rel="noreferrer noopener"
+            className="flex cursor-pointer items-center gap-1.5 transition-colors hover:text-foreground"
           >
-            <Github className="h-3.5 w-3.5" /> GitHub
+            <Github className="h-4 w-4" />
+            GitHub
           </a>
         </nav>
-        <Link
-          to="/app"
-          className="group inline-flex cursor-pointer items-center gap-1.5 rounded-md bg-foreground px-3 py-1.5 text-[13px] font-medium text-background transition-[background-color,transform] duration-[var(--motion-duration-normal)] hover:bg-foreground/90 active:scale-[0.98]"
-        >
-          Open app
-          <ArrowRight className="h-3.5 w-3.5 transition-transform duration-[var(--motion-duration-fast)] group-hover:translate-x-0.5" />
-        </Link>
+        <Button asChild size="sm" className="cursor-pointer gap-1.5">
+          <Link to="/workspace">
+            Open workspace
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </Button>
       </div>
     </header>
   );
 }
 
-function Hero() {
+function Hero({ onOpenPaste }: { onOpenPaste: () => void }) {
   const navigate = useNavigate();
   const loadJson = useWorkspace((s) => s.loadJson);
-  const [pasteOpen, setPasteOpen] = useState(false);
 
   async function loadSample() {
     await loadJson("sample.json", SAMPLE_JSON);
-    navigate({ to: "/app" });
+    navigate({ to: "/workspace" });
   }
 
   useEffect(() => {
@@ -112,98 +121,94 @@ function Hero() {
           toast.message("Clipboard is empty", {
             description: "Copy some JSON and press ⌘P again.",
           });
-          setPasteOpen(true);
+          onOpenPaste();
           return;
         }
         const ok = await loadJson("clipboard.json", text);
         if (ok) {
           toast.success("JSON loaded from clipboard");
-          navigate({ to: "/app" });
+          navigate({ to: "/workspace" });
         } else {
           toast.error("That doesn't look like valid JSON");
-          setPasteOpen(true);
+          onOpenPaste();
         }
       } catch {
-        setPasteOpen(true);
+        onOpenPaste();
       }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [loadJson, navigate]);
+  }, [loadJson, navigate, onOpenPaste]);
 
   return (
-    <section className="relative overflow-hidden">
-      <div className="absolute inset-0 bg-grid opacity-60 [mask-image:radial-gradient(ellipse_at_top,_black_30%,_transparent_70%)]" />
-      <div className="absolute left-1/2 top-[-20%] -z-10 h-[600px] w-[1100px] -translate-x-1/2 rounded-full bg-brand/20 blur-[140px] animate-pulse-soft" />
-      <div className="relative mx-auto max-w-7xl px-5 pb-16 pt-20 md:pt-28">
-        <FadeIn className="mx-auto max-w-3xl text-center">
-          <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-border/70 bg-card/60 px-3 py-1 text-[11px] text-muted-foreground backdrop-blur">
-            <Sparkles className="h-3 w-3 text-brand" />
-            Local‑first · 10 MB ready · Zero uploads
+    <section className="relative overflow-hidden border-b border-border/60 hero-mesh">
+      <div className="pointer-events-none absolute inset-0 bg-grid opacity-30 [mask-image:radial-gradient(ellipse_at_top,_black_20%,_transparent_75%)]" />
+      <div className="pointer-events-none absolute -left-32 top-0 h-96 w-96 rounded-full bg-brand/10 blur-[120px]" />
+
+      <div className="relative mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:items-center lg:py-24">
+        <FadeIn>
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="secondary" className="gap-1 bg-brand/10 text-brand hover:bg-brand/10">
+              <Shield className="h-3 w-3" />
+              Local-first
+            </Badge>
+            <Badge variant="outline" className="text-muted-foreground">
+              No uploads · 10 MB ready
+            </Badge>
           </div>
-          <h1 className="mt-6 text-balance text-5xl font-semibold tracking-tight md:text-7xl">
-            Read JSON like a{" "}
-            <span className="text-gradient-brand">spreadsheet</span>.
+          <h1 className="mt-6 text-balance text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
+            Paste JSON.{" "}
+            <span className="text-gradient-brand">Explore it like a spreadsheet.</span>
           </h1>
-          <p className="mx-auto mt-5 max-w-xl text-pretty text-base text-muted-foreground md:text-lg">
-            JSON‑Table pairs a syntax‑highlighted source view with nested,
-            filterable tables — so you can find the value you need in seconds.
+          <p className="mt-5 max-w-lg text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
+            A developer-focused viewer with syntax-highlighted source on the left
+            and filterable nested tables on the right — find any value in seconds.
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <button
-              onClick={() => setPasteOpen(true)}
-              className="group inline-flex cursor-pointer items-center gap-2 rounded-md bg-brand px-5 py-2.5 text-sm font-medium text-primary-foreground glow-brand transition-[filter,transform] duration-[var(--motion-duration-normal)] hover:brightness-110 active:scale-[0.98]"
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <Button
+              size="lg"
+              className="cursor-pointer gap-2 glow-brand"
+              onClick={onOpenPaste}
             >
               <ClipboardPaste className="h-4 w-4" />
               Paste JSON
-              <ArrowRight className="h-4 w-4 transition-transform duration-[var(--motion-duration-fast)] group-hover:translate-x-0.5" />
-            </button>
-            <button
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="cursor-pointer gap-2"
               onClick={loadSample}
-              className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-border bg-card/60 px-5 py-2.5 text-sm font-medium text-foreground transition-[background-color,transform] duration-[var(--motion-duration-normal)] hover:bg-card active:scale-[0.98]"
             >
               <Sparkles className="h-4 w-4 text-brand" />
               Try sample
-            </button>
-            <Link
-              to="/app"
-              className="inline-flex cursor-pointer items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors duration-[var(--motion-duration-fast)] hover:text-foreground"
-            >
-              Open workspace →
-            </Link>
+            </Button>
           </div>
-          <div className="mt-4 flex items-center justify-center gap-2 font-mono text-[11px] text-muted-foreground">
-            <span>Tip — press</span>
-            <kbd className="rounded border border-border bg-card/60 px-1.5 py-0.5">⌘</kbd>
-            <kbd className="rounded border border-border bg-card/60 px-1.5 py-0.5">P</kbd>
-            <span>to paste &amp; open instantly</span>
-          </div>
+          <p className="mt-4 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
+            <Upload className="h-3.5 w-3.5" />
+            Drop a file anywhere · or press
+            <kbd className="rounded border border-border bg-muted/50 px-1.5 py-0.5 font-mono">⌘P</kbd>
+            to paste instantly
+          </p>
         </FadeIn>
 
-        <FadeIn delay={0.12} className="relative mx-auto mt-16 max-w-6xl">
-          <div className="absolute -inset-6 -z-10 rounded-3xl bg-gradient-to-tr from-brand/30 via-transparent to-brand-2/30 blur-2xl" />
-          <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-2xl shadow-black/20 transition-shadow duration-[var(--motion-duration-slow)] hover:shadow-brand/10">
-            <PreviewMock />
+        <FadeIn delay={0.1} className="relative">
+          <div className="overflow-hidden rounded-xl border border-border/80 bg-card/60 shadow-premium ring-1 ring-white/5">
+            <PreviewMock compact />
           </div>
         </FadeIn>
-        <PasteDialog
-          open={pasteOpen}
-          onOpenChange={setPasteOpen}
-          onLoaded={() => navigate({ to: "/app" })}
-        />
       </div>
     </section>
   );
 }
 
-function LogoStrip() {
+function TrustStrip() {
   const items = ["REST APIs", "GraphQL", "Webhooks", "Logs", "Configs", "Postman"];
   return (
-    <section className="border-y border-border/60 bg-card/30">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-10 gap-y-3 px-5 py-6 text-[12px] uppercase tracking-[0.18em] text-muted-foreground">
-        <span className="text-foreground/60">Works great with</span>
+    <section className="border-b border-border/60 bg-muted/20">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-8 gap-y-2 px-4 py-5 sm:px-6">
+        <span className="text-xs font-medium text-muted-foreground">Built for</span>
         {items.map((i) => (
-          <span key={i} className="transition-colors duration-[var(--motion-duration-fast)] hover:text-foreground">
+          <span key={i} className="text-xs font-medium text-foreground/70 transition-colors hover:text-foreground">
             {i}
           </span>
         ))}
@@ -215,56 +220,56 @@ function LogoStrip() {
 const FEATURES = [
   {
     icon: Code2,
-    title: "JSON source view",
-    body: "Syntax‑highlighted, foldable source with line numbers. Format or minify in one click.",
+    title: "Syntax-highlighted source",
+    body: "Foldable JSON with line numbers. Format or minify in one click.",
   },
   {
     icon: Table2,
     title: "Nested spreadsheet grid",
-    body: "Arrays of objects become real tables with collapsible sections and column controls.",
+    body: "Arrays of objects become real tables with collapsible sections.",
   },
   {
     icon: Filter,
-    title: "Per‑column filters",
-    body: "Filter rows by any column — include/exclude, conditions, and sort in one popover.",
-  },
-  {
-    icon: Search,
-    title: "Instant paste",
-    body: "Drop a file, paste JSON, or press ⌘P to load from clipboard and jump to the workspace.",
+    title: "Column filters & sort",
+    body: "Filter by value, condition, or sort in a focused modal dialog.",
   },
   {
     icon: Zap,
-    title: "Built for speed",
-    body: "Handles large payloads locally without uploads. Your data never leaves the browser.",
+    title: "Fast & local",
+    body: "Handles large payloads in-browser. Your data never leaves the device.",
   },
   {
     icon: Lock,
-    title: "100% local",
-    body: "Recents stay in IndexedDB on your device. Nothing is sent to a server, ever.",
+    title: "Recents in IndexedDB",
+    body: "Pick up where you left off. Nothing syncs to a server.",
+  },
+  {
+    icon: ClipboardPaste,
+    title: "Instant paste workflow",
+    body: "Drop, paste, or ⌘P from clipboard — straight into the workspace.",
   },
 ];
 
 function FeatureGrid() {
   return (
-    <section id="features" className="mx-auto max-w-7xl px-5 py-24">
-      <FadeIn inView className="mx-auto max-w-2xl text-center">
-        <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
-          Everything you wished JSON viewers had.
+    <section id="features" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+      <FadeIn inView className="max-w-2xl">
+        <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+          Everything you need to read JSON quickly
         </h2>
         <p className="mt-3 text-muted-foreground">
-          Designed for developers who live in API responses, logs and configs.
+          Designed for developers who live in API responses, logs, and config files.
         </p>
       </FadeIn>
-      <Stagger className="mt-12 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
+      <Stagger className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {FEATURES.map((f) => (
           <StaggerItem key={f.title}>
-            <div className="group relative h-full bg-card/60 p-7 transition-[background-color,transform] duration-[var(--motion-duration-normal)] ease-[var(--motion-ease-out)] hover:-translate-y-0.5 hover:bg-card">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand/15 text-brand transition-transform duration-[var(--motion-duration-normal)] group-hover:scale-110">
+            <div className="group h-full rounded-xl border border-border bg-card/50 p-6 transition-[border-color,box-shadow,transform] duration-[var(--motion-duration-normal)] hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-lg hover:shadow-brand/5">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand/10 text-brand transition-transform duration-[var(--motion-duration-normal)] group-hover:scale-105">
                 <f.icon className="h-5 w-5" />
               </div>
-              <h3 className="mt-5 text-base font-semibold tracking-tight">{f.title}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
+              <h3 className="mt-4 text-base font-semibold">{f.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
             </div>
           </StaggerItem>
         ))}
@@ -273,52 +278,55 @@ function FeatureGrid() {
   );
 }
 
-function PreviewSection() {
+function WorkflowSection() {
+  const steps = [
+    {
+      n: "01",
+      title: "Paste or drop",
+      body: "JSON from clipboard, file, or sample — validated instantly.",
+    },
+    {
+      n: "02",
+      title: "Browse source & grid",
+      body: "Two resizable panes mirror your document. Hide either from the toolbar and restore from the edge rail.",
+    },
+    {
+      n: "03",
+      title: "Filter & edit",
+      body: "Sort columns, filter values, double-click cells to edit inline.",
+    },
+  ];
+
   return (
-    <section id="preview" className="relative border-t border-border/60 bg-card/20 py-24">
-      <div className="mx-auto max-w-7xl px-5">
-        <div className="grid items-center gap-10 md:grid-cols-2">
-          <FadeIn inView>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background/60 px-2.5 py-0.5 text-[11px] uppercase tracking-wider text-muted-foreground">
-              <KeyRound className="h-3 w-3" /> Live preview
-            </span>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight md:text-5xl">
-              Two panes.{" "}
-              <span className="text-gradient-brand">Zero friction.</span>
-            </h2>
-            <p className="mt-4 text-muted-foreground">
-              Formatted JSON on the left mirrors your document. The grid on the
-              right renders nested arrays as real tables — filterable,
-              collapsible, and fast.
-            </p>
-            <ul className="mt-6 space-y-2.5 text-sm">
-              {[
-                "Collapse either pane to focus on what matters",
-                "Drag the divider to resize, use rail buttons to restore",
-                "Filter any column with sort, conditions, and value pickers",
-              ].map((b) => (
-                <li key={b} className="flex items-start gap-2 text-foreground/90">
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand" />
-                  {b}
-                </li>
-              ))}
-            </ul>
-            <Link
-              to="/app"
-              className="mt-8 inline-flex cursor-pointer items-center gap-2 rounded-md bg-foreground px-4 py-2 text-sm font-medium text-background transition-[background-color,transform] duration-[var(--motion-duration-normal)] hover:bg-foreground/90 active:scale-[0.98]"
-            >
-              Try it now <ArrowRight className="h-4 w-4" />
-            </Link>
-          </FadeIn>
-          <FadeIn inView delay={0.08}>
-            <div className="relative">
-              <div className="absolute -inset-6 -z-10 rounded-3xl bg-gradient-to-br from-brand-2/25 via-brand/20 to-transparent blur-2xl" />
-              <div className="overflow-hidden rounded-xl border border-border bg-card shadow-xl transition-shadow duration-[var(--motion-duration-slow)] hover:shadow-brand/10">
-                <PreviewMock compact />
+    <section id="workflow" className="border-y border-border/60 bg-muted/15 py-20">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        <FadeIn inView className="max-w-2xl">
+          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+            Three steps. Zero friction.
+          </h2>
+          <p className="mt-3 text-muted-foreground">
+            From raw JSON to the answer you need — without leaving the browser.
+          </p>
+        </FadeIn>
+        <Stagger className="mt-12 grid gap-6 md:grid-cols-3">
+          {steps.map((s) => (
+            <StaggerItem key={s.n}>
+              <div className="rounded-xl surface-panel p-6">
+                <span className="font-mono text-xs font-medium text-brand">{s.n}</span>
+                <h3 className="mt-3 text-lg font-semibold">{s.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
               </div>
-            </div>
-          </FadeIn>
-        </div>
+            </StaggerItem>
+          ))}
+        </Stagger>
+        <FadeIn inView delay={0.08} className="mt-10">
+          <Button asChild size="lg" className="cursor-pointer gap-2">
+            <Link to="/workspace">
+              Launch workspace
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        </FadeIn>
       </div>
     </section>
   );
@@ -326,22 +334,26 @@ function PreviewSection() {
 
 function CtaSection() {
   return (
-    <section className="mx-auto max-w-5xl px-5 py-24">
+    <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
       <FadeIn inView>
-        <div className="relative overflow-hidden rounded-3xl border border-border bg-card/60 p-12 text-center">
-          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-brand/15 via-transparent to-brand-2/15" />
-          <h2 className="text-3xl font-semibold tracking-tight md:text-5xl">
-            Ready to read JSON, fast?
+        <div className="rounded-2xl border border-border bg-card/60 p-10 text-center sm:p-14">
+          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+            Ready to explore your JSON?
           </h2>
-          <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
-            No sign‑up. No upload. Just paste your JSON and go.
+          <p className="mx-auto mt-3 max-w-md text-muted-foreground">
+            No sign-up. No upload. Just paste and go.
           </p>
-          <Link
-            to="/app"
-            className="mt-7 inline-flex cursor-pointer items-center gap-2 rounded-md bg-brand px-6 py-3 text-sm font-semibold text-primary-foreground glow-brand transition-[filter,transform] duration-[var(--motion-duration-normal)] hover:brightness-110 active:scale-[0.98]"
-          >
-            Launch workspace <ArrowRight className="h-4 w-4" />
-          </Link>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Button asChild size="lg" className="cursor-pointer gap-2 glow-brand">
+              <Link to="/workspace">
+                Open workspace
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="cursor-pointer">
+              <Link to="/workspace">Browse empty workspace</Link>
+            </Button>
+          </div>
         </div>
       </FadeIn>
     </section>

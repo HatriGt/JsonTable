@@ -87,25 +87,25 @@
   --card-foreground: oklch(0.18 0.02 260);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.18 0.02 260);
-  --primary: oklch(0.58 0.22 268);
+  --primary: oklch(0.52 0.16 155);
   --primary-foreground: oklch(0.99 0.005 250);
   --secondary: oklch(0.96 0.005 250);
   --secondary-foreground: oklch(0.22 0.02 260);
   --muted: oklch(0.96 0.005 250);
-  --muted-foreground: oklch(0.5 0.02 260);
+  --muted-foreground: oklch(0.48 0.02 260);
   --accent: oklch(0.94 0.015 255);
   --accent-foreground: oklch(0.22 0.02 260);
   --destructive: oklch(0.6 0.22 25);
   --destructive-foreground: oklch(0.99 0.005 250);
   --border: oklch(0.9 0.01 255);
   --input: oklch(0.92 0.01 255);
-  --ring: oklch(0.62 0.18 258);
-  --success: oklch(0.7 0.17 150);
+  --ring: oklch(0.58 0.16 155);
+  --success: oklch(0.62 0.17 150);
   --warning: oklch(0.78 0.16 80);
-  --info: oklch(0.58 0.22 268);
-  --brand: oklch(0.58 0.22 268);
-  --brand-2: oklch(0.7 0.2 200);
-  --brand-3: oklch(0.75 0.18 80);
+  --info: oklch(0.55 0.14 230);
+  --brand: oklch(0.52 0.16 155);
+  --brand-2: oklch(0.58 0.14 210);
+  --brand-3: oklch(0.62 0.12 85);
   --json-key: oklch(0.55 0.18 258);
   --json-string: oklch(0.55 0.16 150);
   --json-number: oklch(0.65 0.18 40);
@@ -127,31 +127,31 @@
 }
 
 .dark {
-  --background: oklch(0.135 0.014 265);
-  --foreground: oklch(0.97 0.005 250);
-  --card: oklch(0.18 0.016 265);
+  --background: oklch(0.098 0.014 260);
+  --foreground: oklch(0.96 0.005 250);
+  --card: oklch(0.128 0.014 260);
   --card-foreground: oklch(0.96 0.005 250);
-  --popover: oklch(0.19 0.016 265);
+  --popover: oklch(0.145 0.014 260);
   --popover-foreground: oklch(0.96 0.005 250);
-  --primary: oklch(0.74 0.18 268);
-  --primary-foreground: oklch(0.14 0.012 260);
-  --secondary: oklch(0.23 0.016 265);
+  --primary: oklch(0.72 0.19 155);
+  --primary-foreground: oklch(0.12 0.012 260);
+  --secondary: oklch(0.21 0.014 260);
   --secondary-foreground: oklch(0.96 0.005 250);
-  --muted: oklch(0.21 0.014 265);
-  --muted-foreground: oklch(0.68 0.018 265);
-  --accent: oklch(0.27 0.022 265);
+  --muted: oklch(0.19 0.012 260);
+  --muted-foreground: oklch(0.62 0.018 260);
+  --accent: oklch(0.24 0.018 260);
   --accent-foreground: oklch(0.98 0.005 250);
   --destructive: oklch(0.65 0.22 25);
   --destructive-foreground: oklch(0.98 0.005 250);
-  --border: oklch(1 0 0 / 9%);
-  --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.74 0.18 268);
-  --success: oklch(0.75 0.17 150);
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 10%);
+  --ring: oklch(0.72 0.19 155);
+  --success: oklch(0.72 0.17 150);
   --warning: oklch(0.82 0.16 80);
-  --info: oklch(0.74 0.18 268);
-  --brand: oklch(0.74 0.18 268);
-  --brand-2: oklch(0.78 0.16 200);
-  --brand-3: oklch(0.82 0.16 80);
+  --info: oklch(0.68 0.14 230);
+  --brand: oklch(0.72 0.19 155);
+  --brand-2: oklch(0.68 0.14 210);
+  --brand-3: oklch(0.76 0.14 85);
   --json-key: oklch(0.75 0.14 258);
   --json-string: oklch(0.78 0.14 150);
   --json-number: oklch(0.8 0.16 60);
@@ -192,7 +192,7 @@
 }
 
 @utility text-gradient-brand {
-  background: linear-gradient(110deg, var(--brand) 0%, var(--brand-2) 60%, var(--brand-3) 100%);
+  background: linear-gradient(120deg, var(--brand) 0%, var(--brand-2) 55%, var(--brand-3) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -200,15 +200,77 @@
 
 @utility bg-grid {
   background-image:
-    linear-gradient(to right, color-mix(in oklab, var(--foreground) 6%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklab, var(--foreground) 6%, transparent) 1px, transparent 1px);
-  background-size: 40px 40px;
+    linear-gradient(to right, color-mix(in oklab, var(--foreground) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--foreground) 5%, transparent) 1px, transparent 1px);
+  background-size: 32px 32px;
 }
 
 @utility glow-brand {
   box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--brand) 30%, transparent),
-    0 20px 60px -20px color-mix(in oklab, var(--brand) 50%, transparent);
+    0 0 0 1px color-mix(in oklab, var(--brand) 25%, transparent),
+    0 12px 40px -16px color-mix(in oklab, var(--brand) 35%, transparent);
+}
+
+@utility surface-panel {
+  border: 1px solid color-mix(in oklab, var(--border) 100%, transparent);
+  background: color-mix(in oklab, var(--card) 85%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+@utility surface-inset {
+  background: color-mix(in oklab, var(--muted) 50%, transparent);
+  border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+}
+
+@utility shell-workspace {
+  background: var(--shell);
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--foreground) 5%, transparent);
+}
+
+@utility shell-pane {
+  background: color-mix(in oklab, var(--card) 92%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, var(--foreground) 4%, transparent),
+    0 1px 2px color-mix(in oklab, black 20%, transparent);
+}
+
+@utility shadow-premium {
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--border) 100%, transparent),
+    0 20px 50px -30px color-mix(in oklab, black 45%, transparent),
+    0 0 80px -40px color-mix(in oklab, var(--brand) 15%, transparent);
+}
+
+@utility hero-mesh {
+  background-image:
+    radial-gradient(ellipse 80% 60% at 20% -10%, color-mix(in oklab, var(--brand) 18%, transparent), transparent 55%),
+    radial-gradient(ellipse 60% 50% at 90% 10%, color-mix(in oklab, var(--brand-2) 12%, transparent), transparent 50%),
+    radial-gradient(ellipse 50% 40% at 50% 100%, color-mix(in oklab, var(--brand) 8%, transparent), transparent 60%);
+}
+
+@utility grid-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+@utility grid-header-cell {
+  background: var(--grid-header);
+  border-bottom: 1px solid color-mix(in oklab, var(--border) 100%, transparent);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+@utility grid-body-cell {
+  border-bottom: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+  transition: background-color var(--motion-duration-fast) var(--motion-ease-out);
+}
+
+@utility grid-row-index {
+  background: color-mix(in oklab, var(--grid-header) 80%, transparent);
+  color: color-mix(in oklab, var(--muted-foreground) 100%, transparent);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
 }
 
 @utility transition-pane {
@@ -266,8 +328,20 @@
 }
 
 :root {
-  --source-bg: oklch(0.985 0.003 250);
+  --source-bg: oklch(0.99 0.002 250);
+  --pane-header: oklch(0.975 0.003 250);
+  --shell: oklch(0.97 0.003 250);
+  --grid-header: oklch(0.965 0.004 250);
+  --grid-row-hover: oklch(0.55 0.02 260 / 6%);
+  --grid-row-alt: oklch(0.55 0.02 260 / 3%);
+  --gutter-border: oklch(0.88 0.01 255);
 }
 .dark {
-  --source-bg: oklch(0.15 0.014 265);
+  --source-bg: oklch(0.102 0.011 260);
+  --pane-header: oklch(0.118 0.012 260);
+  --shell: oklch(0.092 0.013 260);
+  --grid-header: oklch(0.132 0.013 260);
+  --grid-row-hover: oklch(1 0 0 / 4%);
+  --grid-row-alt: oklch(1 0 0 / 2%);
+  --gutter-border: oklch(1 0 0 / 6%);
 }

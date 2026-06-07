@@ -24,6 +24,7 @@ type State = {
   loadJson: (name: string, raw: string) => Promise<boolean>;
   updateAt: (path: PathSegment[], value: unknown) => void;
   reset: () => void;
+  clearError: () => void;
 };
 
 export const useWorkspace = create<State>((set) => ({
@@ -73,6 +74,7 @@ export const useWorkspace = create<State>((set) => ({
       };
     }),
   reset: () => set({ doc: null, error: null, selection: [], source: "tree" }),
+  clearError: () => set({ error: null }),
 }));
 
 function setDeep(root: unknown, path: PathSegment[], value: unknown): unknown {

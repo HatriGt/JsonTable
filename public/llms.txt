@@ -7,4 +7,4 @@ JSON-Table is a browser-based developer utility that renders arbitrary JSON as a
 ## Pages
 
 - [Home](/): Overview, features, and paste-to-open entry point.
-- [Workspace](/app): The interactive JSON tree + table viewer with per-column filters, column reordering, and inline cell editing.
+- [Workspace](/workspace): The interactive JSON tree + table viewer with per-column filters, column reordering, and inline cell editing.
