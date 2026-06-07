@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Landing } from "@/components/landing/Landing";
+import { getSiteUrl } from "@/lib/site";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -32,7 +33,7 @@ export const Route = createFileRoute("/")({
           "@context": "https://schema.org",
           "@type": "WebSite",
           name: "JSON\u2011Table",
-          url: "https://nexus-sheet.lovable.app/",
+          url: getSiteUrl(),
           description:
             "Turn any JSON into a navigable tree and a sortable, filterable spreadsheet.",
         }),
@@ -45,7 +46,7 @@ export const Route = createFileRoute("/")({
           name: "JSON\u2011Table",
           applicationCategory: "DeveloperApplication",
           operatingSystem: "Web",
-          url: "https://nexus-sheet.lovable.app/",
+          url: getSiteUrl(),
           description:
             "Explore, edit, and understand JSON visually. The easiest way to view JSON as a table.",
           offers: {
