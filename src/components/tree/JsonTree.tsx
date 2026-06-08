@@ -34,14 +34,7 @@ export function JsonTree() {
         />
       </div>
       <div className="flex-1 overflow-auto px-1 py-1 font-mono text-[12px] leading-5">
-        <TreeNode
-          name="root"
-          value={doc.value}
-          path={[]}
-          depth={0}
-          matcher={matcher}
-          defaultOpen
-        />
+        <TreeNode name="root" value={doc.value} path={[]} depth={0} matcher={matcher} defaultOpen />
       </div>
     </div>
   );

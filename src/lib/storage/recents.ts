@@ -40,7 +40,7 @@ export async function deleteRecent(id: string): Promise<void> {
   const idx = await listRecents();
   await set(
     INDEX_KEY,
-    idx.filter((r) => r.id !== id)
+    idx.filter((r) => r.id !== id),
   );
 }
 

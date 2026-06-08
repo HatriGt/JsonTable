@@ -51,12 +51,7 @@ export function useResolvedOrder(arrayPath: string, defaultCols: string[]) {
 }
 
 /** Persist a move; seeds default order if needed. */
-export function moveColumn(
-  arrayPath: string,
-  defaultCols: string[],
-  from: string,
-  to: string,
-) {
+export function moveColumn(arrayPath: string, defaultCols: string[], from: string, to: string) {
   if (from === to) return;
   useColumnOrder.setState((s) => {
     const base = s.orders[arrayPath] ?? defaultCols;

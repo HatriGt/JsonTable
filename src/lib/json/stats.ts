@@ -29,8 +29,7 @@ export function computeStats(root: unknown): DocStats {
       for (let i = 0; i < v.length; i++) stack.push({ v: v[i], d: d + 1 });
     } else if (typeof v === "object") {
       s.objects++;
-      for (const k in v as object)
-        stack.push({ v: (v as Record<string, unknown>)[k], d: d + 1 });
+      for (const k in v as object) stack.push({ v: (v as Record<string, unknown>)[k], d: d + 1 });
     } else {
       s.primitives++;
     }

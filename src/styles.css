@@ -81,13 +81,13 @@
   --motion-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --motion-ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
   --motion-stagger-step: 60ms;
-  --background: oklch(0.985 0.003 250);
+  --background: oklch(0.995 0.002 250);
   --foreground: oklch(0.16 0.02 260);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.18 0.02 260);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.18 0.02 260);
-  --primary: oklch(0.52 0.16 155);
+  --primary: oklch(0.55 0.19 258);
   --primary-foreground: oklch(0.99 0.005 250);
   --secondary: oklch(0.96 0.005 250);
   --secondary-foreground: oklch(0.22 0.02 260);
@@ -99,13 +99,13 @@
   --destructive-foreground: oklch(0.99 0.005 250);
   --border: oklch(0.9 0.01 255);
   --input: oklch(0.92 0.01 255);
-  --ring: oklch(0.58 0.16 155);
+  --ring: oklch(0.55 0.19 258);
   --success: oklch(0.62 0.17 150);
   --warning: oklch(0.78 0.16 80);
-  --info: oklch(0.55 0.14 230);
-  --brand: oklch(0.52 0.16 155);
-  --brand-2: oklch(0.58 0.14 210);
-  --brand-3: oklch(0.62 0.12 85);
+  --info: oklch(0.55 0.19 258);
+  --brand: oklch(0.55 0.19 258);
+  --brand-2: oklch(0.58 0.18 230);
+  --brand-3: oklch(0.7 0.16 95);
   --json-key: oklch(0.55 0.18 258);
   --json-string: oklch(0.55 0.16 150);
   --json-number: oklch(0.65 0.18 40);
@@ -133,7 +133,7 @@
   --card-foreground: oklch(0.96 0.005 250);
   --popover: oklch(0.145 0.014 260);
   --popover-foreground: oklch(0.96 0.005 250);
-  --primary: oklch(0.72 0.19 155);
+  --primary: oklch(0.68 0.18 258);
   --primary-foreground: oklch(0.12 0.012 260);
   --secondary: oklch(0.21 0.014 260);
   --secondary-foreground: oklch(0.96 0.005 250);
@@ -145,13 +145,13 @@
   --destructive-foreground: oklch(0.98 0.005 250);
   --border: oklch(1 0 0 / 8%);
   --input: oklch(1 0 0 / 10%);
-  --ring: oklch(0.72 0.19 155);
+  --ring: oklch(0.68 0.18 258);
   --success: oklch(0.72 0.17 150);
   --warning: oklch(0.82 0.16 80);
-  --info: oklch(0.68 0.14 230);
-  --brand: oklch(0.72 0.19 155);
-  --brand-2: oklch(0.68 0.14 210);
-  --brand-3: oklch(0.76 0.14 85);
+  --info: oklch(0.68 0.18 258);
+  --brand: oklch(0.68 0.18 258);
+  --brand-2: oklch(0.65 0.16 230);
+  --brand-3: oklch(0.76 0.14 95);
   --json-key: oklch(0.75 0.14 258);
   --json-string: oklch(0.78 0.14 150);
   --json-number: oklch(0.8 0.16 60);
@@ -180,7 +180,12 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-family:
+      "Inter",
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      sans-serif;
     font-feature-settings: "cv11", "ss01", "ss03";
     -webkit-font-smoothing: antialiased;
   }
@@ -200,9 +205,117 @@
 
 @utility bg-grid {
   background-image:
-    linear-gradient(to right, color-mix(in oklab, var(--foreground) 5%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklab, var(--foreground) 5%, transparent) 1px, transparent 1px);
+    linear-gradient(
+      to right,
+      color-mix(in oklab, var(--foreground) 5%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--foreground) 5%, transparent) 1px,
+      transparent 1px
+    );
   background-size: 32px 32px;
+}
+
+.landing-page {
+  background-color: oklch(0.995 0.002 250);
+}
+
+.dark .landing-page {
+  background-color: var(--background);
+}
+
+/* Landing graph paper — wide spacing, faint lines, radial fade at corners + demo */
+.landing-grid-layer {
+  background-image:
+    linear-gradient(to right, oklch(0.55 0.01 260 / 0.042) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.55 0.01 260 / 0.042) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: center top;
+  -webkit-mask-image:
+    radial-gradient(
+      ellipse 88% 62% at 50% 14%,
+      rgb(0 0 0 / 1) 0%,
+      rgb(0 0 0 / 0.75) 28%,
+      rgb(0 0 0 / 0.35) 48%,
+      rgb(0 0 0 / 0.08) 62%,
+      transparent 74%
+    ),
+    linear-gradient(to bottom, rgb(0 0 0 / 1) 0%, rgb(0 0 0 / 0.55) 38%, transparent 58%);
+  mask-image:
+    radial-gradient(
+      ellipse 88% 62% at 50% 14%,
+      rgb(0 0 0 / 1) 0%,
+      rgb(0 0 0 / 0.75) 28%,
+      rgb(0 0 0 / 0.35) 48%,
+      rgb(0 0 0 / 0.08) 62%,
+      transparent 74%
+    ),
+    linear-gradient(to bottom, rgb(0 0 0 / 1) 0%, rgb(0 0 0 / 0.55) 38%, transparent 58%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+.dark .landing-grid-layer {
+  background-image:
+    linear-gradient(to right, oklch(1 0 0 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(1 0 0 / 0.05) 1px, transparent 1px);
+}
+
+/* Slightly stronger grid behind headline / hero copy */
+.landing-grid-layer-headline {
+  background-image:
+    linear-gradient(to right, oklch(0.5 0.01 260 / 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.5 0.01 260 / 0.07) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: center top;
+  -webkit-mask-image: radial-gradient(
+    ellipse 58% 32% at 50% 24%,
+    rgb(0 0 0 / 1) 0%,
+    rgb(0 0 0 / 0.85) 42%,
+    rgb(0 0 0 / 0.25) 68%,
+    transparent 88%
+  );
+  mask-image: radial-gradient(
+    ellipse 58% 32% at 50% 24%,
+    rgb(0 0 0 / 1) 0%,
+    rgb(0 0 0 / 0.85) 42%,
+    rgb(0 0 0 / 0.25) 68%,
+    transparent 88%
+  );
+}
+
+.dark .landing-grid-layer-headline {
+  background-image:
+    linear-gradient(to right, oklch(1 0 0 / 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(1 0 0 / 0.08) 1px, transparent 1px);
+}
+
+@utility text-gradient-spreadsheet {
+  background: linear-gradient(
+    90deg,
+    oklch(0.52 0.2 258) 0%,
+    oklch(0.58 0.18 230) 40%,
+    oklch(0.7 0.16 95) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility shadow-landing-demo {
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--border) 100%, transparent),
+    0 32px 80px -24px color-mix(in oklab, black 14%, transparent),
+    0 12px 32px -16px color-mix(in oklab, black 6%, transparent);
+}
+
+.dark .shadow-landing-demo {
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--border) 100%, transparent),
+    0 32px 80px -24px oklch(0 0 0 / 0.45),
+    0 12px 32px -16px oklch(0 0 0 / 0.25);
 }
 
 @utility glow-brand {
@@ -223,15 +336,12 @@
 }
 
 @utility shell-workspace {
-  background: var(--shell);
-  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--foreground) 5%, transparent);
+  background: transparent;
 }
 
 @utility shell-pane {
-  background: color-mix(in oklab, var(--card) 92%, transparent);
-  box-shadow:
-    inset 0 1px 0 color-mix(in oklab, var(--foreground) 4%, transparent),
-    0 1px 2px color-mix(in oklab, black 20%, transparent);
+  background: var(--card);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--border) 85%, transparent);
 }
 
 @utility shadow-premium {
@@ -243,9 +353,21 @@
 
 @utility hero-mesh {
   background-image:
-    radial-gradient(ellipse 80% 60% at 20% -10%, color-mix(in oklab, var(--brand) 18%, transparent), transparent 55%),
-    radial-gradient(ellipse 60% 50% at 90% 10%, color-mix(in oklab, var(--brand-2) 12%, transparent), transparent 50%),
-    radial-gradient(ellipse 50% 40% at 50% 100%, color-mix(in oklab, var(--brand) 8%, transparent), transparent 60%);
+    radial-gradient(
+      ellipse 80% 60% at 20% -10%,
+      color-mix(in oklab, var(--brand) 18%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 60% 50% at 90% 10%,
+      color-mix(in oklab, var(--brand-2) 12%, transparent),
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 50% 40% at 50% 100%,
+      color-mix(in oklab, var(--brand) 8%, transparent),
+      transparent 60%
+    );
 }
 
 @utility grid-table {
@@ -328,20 +450,246 @@
 }
 
 :root {
-  --source-bg: oklch(0.99 0.002 250);
-  --pane-header: oklch(0.975 0.003 250);
-  --shell: oklch(0.97 0.003 250);
-  --grid-header: oklch(0.965 0.004 250);
-  --grid-row-hover: oklch(0.55 0.02 260 / 6%);
-  --grid-row-alt: oklch(0.55 0.02 260 / 3%);
-  --gutter-border: oklch(0.88 0.01 255);
+  --source-bg: oklch(0.985 0.003 250);
+  --pane-header: oklch(0.99 0.002 250);
+  --shell: oklch(0.995 0.002 250);
+  --grid-header: oklch(0.99 0.002 250);
+  --grid-row-hover: oklch(0.55 0.19 258 / 5%);
+  --grid-row-alt: oklch(0.55 0.01 260 / 2.5%);
+  --gutter-border: oklch(0.55 0.01 260 / 10%);
 }
 .dark {
-  --source-bg: oklch(0.102 0.011 260);
-  --pane-header: oklch(0.118 0.012 260);
-  --shell: oklch(0.092 0.013 260);
+  --source-bg: oklch(0.11 0.012 260);
+  --pane-header: oklch(0.128 0.014 260);
+  --shell: oklch(0.098 0.014 260);
   --grid-header: oklch(0.132 0.013 260);
-  --grid-row-hover: oklch(1 0 0 / 4%);
+  --grid-row-hover: oklch(0.68 0.18 258 / 8%);
   --grid-row-alt: oklch(1 0 0 / 2%);
-  --gutter-border: oklch(1 0 0 / 6%);
+  --gutter-border: oklch(1 0 0 / 8%);
+}
+
+.workspace-page {
+  background-color: oklch(0.995 0.002 250);
+}
+
+.dark .workspace-page {
+  background-color: var(--background);
+}
+
+/* Subtle graph paper behind workspace — same family as landing, lower contrast */
+.workspace-grid-layer {
+  background-image:
+    linear-gradient(to right, oklch(0.55 0.01 260 / 0.032) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.55 0.01 260 / 0.032) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: center top;
+}
+
+.dark .workspace-grid-layer {
+  background-image:
+    linear-gradient(to right, oklch(1 0 0 / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(1 0 0 / 0.04) 1px, transparent 1px);
+}
+
+/* Workspace empty state — premium SaaS onboarding (Dribbble-inspired) */
+.empty-state-shell {
+  max-width: 28rem;
+}
+
+@media (min-width: 640px) {
+  .empty-state-shell {
+    max-width: 32rem;
+  }
+}
+
+.empty-state-orb {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5.5rem;
+  height: 5.5rem;
+}
+
+.empty-state-orb::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 45%,
+    color-mix(in oklab, var(--brand) 22%, transparent) 0%,
+    color-mix(in oklab, var(--brand-2) 10%, transparent) 42%,
+    transparent 72%
+  );
+}
+
+.empty-state-orb-icon {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  height: 4rem;
+  width: 4rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: calc(var(--radius) + 6px);
+  border: 1px solid color-mix(in oklab, var(--brand) 18%, transparent);
+  background: color-mix(in oklab, var(--background) 55%, var(--card) 45%);
+  color: var(--brand);
+  box-shadow:
+    0 1px 2px oklch(0.2 0.02 260 / 0.05),
+    0 8px 24px color-mix(in oklab, var(--brand) 10%, transparent);
+}
+
+.dark .empty-state-orb-icon {
+  background: color-mix(in oklab, var(--card) 70%, var(--background) 30%);
+  box-shadow:
+    0 1px 2px oklch(0 0 0 / 0.25),
+    0 8px 24px color-mix(in oklab, var(--brand) 14%, transparent);
+}
+
+.empty-state-drop-zone {
+  border: 1.5px dashed color-mix(in oklab, var(--border) 75%, transparent);
+  border-radius: var(--radius-2xl);
+  background: color-mix(in oklab, var(--card) 50%, var(--background) 50%);
+  box-shadow:
+    0 1px 2px oklch(0.2 0.02 260 / 0.04),
+    0 4px 16px oklch(0.2 0.02 260 / 0.03);
+  transition:
+    border-color var(--motion-duration-normal) var(--motion-ease-out),
+    background-color var(--motion-duration-normal) var(--motion-ease-out),
+    box-shadow var(--motion-duration-normal) var(--motion-ease-out),
+    transform var(--motion-duration-normal) var(--motion-ease-out);
+}
+
+.empty-state-drop-zone[data-active="true"] {
+  border-color: color-mix(in oklab, var(--brand) 50%, transparent);
+  background: color-mix(in oklab, var(--brand) 5%, var(--card) 95%);
+  box-shadow:
+    0 0 0 4px color-mix(in oklab, var(--brand) 10%, transparent),
+    0 4px 20px color-mix(in oklab, var(--brand) 12%, transparent);
+}
+
+.empty-state-drop-zone-error {
+  border-color: color-mix(in oklab, var(--destructive) 45%, transparent);
+}
+
+.empty-state-icon {
+  display: flex;
+  height: 3rem;
+  width: 3rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-xl);
+  background: color-mix(in oklab, var(--brand) 10%, transparent);
+  color: var(--brand);
+  transition: background-color var(--motion-duration-normal) var(--motion-ease-out);
+}
+
+.empty-state-drop-zone[data-active="true"] .empty-state-icon {
+  background: color-mix(in oklab, var(--brand) 18%, transparent);
+  color: var(--brand);
+}
+
+.empty-state-recent-list {
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  border: 1px solid color-mix(in oklab, var(--border) 65%, transparent);
+  background: color-mix(in oklab, var(--card) 55%, transparent);
+  box-shadow:
+    0 1px 2px oklch(0.2 0.02 260 / 0.03),
+    0 4px 12px oklch(0.2 0.02 260 / 0.02);
+}
+
+.empty-state-recent-row {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid color-mix(in oklab, var(--border) 45%, transparent);
+  transition: background-color var(--motion-duration-fast) var(--motion-ease-out);
+}
+
+.empty-state-recent-row:last-child {
+  border-bottom: none;
+}
+
+.empty-state-recent-row:hover,
+.empty-state-recent-row:focus-within {
+  background: color-mix(in oklab, var(--muted) 45%, transparent);
+}
+
+.empty-state-recent-icon {
+  display: flex;
+  height: 2.25rem;
+  width: 2.25rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: color-mix(in oklab, var(--muted) 60%, transparent);
+  color: var(--muted-foreground);
+  transition: background-color var(--motion-duration-fast) var(--motion-ease-out);
+}
+
+.empty-state-recent-row:hover .empty-state-recent-icon,
+.empty-state-recent-row:focus-within .empty-state-recent-icon {
+  background: color-mix(in oklab, var(--brand) 12%, transparent);
+  color: var(--brand);
+}
+
+.dark .empty-state-drop-zone {
+  box-shadow:
+    0 1px 2px oklch(0 0 0 / 0.2),
+    0 4px 16px oklch(0 0 0 / 0.12);
+}
+
+.dark .empty-state-drop-zone[data-active="true"] {
+  box-shadow:
+    0 0 0 4px color-mix(in oklab, var(--brand) 14%, transparent),
+    0 4px 20px color-mix(in oklab, var(--brand) 16%, transparent);
+}
+
+.dark .empty-state-recent-list {
+  box-shadow:
+    0 1px 2px oklch(0 0 0 / 0.15),
+    0 4px 12px oklch(0 0 0 / 0.1);
+}
+
+/* Editable JSON source — highlight layer + transparent textarea stack */
+.source-editor-stack {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+}
+
+.source-editor-stack > pre,
+.source-editor-stack > textarea {
+  grid-area: 1 / 1;
+  margin: 0;
+  border: 0;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.7;
+  white-space: pre;
+  overflow-wrap: normal;
+  word-break: normal;
+  tab-size: 2;
+}
+
+.source-editor-stack > pre {
+  pointer-events: none;
+  padding: 0.5rem 1.5rem 0.5rem 0.75rem;
+}
+
+.source-editor-stack > textarea {
+  resize: none;
+  background: transparent;
+  color: transparent;
+  caret-color: var(--foreground);
+  padding: 0.5rem 1.5rem 0.5rem 0.75rem;
+  outline: none;
+}
+
+.source-editor-stack > textarea::selection {
+  background: color-mix(in oklab, var(--primary) 28%, transparent);
+  color: transparent;
 }

@@ -24,12 +24,7 @@ export function formatPath(path: PathSegment[]): string {
 
 export function toJsonPointer(path: PathSegment[]): string {
   if (path.length === 0) return "";
-  return (
-    "/" +
-    path
-      .map((s) => String(s).replace(/~/g, "~0").replace(/\//g, "~1"))
-      .join("/")
-  );
+  return "/" + path.map((s) => String(s).replace(/~/g, "~0").replace(/\//g, "~1")).join("/");
 }
 
 export function valueType(v: unknown): string {
@@ -42,4 +37,13 @@ export function pathEquals(a: PathSegment[], b: PathSegment[]): boolean {
   if (a.length !== b.length) return false;
   for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
   return true;
+}
+
+/** Slash-separated path used by NestedGrid → PathSegment[] */
+export function slashPathToSegments(p: string): PathSegment[] {
+  if (!p) return [];
+  return p.split("/").map((s) => {
+    const n = Number(s);
+    return Number.isInteger(n) && String(n) === s ? n : s;
+  });
 }

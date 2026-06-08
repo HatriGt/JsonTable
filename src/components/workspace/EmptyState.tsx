@@ -1,38 +1,42 @@
 import { useCallback, useEffect, useState } from "react";
-import { m } from "@/lib/motion/framer";
+import { m, useReducedMotion } from "@/lib/motion/framer";
 import {
+  AlertCircle,
+  ArrowRight,
   Braces,
   ClipboardPaste,
-  Upload,
-  Sparkles,
   FileJson,
+  LayoutGrid,
+  Sparkles,
   Trash2,
+  Upload,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { IconButton } from "@/components/ui/icon-button";
 import { PasteDialog } from "@/components/input/PasteDialog";
 import { useWorkspace } from "@/store/workspace";
 import { SAMPLE_JSON } from "@/lib/json/sample";
 import { formatBytes } from "@/lib/format";
 import { FadeIn } from "@/components/motion/FadeIn";
-import { Stagger, StaggerItem } from "@/components/motion/Stagger";
 import { motionTransition } from "@/lib/motion/presets";
-import {
-  deleteRecent,
-  listRecents,
-  loadRecent,
-  type RecentMeta,
-} from "@/lib/storage/recents";
+import { deleteRecent, listRecents, loadRecent, type RecentMeta } from "@/lib/storage/recents";
 import { cn } from "@/lib/utils";
+
+const FILE_INPUT_ID = "empty-state-file-input";
 
 export function EmptyState() {
   const loadJson = useWorkspace((s) => s.loadJson);
   const error = useWorkspace((s) => s.error);
+  const reducedMotion = useReducedMotion();
   const [over, setOver] = useState(false);
   const [pasteOpen, setPasteOpen] = useState(false);
   const [recents, setRecents] = useState<RecentMeta[]>([]);
 
   const refreshRecents = useCallback(() => {
-    listRecents().then(setRecents).catch(() => {});
+    listRecents()
+      .then(setRecents)
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -52,14 +56,13 @@ export function EmptyState() {
       const txt = e.dataTransfer.getData("text");
       if (txt) await loadJson("dropped.json", txt);
     },
-    [loadJson]
+    [loadJson],
   );
 
   useEffect(() => {
     const onPaste = async (e: ClipboardEvent) => {
       const target = e.target as HTMLElement | null;
-      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA"))
-        return;
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) return;
       const t = e.clipboardData?.getData("text");
       if (t && (t.trim().startsWith("{") || t.trim().startsWith("["))) {
         await loadJson("pasted.json", t);
@@ -71,68 +74,108 @@ export function EmptyState() {
 
   return (
     <div
-      className="relative flex flex-1 flex-col items-center justify-center overflow-auto p-8"
+      className="relative flex flex-1 flex-col items-center justify-center overflow-auto px-4 py-12 sm:px-6 sm:py-16"
       onDragOver={(e) => {
         e.preventDefault();
         setOver(true);
       }}
       onDragLeave={() => setOver(false)}
       onDrop={onDrop}
+      role="region"
+      aria-label="Get started with JSON"
     >
-      <div className="pointer-events-none absolute inset-0 bg-grid opacity-40 [mask-image:radial-gradient(ellipse_at_center,_black_30%,_transparent_70%)]" />
-      <div className="pointer-events-none absolute left-1/2 top-1/3 -z-10 h-[400px] w-[700px] -translate-x-1/2 rounded-full bg-brand/15 blur-[140px] animate-pulse-soft" />
-
-      <FadeIn>
-        <m.div
-          animate={over ? { scale: 1.01 } : { scale: 1 }}
-          transition={motionTransition.fast}
-          className={cn(
-            "relative mx-auto w-full max-w-2xl rounded-2xl border border-dashed p-10 text-center surface-panel shadow-premium transition-[border-color,box-shadow] duration-[var(--motion-duration-normal)]",
-            over
-              ? "border-brand bg-brand/5 shadow-lg shadow-brand/10"
-              : "border-border/80",
-            error && "animate-shake border-destructive/50"
-          )}
-        >
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand/15 text-brand transition-transform duration-[var(--motion-duration-normal)]">
-            <Braces className="h-7 w-7" />
+      <FadeIn className="empty-state-shell relative w-full">
+        <div className="flex flex-col items-center text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-background/80 px-3.5 py-1.5 text-xs text-muted-foreground shadow-sm backdrop-blur-sm">
+            <LayoutGrid className="h-3.5 w-3.5 text-info" aria-hidden="true" />
+            Local-first · 10 MB ready · Zero uploads
           </div>
-          <h2 className="mt-5 text-2xl font-semibold tracking-tight">
-            Open a JSON document
+
+          <div className="empty-state-orb mt-8" aria-hidden="true">
+            <div className="empty-state-orb-icon">
+              <Braces className="h-7 w-7" />
+            </div>
+          </div>
+
+          <h2
+            id="empty-state-heading"
+            className="mt-7 max-w-sm text-balance text-[1.75rem] font-semibold leading-tight tracking-tight text-foreground sm:text-3xl"
+          >
+            Open a <span className="text-gradient-spreadsheet">JSON</span> document
           </h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Drop a file, paste from clipboard, or start with a sample. Everything
-            stays on your device.
+          <p className="mt-3 max-w-sm text-pretty text-[15px] leading-relaxed text-muted-foreground sm:text-base">
+            Drop a file, paste from clipboard, or explore with sample data.
           </p>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+
+          <m.div
+            className="mt-8 w-full"
+            animate={reducedMotion ? undefined : over ? { scale: 1.008 } : { scale: 1 }}
+            transition={motionTransition.fast}
+          >
+            <div
+              data-active={over}
+              className={cn(
+                "empty-state-drop-zone flex flex-col items-center gap-4 px-6 py-10 sm:px-8 sm:py-11",
+                error && "empty-state-drop-zone-error",
+              )}
+              aria-hidden="true"
+            >
+              <div className="empty-state-icon" aria-hidden="true">
+                {over ? <Upload className="h-5 w-5" /> : <Upload className="h-5 w-5 opacity-60" />}
+              </div>
+              <div>
+                <p className="text-sm font-medium text-foreground">
+                  {over ? "Release to open" : "Drop your file here"}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">.json, .txt, or raw JSON text</p>
+              </div>
+            </div>
+          </m.div>
+
+          <div className="mt-6 flex w-full flex-col gap-4">
             <Button
+              size="lg"
               onClick={() => setPasteOpen(true)}
-              className="cursor-pointer gap-2 transition-transform duration-[var(--motion-duration-fast)] active:scale-95"
+              className="h-11 w-full cursor-pointer gap-2 rounded-lg bg-brand text-white shadow-sm hover:bg-brand/90"
+              aria-label="Paste JSON from clipboard"
             >
-              <ClipboardPaste className="h-4 w-4" />
+              <ClipboardPaste className="h-4 w-4" aria-hidden="true" />
               Paste JSON
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Button>
-            <Button
-              variant="secondary"
-              className="cursor-pointer gap-2 transition-transform duration-[var(--motion-duration-fast)] active:scale-95"
-              onClick={() => document.getElementById("hidden-file-input")?.click()}
-            >
-              <Upload className="h-4 w-4" />
-              Open file
-            </Button>
-            <Button
-              variant="outline"
-              className="cursor-pointer gap-2 transition-transform duration-[var(--motion-duration-fast)] active:scale-95"
-              onClick={() => loadJson("sample.json", SAMPLE_JSON)}
-            >
-              <Sparkles className="h-4 w-4" />
-              Try sample
-            </Button>
+
+            <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-11 min-h-11 min-w-11 cursor-pointer gap-1.5 px-4 text-muted-foreground hover:text-foreground"
+                onClick={() => document.getElementById(FILE_INPUT_ID)?.click()}
+                aria-label="Open JSON file from disk"
+              >
+                <Upload className="h-3.5 w-3.5" aria-hidden="true" />
+                Open file
+              </Button>
+              <span className="hidden text-muted-foreground/30 sm:inline" aria-hidden="true">
+                ·
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-11 min-h-11 min-w-11 cursor-pointer gap-1.5 px-4 text-muted-foreground hover:text-foreground"
+                onClick={() => loadJson("sample.json", SAMPLE_JSON)}
+                aria-label="Load sample JSON document"
+              >
+                <Sparkles className="h-3.5 w-3.5 text-info" aria-hidden="true" />
+                Try sample
+              </Button>
+            </div>
+
             <input
-              id="hidden-file-input"
+              id={FILE_INPUT_ID}
               type="file"
               accept=".json,application/json,.txt"
               className="hidden"
+              aria-label="Open JSON file"
               onChange={async (e) => {
                 const f = e.target.files?.[0];
                 if (!f) return;
@@ -142,64 +185,82 @@ export function EmptyState() {
               }}
             />
           </div>
+
           {error && (
-            <p className="mt-5 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 font-mono text-xs text-destructive">
-              {error.message} — line {error.line}, col {error.column}
-            </p>
+            <Alert variant="destructive" className="mt-6 w-full text-left" role="alert">
+              <AlertCircle className="h-4 w-4" aria-hidden="true" />
+              <AlertTitle>Invalid JSON</AlertTitle>
+              <AlertDescription className="font-mono text-xs">
+                {error.message} — line {error.line}, col {error.column}
+              </AlertDescription>
+            </Alert>
           )}
-          <p className="mt-6 text-[11px] text-muted-foreground">
+
+          <p className="mt-6 text-xs text-muted-foreground">
+            Tip — paste JSON anywhere with{" "}
+            <kbd className="inline-flex min-h-[22px] min-w-[22px] items-center justify-center rounded border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] shadow-sm">
+              ⌘
+            </kbd>{" "}
+            <kbd className="inline-flex min-h-[22px] min-w-[22px] items-center justify-center rounded border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] shadow-sm">
+              V
+            </kbd>
+          </p>
+
+          <p className="mt-3 text-[11px] text-muted-foreground/80">
             Files stay in your browser. Nothing is ever uploaded.
           </p>
-        </m.div>
+        </div>
       </FadeIn>
 
       {recents.length > 0 && (
-        <div className="relative mt-8 w-full max-w-2xl">
-          <div className="mb-2 flex items-center justify-between px-1">
-            <h3 className="mb-2 text-xs font-medium text-muted-foreground">
+        <FadeIn delay={0.08} className="empty-state-shell relative mt-12 w-full">
+          <div className="flex items-center justify-between px-1">
+            <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Recent files
             </h3>
+            <span className="text-[11px] text-muted-foreground/70">{recents.length} saved</span>
           </div>
-          <Stagger className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <ul className="empty-state-recent-list mt-2.5" role="list" aria-label="Recent JSON files">
             {recents.map((r) => (
-              <StaggerItem key={r.id}>
-                <div className="group flex items-center justify-between gap-2 rounded-lg border border-border bg-card/60 p-3 transition-[border-color,background-color,transform] duration-[var(--motion-duration-normal)] hover:-translate-y-0.5 hover:border-brand/40 hover:bg-card">
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      const raw = await loadRecent(r.id);
-                      if (raw) await loadJson(r.name, raw);
-                    }}
-                    className="flex min-w-0 flex-1 cursor-pointer items-center gap-2.5 text-left"
-                  >
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-brand/10 text-brand">
-                      <FileJson className="h-4 w-4" />
+              <li key={r.id} className="empty-state-recent-row group" role="listitem">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const raw = await loadRecent(r.id);
+                    if (raw) await loadJson(r.name, raw);
+                  }}
+                  className="flex min-h-11 min-w-0 flex-1 cursor-pointer items-center gap-3 px-3.5 py-3 text-left outline-none transition-colors duration-[var(--motion-duration-fast)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+                  aria-label={`Open recent file ${r.name}`}
+                >
+                  <div className="empty-state-recent-icon" aria-hidden="true">
+                    <FileJson className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate text-sm font-medium text-foreground">{r.name}</div>
+                    <div className="truncate text-xs text-muted-foreground">
+                      {formatBytes(r.sizeBytes)} · {new Date(r.savedAt).toLocaleString()}
                     </div>
-                    <div className="min-w-0">
-                      <div className="truncate text-sm font-medium">{r.name}</div>
-                      <div className="text-[10px] text-muted-foreground">
-                        {formatBytes(r.sizeBytes)} ·{" "}
-                        {new Date(r.savedAt).toLocaleString()}
-                      </div>
-                    </div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      await deleteRecent(r.id);
-                      refreshRecents();
-                    }}
-                    className="cursor-pointer rounded p-1 text-muted-foreground opacity-0 transition-[opacity,background-color,color] duration-[var(--motion-duration-fast)] group-hover:opacity-100 hover:bg-accent hover:text-destructive"
-                    title="Remove"
-                    aria-label="Remove recent file"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              </StaggerItem>
+                  </div>
+                  <ArrowRight
+                    className="h-3.5 w-3.5 shrink-0 text-muted-foreground/0 transition-all duration-[var(--motion-duration-fast)] group-hover:text-muted-foreground/60 sm:group-focus-within:text-muted-foreground/60"
+                    aria-hidden="true"
+                  />
+                </button>
+                <IconButton
+                  title="Remove recent file"
+                  aria-label={`Remove ${r.name} from recent files`}
+                  onClick={async () => {
+                    await deleteRecent(r.id);
+                    refreshRecents();
+                  }}
+                  className="mr-2 h-11 w-11 shrink-0 text-muted-foreground opacity-100 transition-opacity duration-[var(--motion-duration-fast)] hover:text-destructive sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </IconButton>
+              </li>
             ))}
-          </Stagger>
-        </div>
+          </ul>
+        </FadeIn>
       )}
 
       <PasteDialog open={pasteOpen} onOpenChange={setPasteOpen} />

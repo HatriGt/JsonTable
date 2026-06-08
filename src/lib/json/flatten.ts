@@ -26,9 +26,7 @@ export function buildGrid(value: unknown): GridShape {
     return { isTabular: true, columns: [], rows: [], reason: "Empty array." };
   }
 
-  const allPrimitive = value.every(
-    (v) => v === null || typeof v !== "object"
-  );
+  const allPrimitive = value.every((v) => v === null || typeof v !== "object");
   if (allPrimitive) {
     return {
       isTabular: true,

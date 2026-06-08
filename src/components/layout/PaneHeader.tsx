@@ -27,14 +27,14 @@ export function PaneHeader({
   return (
     <div
       className={cn(
-        "flex h-11 shrink-0 items-center justify-between border-b border-border/80 bg-[var(--pane-header)] px-3",
+        "flex h-11 shrink-0 items-center justify-between border-b border-border/80 bg-[var(--pane-header)]/95 px-3 backdrop-blur-sm",
         "shadow-[inset_0_1px_0_color-mix(in_oklab,var(--foreground)_4%,transparent)]",
-        className
+        className,
       )}
     >
       <div className="flex min-w-0 items-center gap-2.5">
         {icon && (
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-brand/15 bg-brand/10 text-brand shadow-[inset_0_1px_0_color-mix(in_oklab,white_8%,transparent)]">
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-card text-info">
             {icon}
           </span>
         )}

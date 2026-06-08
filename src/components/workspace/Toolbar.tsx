@@ -8,28 +8,10 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { formatBytes } from "@/lib/format";
 import { motionTransition } from "@/lib/motion/presets";
-import {
-  ClipboardPaste,
-  Upload,
-  Sun,
-  Moon,
-  Monitor,
-  Trash2,
-  Braces,
-  Code2,
-  Table2,
-} from "lucide-react";
+import { ClipboardPaste, Upload, Sun, Moon, Monitor, Trash2, Braces } from "lucide-react";
 import { PasteDialog } from "@/components/input/PasteDialog";
-import { cn } from "@/lib/utils";
 
-type PaneControls = {
-  sourceCollapsed: boolean;
-  gridCollapsed: boolean;
-  onToggleSource: () => void;
-  onToggleGrid: () => void;
-};
-
-export function Toolbar({ paneControls }: { paneControls?: PaneControls }) {
+export function Toolbar() {
   const fileRef = useRef<HTMLInputElement>(null);
   const { doc, loadJson, reset } = useWorkspace();
   const { theme, setTheme } = useTheme();
@@ -48,13 +30,13 @@ export function Toolbar({ paneControls }: { paneControls?: PaneControls }) {
   const ThemeIcon = theme === "dark" ? Moon : theme === "light" ? Sun : Monitor;
 
   return (
-    <div className="flex h-12 shrink-0 items-center justify-between gap-2 border-b border-border/80 bg-[var(--pane-header)] px-3 shadow-[inset_0_1px_0_color-mix(in_oklab,var(--foreground)_4%,transparent)]">
+    <div className="relative z-10 flex h-12 shrink-0 items-center justify-between gap-2 border-b border-border/80 bg-[var(--pane-header)]/90 px-3 shadow-[inset_0_1px_0_color-mix(in_oklab,var(--foreground)_4%,transparent)] backdrop-blur-md">
       <div className="flex min-w-0 items-center gap-2">
         <Link
           to="/"
           className="group flex cursor-pointer items-center gap-2 transition-opacity duration-[var(--motion-duration-fast)] hover:opacity-90"
         >
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-brand/12 text-brand transition-transform duration-[var(--motion-duration-fast)] group-hover:scale-105">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-border/60 bg-card text-info transition-transform duration-[var(--motion-duration-fast)] group-hover:scale-105">
             <Braces className="h-4 w-4" />
           </div>
           <span className="hidden text-sm font-semibold tracking-tight sm:inline">JSON‑Table</span>
@@ -70,7 +52,10 @@ export function Toolbar({ paneControls }: { paneControls?: PaneControls }) {
               className="ml-1 flex min-w-0 items-center gap-2"
             >
               <Separator orientation="vertical" className="hidden h-5 sm:block" />
-              <Badge variant="secondary" className="max-w-[200px] truncate font-mono text-[11px] font-normal sm:max-w-xs">
+              <Badge
+                variant="secondary"
+                className="max-w-[200px] truncate font-mono text-[11px] font-normal sm:max-w-xs"
+              >
                 {doc.name}
               </Badge>
               <span className="hidden text-xs text-muted-foreground sm:inline">
@@ -82,41 +67,6 @@ export function Toolbar({ paneControls }: { paneControls?: PaneControls }) {
       </div>
 
       <div className="flex items-center gap-1">
-        {paneControls && (
-          <>
-            <div className="hidden items-center gap-0.5 rounded-lg border border-border bg-muted/30 p-0.5 md:flex">
-              <Button
-                type="button"
-                size="sm"
-                variant="ghost"
-                aria-pressed={!paneControls.sourceCollapsed}
-                onClick={paneControls.onToggleSource}
-                className={cn(
-                  "h-7 cursor-pointer gap-1.5 px-2.5 text-xs",
-                  !paneControls.sourceCollapsed && "bg-background shadow-sm"
-                )}
-              >
-                <Code2 className="h-3.5 w-3.5" />
-                Source
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                variant="ghost"
-                aria-pressed={!paneControls.gridCollapsed}
-                onClick={paneControls.onToggleGrid}
-                className={cn(
-                  "h-7 cursor-pointer gap-1.5 px-2.5 text-xs",
-                  !paneControls.gridCollapsed && "bg-background shadow-sm"
-                )}
-              >
-                <Table2 className="h-3.5 w-3.5" />
-                Grid
-              </Button>
-            </div>
-            <Separator orientation="vertical" className="mx-1 hidden h-5 md:block" />
-          </>
-        )}
         <Button
           size="sm"
           variant="ghost"

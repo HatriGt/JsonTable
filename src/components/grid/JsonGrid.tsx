@@ -18,11 +18,15 @@ import { ArrowUp, ArrowDown, Table2, LayoutGrid, Rows3 } from "lucide-react";
 import { NestedGrid } from "./NestedGrid";
 import { cn } from "@/lib/utils";
 
-export function JsonGrid() {
+type JsonGridProps = {
+  lockedMode?: "nested" | "flat";
+};
+
+export function JsonGrid({ lockedMode }: JsonGridProps) {
   const { doc, selection, setSelection } = useWorkspace();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [filters, setFilters] = useState<ColumnFiltersState>([]);
-  const [mode, setMode] = useState<"nested" | "flat">("nested");
+  const [mode, setMode] = useState<"nested" | "flat">(lockedMode ?? "nested");
   const parentRef = useRef<HTMLDivElement>(null);
 
   const value = doc ? getAtPath(doc.value, selection) : undefined;
@@ -40,12 +44,7 @@ export function JsonGrid() {
       },
       filterFn: (row, columnId, value) => {
         const raw = row.getValue(columnId);
-        const text =
-          raw == null
-            ? ""
-            : typeof raw === "object"
-              ? JSON.stringify(raw)
-              : String(raw);
+        const text = raw == null ? "" : typeof raw === "object" ? JSON.stringify(raw) : String(raw);
         return text.toLowerCase().includes(String(value).toLowerCase());
       },
     }));
@@ -74,37 +73,38 @@ export function JsonGrid() {
 
   const virtualItems = rowVirtualizer.getVirtualItems();
   const paddingTop = virtualItems[0]?.start ?? 0;
-  const paddingBottom =
-    rowVirtualizer.getTotalSize() - (virtualItems.at(-1)?.end ?? 0);
+  const paddingBottom = rowVirtualizer.getTotalSize() - (virtualItems.at(-1)?.end ?? 0);
 
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-between gap-2 pr-2">
         <Breadcrumb />
-        <div className="flex items-center gap-1 rounded border border-border bg-card p-0.5 text-[11px]">
-          <button
-            onClick={() => setMode("nested")}
-            className={cn(
-              "flex items-center gap-1 rounded px-2 py-0.5 text-muted-foreground hover:text-foreground",
-              mode === "nested" && "bg-accent text-foreground"
-            )}
-            title="Nested grid (recursive tables)"
-          >
-            <LayoutGrid className="h-3 w-3" /> Nested
-          </button>
-          <button
-            onClick={() => setMode("flat")}
-            className={cn(
-              "flex items-center gap-1 rounded px-2 py-0.5 text-muted-foreground hover:text-foreground",
-              mode === "flat" && "bg-accent text-foreground"
-            )}
-            title="Flat array table"
-          >
-            <Rows3 className="h-3 w-3" /> Flat
-          </button>
-        </div>
+        {!lockedMode && (
+          <div className="flex items-center gap-1 rounded border border-border bg-card p-0.5 text-[11px]">
+            <button
+              onClick={() => setMode("nested")}
+              className={cn(
+                "flex cursor-pointer items-center gap-1 rounded px-2 py-0.5 text-muted-foreground hover:text-foreground",
+                mode === "nested" && "bg-accent text-foreground",
+              )}
+              title="Nested grid (recursive tables)"
+            >
+              <LayoutGrid className="h-3 w-3" /> Nested
+            </button>
+            <button
+              onClick={() => setMode("flat")}
+              className={cn(
+                "flex cursor-pointer items-center gap-1 rounded px-2 py-0.5 text-muted-foreground hover:text-foreground",
+                mode === "flat" && "bg-accent text-foreground",
+              )}
+              title="Flat array table"
+            >
+              <Rows3 className="h-3 w-3" /> Flat
+            </button>
+          </div>
+        )}
       </div>
-      {mode === "nested" ? (
+      {(lockedMode ?? mode) === "nested" ? (
         <div className="flex-1 overflow-auto border-t border-border p-2">
           <NestedGrid value={value} />
         </div>
@@ -147,10 +147,7 @@ export function JsonGrid() {
                 <tr>
                   <th className="sticky left-0 z-30 w-12 border-b border-r border-border bg-card/80 px-2 py-1" />
                   {table.getHeaderGroups()[0].headers.map((h) => (
-                    <th
-                      key={h.id}
-                      className="border-b border-r border-border bg-card/80 px-1 py-1"
-                    >
+                    <th key={h.id} className="border-b border-r border-border bg-card/80 px-1 py-1">
                       <input
                         value={(h.column.getFilterValue() as string) ?? ""}
                         onChange={(e) => h.column.setFilterValue(e.target.value)}
@@ -188,10 +185,7 @@ export function JsonGrid() {
                             key={cell.id}
                             onClick={(e) => {
                               e.stopPropagation();
-                              setSelection(
-                                [...selection, rowIndex, cell.column.id],
-                                "grid"
-                              );
+                              setSelection([...selection, rowIndex, cell.column.id], "grid");
                             }}
                             className="max-w-[400px] truncate border-b border-r border-border px-2"
                             title={typeof raw === "string" ? raw : d.text}

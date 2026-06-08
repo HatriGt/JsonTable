@@ -4,6 +4,24 @@ import { computeStats, type DocStats } from "@/lib/json/stats";
 import { parseJson, type ParseError } from "@/lib/json/parse";
 import { saveRecent } from "@/lib/storage/recents";
 
+const EMPTY_STATS: DocStats = {
+  nodes: 0,
+  objects: 0,
+  arrays: 0,
+  primitives: 0,
+  maxDepth: 0,
+  nulls: 0,
+};
+
+function scheduleStats(value: unknown, apply: (stats: DocStats) => void) {
+  const run = () => apply(computeStats(value));
+  if (typeof requestIdleCallback === "function") {
+    requestIdleCallback(run, { timeout: 3000 });
+  } else {
+    setTimeout(run, 0);
+  }
+}
+
 type Doc = {
   name: string;
   raw: string;
@@ -22,6 +40,7 @@ type State = {
   source: SelectionSource;
   setSelection: (p: PathSegment[], source?: SelectionSource) => void;
   loadJson: (name: string, raw: string) => Promise<boolean>;
+  editRaw: (raw: string) => boolean;
   updateAt: (path: PathSegment[], value: unknown) => void;
   reset: () => void;
   clearError: () => void;
@@ -39,22 +58,51 @@ export const useWorkspace = create<State>((set) => ({
       set({ error: result.error, doc: null });
       return false;
     }
-    const stats = computeStats(result.value);
     const sizeBytes = new Blob([raw]).size;
+    const value = result.value;
     set({
       error: null,
       doc: {
         name,
         raw,
-        value: result.value,
+        value,
         sizeBytes,
-        stats,
+        stats: EMPTY_STATS,
         loadedAt: Date.now(),
       },
       selection: [],
       source: "tree",
     });
+    scheduleStats(value, (stats) => {
+      set((s) => (s.doc?.value === value ? { doc: { ...s.doc, stats } } : s));
+    });
     saveRecent(name, raw).catch(() => {});
+    return true;
+  },
+  editRaw: (raw) => {
+    const result = parseJson(raw);
+    if (!result.ok) {
+      set({ error: result.error });
+      return false;
+    }
+    const value = result.value;
+    const sizeBytes = new Blob([raw]).size;
+    set((s) => {
+      if (!s.doc) return s;
+      return {
+        error: null,
+        doc: {
+          ...s.doc,
+          raw,
+          value,
+          sizeBytes,
+          stats: EMPTY_STATS,
+        },
+      };
+    });
+    scheduleStats(value, (stats) => {
+      set((s) => (s.doc?.value === value ? { doc: { ...s.doc, stats } } : s));
+    });
     return true;
   },
   updateAt: (path, value) =>

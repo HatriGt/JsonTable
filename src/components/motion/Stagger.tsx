@@ -24,9 +24,7 @@ export function Stagger({ children, className, itemClassName, inView = true }: P
       className={className}
       variants={staggerContainer}
       initial="hidden"
-      {...(inView
-        ? { whileInView: "visible", viewport: viewportOnce }
-        : { animate: "visible" })}
+      {...(inView ? { whileInView: "visible", viewport: viewportOnce } : { animate: "visible" })}
     >
       {Array.isArray(children)
         ? children.map((child, i) => (

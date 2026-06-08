@@ -1,27 +1,49 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronDown, ChevronRight, MoreHorizontal, MoreVertical, GripVertical, Pencil } from "lucide-react";
+import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
+import { useVirtualizer } from "@tanstack/react-virtual";
+import {
+  ChevronDown,
+  ChevronRight,
+  Maximize2,
+  MoreVertical,
+  GripVertical,
+  Pencil,
+} from "lucide-react";
+import { ArrayTableModal } from "./ArrayTableModal";
 import { cn } from "@/lib/utils";
-import { valueType } from "@/lib/json/path";
+import { slashPathToSegments, valueType } from "@/lib/json/path";
 import { useWorkspace } from "@/store/workspace";
 import { useResolvedOrder, moveColumn } from "@/store/columnOrder";
-import {
-  isFilterActive,
-  matchesFilter,
-  useFilters,
-  valueToText,
-} from "@/store/filters";
+import { isFilterActive, matchesFilter, useFilters, valueToText } from "@/store/filters";
 import { FilterPopover } from "./FilterPopover";
+
+const VIRTUAL_ROW_THRESHOLD = 40;
+const GRID_ROW_HEIGHT = 36;
 
 type Props = {
   value: unknown;
   label?: string;
   path?: string;
   depth?: number;
+  scrollElementRef?: RefObject<HTMLElement | null>;
 };
 
-export function NestedGrid({ value, label, path = "", depth = 0 }: Props) {
+export function NestedGrid({
+  value,
+  label,
+  path = "",
+  depth = 0,
+  scrollElementRef,
+}: Props) {
   if (Array.isArray(value)) {
-    return <ArrayTable value={value} label={label} path={path} depth={depth} />;
+    return (
+      <ArrayTable
+        value={value}
+        label={label}
+        path={path}
+        depth={depth}
+        scrollElementRef={scrollElementRef}
+      />
+    );
   }
   if (value && typeof value === "object") {
     return (
@@ -30,6 +52,7 @@ export function NestedGrid({ value, label, path = "", depth = 0 }: Props) {
         label={label}
         path={path}
         depth={depth}
+        scrollElementRef={scrollElementRef}
       />
     );
   }
@@ -64,9 +87,7 @@ function Header({
       <span
         className={cn(
           "rounded-md px-1.5 py-0.5 text-[10px] font-medium tabular-nums",
-          kind === "array"
-            ? "bg-brand/12 text-brand"
-            : "bg-muted text-muted-foreground"
+          kind === "array" ? "bg-brand/12 text-brand" : "bg-muted text-muted-foreground",
         )}
       >
         {kind === "array" ? `${count} rows` : `${count} keys`}
@@ -89,7 +110,7 @@ function CollapsibleBody({
       className={cn(
         "grid transition-[grid-template-rows] duration-[var(--motion-duration-normal)] ease-[var(--motion-ease-out)]",
         open ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
-        className
+        className,
       )}
     >
       <div className="overflow-hidden">{children}</div>
@@ -104,23 +125,23 @@ function ObjectTable({
   label,
   path,
   depth,
+  scrollElementRef,
 }: {
   value: Record<string, unknown>;
   label?: string;
   path: string;
   depth: number;
+  scrollElementRef?: RefObject<HTMLElement | null>;
 }) {
   const entries = Object.entries(value);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(depth === 0 || entries.length <= 30);
 
   const body = (
     <table className="w-full border-collapse font-mono text-[12px]">
       <tbody>
         {entries.map(([k, v]) => (
           <tr key={k} className="align-top">
-            <td className="w-[160px] min-w-[120px] border-y border-r border-border bg-muted/30 px-2.5 py-1.5 text-foreground/80">
-              {k}
-            </td>
+            <ObjectKeyCell path={joinPath(path, k)} label={k} />
             <td className="border-y border-border p-0">
               {isContainer(v) ? (
                 <div className="p-1.5">
@@ -129,6 +150,7 @@ function ObjectTable({
                     label={k}
                     path={joinPath(path, k)}
                     depth={depth + 1}
+                    scrollElementRef={scrollElementRef}
                   />
                 </div>
               ) : (
@@ -173,19 +195,21 @@ function ArrayTable({
   label,
   path,
   depth,
+  scrollElementRef,
 }: {
   value: unknown[];
   label?: string;
   path: string;
   depth: number;
+  scrollElementRef?: RefObject<HTMLElement | null>;
 }) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(depth === 0 || value.length <= 30);
+  const [modalOpen, setModalOpen] = useState(false);
   const filterState = useFilters((s) => s.filters);
   const clearArray = useFilters((s) => s.clearArray);
 
   const allObjects =
-    value.length > 0 &&
-    value.every((v) => v && typeof v === "object" && !Array.isArray(v));
+    value.length > 0 && value.every((v) => v && typeof v === "object" && !Array.isArray(v));
 
   const columns = useMemo(() => {
     if (!allObjects) return [] as string[];
@@ -245,15 +269,27 @@ function ArrayTable({
     return n;
   }, [columns, filterState, path, allObjects]);
 
+  const shouldVirtualize =
+    allObjects && processed.length > VIRTUAL_ROW_THRESHOLD && scrollElementRef != null;
+
+  const rowVirtualizer = useVirtualizer({
+    count: shouldVirtualize ? processed.length : 0,
+    getScrollElement: () => scrollElementRef?.current ?? null,
+    estimateSize: () => GRID_ROW_HEIGHT,
+    overscan: 12,
+  });
+
+  const virtualRows = shouldVirtualize ? rowVirtualizer.getVirtualItems() : [];
+  const paddingTop = virtualRows[0]?.start ?? 0;
+  const paddingBottom =
+    shouldVirtualize && virtualRows.length > 0
+      ? rowVirtualizer.getTotalSize() - (virtualRows.at(-1)?.end ?? 0)
+      : 0;
+
   const body = allObjects ? (
     <div>
       <table className="grid-table w-max min-w-full font-mono text-[12px]">
-        <ColumnHeaderRow
-          path={path}
-          columns={orderedColumns}
-          rawColumns={columns}
-          value={value}
-        />
+        <ColumnHeaderRow path={path} columns={orderedColumns} rawColumns={columns} value={value} />
         <tbody>
           {processed.length === 0 && (
             <tr>
@@ -265,49 +301,43 @@ function ArrayTable({
               </td>
             </tr>
           )}
-          {processed.map((i) => {
-            const row = value[i] as Record<string, unknown>;
-            return (
-              <tr
-                key={i}
-                className={cn(
-                  "group align-top",
-                  i % 2 === 1 && "bg-[var(--grid-row-alt)]"
-                )}
-              >
-                <td className="grid-row-index grid-body-cell w-11 border-r border-border/60 px-2.5 py-2.5 text-right">
-                  {i + 1}
-                </td>
-                {orderedColumns.map((c) => {
-                  const v = row[c];
-                  return (
-                    <td
-                      key={c}
-                      className="grid-body-cell border-r border-border/60 p-0 align-top transition-colors duration-[var(--motion-duration-fast)] group-hover:bg-[var(--grid-row-hover)]"
-                    >
-                      {isContainer(v) ? (
-                        <div className="p-1.5">
-                          <NestedGrid
-                            value={v}
-                            label={c}
-                            path={joinPath(joinPath(path, String(i)), c)}
-                            depth={depth + 1}
-                          />
-                        </div>
-                      ) : (
-                        <div className="p-0">
-                          <PrimitiveCell
-                            value={v}
-                            path={joinPath(joinPath(path, String(i)), c)}
-                          />
-                        </div>
-                      )}
-                    </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
+          {shouldVirtualize && paddingTop > 0 && (
+            <tr aria-hidden="true">
+              <td colSpan={columns.length + 1} style={{ height: paddingTop, padding: 0, border: 0 }} />
+            </tr>
+          )}
+          {shouldVirtualize
+            ? virtualRows.map((vr) => (
+                <ObjectArrayRow
+                  key={vr.key}
+                  rowIndex={processed[vr.index]}
+                  rowStyle={{ height: vr.size }}
+                  value={value}
+                  orderedColumns={orderedColumns}
+                  path={path}
+                  depth={depth}
+                  scrollElementRef={scrollElementRef}
+                />
+              ))
+            : processed.map((i) => (
+                <ObjectArrayRow
+                  key={i}
+                  rowIndex={i}
+                  value={value}
+                  orderedColumns={orderedColumns}
+                  path={path}
+                  depth={depth}
+                  scrollElementRef={scrollElementRef}
+                />
+              ))}
+          {shouldVirtualize && paddingBottom > 0 && (
+            <tr aria-hidden="true">
+              <td
+                colSpan={columns.length + 1}
+                style={{ height: paddingBottom, padding: 0, border: 0 }}
+              />
+            </tr>
+          )}
         </tbody>
       </table>
     </div>
@@ -315,7 +345,10 @@ function ArrayTable({
     <table className="w-full border-collapse font-mono text-[12px]">
       <tbody>
         {value.map((v, i) => (
-          <tr key={i} className="align-top transition-colors duration-[var(--motion-duration-fast)] hover:bg-accent/30">
+          <tr
+            key={i}
+            className="align-top transition-colors duration-[var(--motion-duration-fast)] hover:bg-accent/30"
+          >
             <td className="w-10 border-b border-r border-border/80 bg-muted/40 px-2 py-2 text-right text-[10px] tabular-nums text-muted-foreground">
               {i + 1}
             </td>
@@ -327,6 +360,7 @@ function ArrayTable({
                     label={String(i)}
                     path={joinPath(path, String(i))}
                     depth={depth + 1}
+                    scrollElementRef={scrollElementRef}
                   />
                 </div>
               ) : (
@@ -341,9 +375,7 @@ function ArrayTable({
     </table>
   );
 
-  const totalFiltered = allObjects
-    ? processed.length
-    : value.length;
+  const totalFiltered = allObjects ? processed.length : value.length;
 
   return (
     <div className="overflow-hidden rounded-xl border border-border/80 bg-card/40 shadow-premium">
@@ -372,17 +404,111 @@ function ArrayTable({
               </button>
             )}
             <button
-              className="rounded p-1 hover:bg-accent hover:text-foreground"
-              title="More"
-              aria-label="More options"
+              type="button"
+              onClick={() => setModalOpen(true)}
+              className="inline-flex min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-brand sm:min-h-8 sm:min-w-8"
+              title="Open array in modal"
+              aria-label="Open array in modal"
             >
-              <MoreHorizontal className="h-3 w-3" />
+              <Maximize2 className="h-3.5 w-3.5" />
             </button>
           </div>
         </div>
       )}
       {label === undefined ? body : <CollapsibleBody open={open}>{body}</CollapsibleBody>}
+      {label !== undefined && (
+        <ArrayTableModal
+          open={modalOpen}
+          onOpenChange={setModalOpen}
+          label={label}
+          path={path}
+          value={value}
+        />
+      )}
     </div>
+  );
+}
+
+function ObjectKeyCell({ path, label }: { path: string; label: string }) {
+  const setSelection = useWorkspace((s) => s.setSelection);
+  return (
+    <td className="w-[160px] min-w-[120px] border-y border-r border-border bg-muted/30 px-2.5 py-1.5 text-foreground/80">
+      <button
+        type="button"
+        onClick={() => setSelection(slashPathToSegments(path), "grid")}
+        className="w-full cursor-pointer text-left hover:text-brand"
+      >
+        {label}
+      </button>
+    </td>
+  );
+}
+
+function ObjectArrayRow({
+  rowIndex,
+  value,
+  orderedColumns,
+  path,
+  depth,
+  scrollElementRef,
+  rowStyle,
+}: {
+  rowIndex: number;
+  value: unknown[];
+  orderedColumns: string[];
+  path: string;
+  depth: number;
+  scrollElementRef?: RefObject<HTMLElement | null>;
+  rowStyle?: { height: number };
+}) {
+  const row = value[rowIndex] as Record<string, unknown>;
+  return (
+    <tr
+      className={cn("group align-top", rowIndex % 2 === 1 && "bg-[var(--grid-row-alt)]")}
+      style={rowStyle}
+    >
+      <RowIndexCell path={joinPath(path, String(rowIndex))} index={rowIndex + 1} />
+      {orderedColumns.map((c) => {
+        const v = row[c];
+        return (
+          <td
+            key={c}
+            className="grid-body-cell border-r border-border/60 p-0 align-top transition-colors duration-[var(--motion-duration-fast)] group-hover:bg-[var(--grid-row-hover)]"
+          >
+            {isContainer(v) ? (
+              <div className="p-1.5">
+                <NestedGrid
+                  value={v}
+                  label={c}
+                  path={joinPath(joinPath(path, String(rowIndex)), c)}
+                  depth={depth + 1}
+                  scrollElementRef={scrollElementRef}
+                />
+              </div>
+            ) : (
+              <div className="p-0">
+                <PrimitiveCell value={v} path={joinPath(joinPath(path, String(rowIndex)), c)} />
+              </div>
+            )}
+          </td>
+        );
+      })}
+    </tr>
+  );
+}
+
+function RowIndexCell({ path, index }: { path: string; index: number }) {
+  const setSelection = useWorkspace((s) => s.setSelection);
+  return (
+    <td className="grid-row-index grid-body-cell w-11 border-r border-border/60 px-2.5 py-2.5 text-right">
+      <button
+        type="button"
+        onClick={() => setSelection(slashPathToSegments(path), "grid")}
+        className="w-full cursor-pointer text-right tabular-nums hover:text-brand"
+      >
+        {index}
+      </button>
+    </td>
   );
 }
 
@@ -391,6 +517,7 @@ function ArrayTable({
 function PrimitiveCell({ value, path }: { value: unknown; path?: string }) {
   const kind = valueType(value);
   const updateAt = useWorkspace((s) => s.updateAt);
+  const setSelection = useWorkspace((s) => s.setSelection);
   const [editing, setEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -415,7 +542,7 @@ function PrimitiveCell({ value, path }: { value: unknown; path?: string }) {
   function commit() {
     setEditing(false);
     if (!path || draft === text) return;
-    updateAt(pathToSegments(path), coerce(draft, value));
+    updateAt(slashPathToSegments(path), coerce(draft, value));
   }
 
   function cancel() {
@@ -442,11 +569,12 @@ function PrimitiveCell({ value, path }: { value: unknown; path?: string }) {
   return (
     <button
       type="button"
+      onClick={() => path && setSelection(slashPathToSegments(path), "grid")}
       onDoubleClick={() => path && setEditing(true)}
-      title={path ? "Double-click to edit" : undefined}
+      title={path ? "Click to inspect · double-click to edit" : undefined}
       className={cn(
         "group/cell flex w-full items-center gap-1 px-2.5 py-1.5 text-left break-words",
-        path && "cursor-text hover:bg-brand/5"
+        path && "cursor-pointer hover:bg-brand/5",
       )}
     >
       <span className={cn("flex-1 break-words", tokenClass(kind))}>{text}</span>
@@ -455,14 +583,6 @@ function PrimitiveCell({ value, path }: { value: unknown; path?: string }) {
       )}
     </button>
   );
-}
-
-function pathToSegments(p: string): (string | number)[] {
-  if (!p) return [];
-  return p.split("/").map((s) => {
-    const n = Number(s);
-    return Number.isInteger(n) && String(n) === s ? n : s;
-  });
 }
 
 function coerce(input: string, original: unknown): unknown {
@@ -507,9 +627,9 @@ function ColumnHeaderRow({
           </span>
         </th>
         {columns.map((c) => {
-          const colValues = value.map(
-            (row) => (row as Record<string, unknown>)[c]
-          );
+          const colValues = value
+            .slice(0, 200)
+            .map((row) => (row as Record<string, unknown>)[c]);
           const isOver = over === c && dragging && dragging !== c;
           return (
             <th
@@ -544,7 +664,7 @@ function ColumnHeaderRow({
               className={cn(
                 "group/h grid-header-cell sticky top-0 z-10 min-w-[148px] border-r border-border/60 px-2.5 py-2 backdrop-blur-md",
                 dragging === c && "opacity-50",
-                isOver && "ring-2 ring-inset ring-brand/40"
+                isOver && "ring-2 ring-inset ring-brand/40",
               )}
             >
               <div className="flex items-center gap-1.5">
@@ -557,11 +677,7 @@ function ColumnHeaderRow({
                 >
                   {c}
                 </span>
-                <FilterPopover
-                  arrayPath={path}
-                  column={c}
-                  values={colValues}
-                />
+                <FilterPopover arrayPath={path} column={c} values={colValues} />
                 <button
                   type="button"
                   title="Column actions"

@@ -46,8 +46,7 @@ function key(p: string, c: string) {
 export const useFilters = create<State>((set, getState) => ({
   filters: {},
   get: (p, c) => getState().filters[key(p, c)] ?? DEFAULT,
-  set: (p, c, value) =>
-    set((s) => ({ filters: { ...s.filters, [key(p, c)]: value } })),
+  set: (p, c, value) => set((s) => ({ filters: { ...s.filters, [key(p, c)]: value } })),
   clear: (p, c) =>
     set((s) => {
       const next = { ...s.filters };
@@ -118,15 +117,13 @@ export function matchesFilter(v: unknown, f: ColumnFilter): boolean {
       case "gt": {
         const nv = Number(v);
         const na = Number(a);
-        if (!Number.isFinite(nv) || !Number.isFinite(na) || !(nv > na))
-          return false;
+        if (!Number.isFinite(nv) || !Number.isFinite(na) || !(nv > na)) return false;
         break;
       }
       case "lt": {
         const nv = Number(v);
         const na = Number(a);
-        if (!Number.isFinite(nv) || !Number.isFinite(na) || !(nv < na))
-          return false;
+        if (!Number.isFinite(nv) || !Number.isFinite(na) || !(nv < na)) return false;
         break;
       }
       case "between": {

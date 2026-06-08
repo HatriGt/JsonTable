@@ -1,6 +1,9 @@
 // Pretty-print + tokenize JSON into spans for syntax highlighting.
 
-export type Token = { t: "key" | "string" | "number" | "bool" | "null" | "punct" | "ws"; v: string };
+export type Token = {
+  t: "key" | "string" | "number" | "bool" | "null" | "punct" | "ws";
+  v: string;
+};
 
 export function prettyPrint(value: unknown, indent = 2): string {
   try {

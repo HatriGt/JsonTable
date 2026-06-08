@@ -11,11 +11,7 @@ import {
   SlidersHorizontal,
   X,
 } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -99,11 +95,10 @@ export function FilterPopover({ arrayPath, column, values }: Props) {
 
   const selectedSet = useMemo(
     () => new Set(draft.selected ?? distinct.map((d) => d.value)),
-    [draft.selected, distinct]
+    [draft.selected, distinct],
   );
   const allSelected = draft.selected === null || draft.selected.length === distinct.length;
-  const selectedCount =
-    draft.selected === null ? distinct.length : draft.selected.length;
+  const selectedCount = draft.selected === null ? distinct.length : draft.selected.length;
 
   function toggleValue(v: string) {
     const base = new Set(draft.selected ?? distinct.map((d) => d.value));
@@ -146,7 +141,7 @@ export function FilterPopover({ arrayPath, column, values }: Props) {
           aria-label={`Filter column ${column}`}
           className={cn(
             "relative inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-[background-color,color] duration-[var(--motion-duration-fast)] hover:bg-accent hover:text-foreground",
-            active && "bg-brand/12 text-brand hover:bg-brand/15 hover:text-brand"
+            active && "bg-brand/12 text-brand hover:bg-brand/15 hover:text-brand",
           )}
         >
           <Filter className="h-3.5 w-3.5" />
@@ -164,7 +159,10 @@ export function FilterPopover({ arrayPath, column, values }: Props) {
                 <p className="truncate font-mono text-base font-semibold">{column}</p>
               </div>
               {active && (
-                <Badge variant="secondary" className="shrink-0 bg-brand/12 text-brand hover:bg-brand/12">
+                <Badge
+                  variant="secondary"
+                  className="shrink-0 bg-brand/12 text-brand hover:bg-brand/12"
+                >
                   Active
                 </Badge>
               )}
@@ -192,13 +190,22 @@ export function FilterPopover({ arrayPath, column, values }: Props) {
               }
               className="rounded-lg border border-border bg-muted/40 p-0.5"
             >
-              <ToggleGroupItem value="none" className="h-7 px-2.5 text-xs data-[state=on]:bg-background">
+              <ToggleGroupItem
+                value="none"
+                className="h-7 px-2.5 text-xs data-[state=on]:bg-background"
+              >
                 None
               </ToggleGroupItem>
-              <ToggleGroupItem value="asc" className="h-7 gap-1 px-2.5 text-xs data-[state=on]:bg-background">
+              <ToggleGroupItem
+                value="asc"
+                className="h-7 gap-1 px-2.5 text-xs data-[state=on]:bg-background"
+              >
                 <ArrowUpAZ className="h-3 w-3" /> A→Z
               </ToggleGroupItem>
-              <ToggleGroupItem value="desc" className="h-7 gap-1 px-2.5 text-xs data-[state=on]:bg-background">
+              <ToggleGroupItem
+                value="desc"
+                className="h-7 gap-1 px-2.5 text-xs data-[state=on]:bg-background"
+              >
                 <ArrowDownAZ className="h-3 w-3" /> Z→A
               </ToggleGroupItem>
             </ToggleGroup>
@@ -234,18 +241,29 @@ export function FilterPopover({ arrayPath, column, values }: Props) {
                     className="cursor-pointer text-xs font-medium text-brand hover:underline"
                   >
                     {allSelected ? "Clear all" : "Select all"}
-                    <span className="text-muted-foreground"> · {selectedCount}/{distinct.length}</span>
+                    <span className="text-muted-foreground">
+                      {" "}
+                      · {selectedCount}/{distinct.length}
+                    </span>
                   </button>
                   <ToggleGroup
                     type="single"
                     value={draft.mode}
-                    onValueChange={(v) => v && setDraft({ ...draft, mode: v as "include" | "exclude" })}
+                    onValueChange={(v) =>
+                      v && setDraft({ ...draft, mode: v as "include" | "exclude" })
+                    }
                     className="rounded-md border border-border"
                   >
-                    <ToggleGroupItem value="include" className="h-7 px-2.5 text-[11px] data-[state=on]:bg-brand/12 data-[state=on]:text-brand">
+                    <ToggleGroupItem
+                      value="include"
+                      className="h-7 px-2.5 text-[11px] data-[state=on]:bg-brand/12 data-[state=on]:text-brand"
+                    >
                       Include
                     </ToggleGroupItem>
-                    <ToggleGroupItem value="exclude" className="h-7 px-2.5 text-[11px] data-[state=on]:bg-brand/12 data-[state=on]:text-brand">
+                    <ToggleGroupItem
+                      value="exclude"
+                      className="h-7 px-2.5 text-[11px] data-[state=on]:bg-brand/12 data-[state=on]:text-brand"
+                    >
                       Exclude
                     </ToggleGroupItem>
                   </ToggleGroup>
@@ -267,7 +285,7 @@ export function FilterPopover({ arrayPath, column, values }: Props) {
                         onClick={() => toggleValue(value)}
                         className={cn(
                           "flex w-full cursor-pointer items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-xs transition-colors duration-[var(--motion-duration-fast)]",
-                          isOn ? "bg-brand/10" : "hover:bg-accent/60"
+                          isOn ? "bg-brand/10" : "hover:bg-accent/60",
                         )}
                       >
                         <Checkbox checked={isOn} className="pointer-events-none h-3.5 w-3.5" />
@@ -278,7 +296,10 @@ export function FilterPopover({ arrayPath, column, values }: Props) {
                             value
                           )}
                         </span>
-                        <Badge variant="secondary" className="h-5 shrink-0 px-1.5 font-mono text-[10px] tabular-nums">
+                        <Badge
+                          variant="secondary"
+                          className="h-5 shrink-0 px-1.5 font-mono text-[10px] tabular-nums"
+                        >
                           {count}
                         </Badge>
                       </button>
@@ -290,7 +311,10 @@ export function FilterPopover({ arrayPath, column, values }: Props) {
 
             <TabsContent value="condition" className="mt-0 space-y-3 px-5 py-4">
               <div className="space-y-1.5">
-                <label htmlFor={`filter-op-${column}`} className="text-xs font-medium text-muted-foreground">
+                <label
+                  htmlFor={`filter-op-${column}`}
+                  className="text-xs font-medium text-muted-foreground"
+                >
                   Operator
                 </label>
                 <Select
@@ -316,10 +340,7 @@ export function FilterPopover({ arrayPath, column, values }: Props) {
               </div>
               {draft.condition.op !== "any" && (
                 <div
-                  className={cn(
-                    "grid gap-2",
-                    draft.condition.op === "between" && "grid-cols-2"
-                  )}
+                  className={cn("grid gap-2", draft.condition.op === "between" && "grid-cols-2")}
                 >
                   <Input
                     value={draft.condition.a ?? ""}

@@ -1,90 +1,92 @@
 import { m, useReducedMotion } from "@/lib/motion/framer";
 import {
   ChevronDown,
+  ChevronRight,
   Filter,
   GripVertical,
   MoreVertical,
+  Search,
 } from "lucide-react";
 import { useMountAnimation } from "@/hooks/use-mount-animation";
 import { motionTransition } from "@/lib/motion/presets";
 import { cn } from "@/lib/utils";
 
-type Props = { compact?: boolean };
-
-export function PreviewMock({ compact = false }: Props) {
+export function PreviewMock() {
   const reduced = useReducedMotion();
   const mounted = useMountAnimation();
   const animateRows = mounted && !reduced;
 
   return (
-    <div className={cn("flex flex-col", compact ? "h-[380px]" : "h-[560px]")}>
-      <div className="flex h-9 items-center gap-2 border-b border-border bg-background/70 px-3 backdrop-blur-sm">
+    <div className="flex h-[480px] flex-col sm:h-[520px]">
+      {/* Window chrome */}
+      <div className="flex h-10 shrink-0 items-center gap-2 border-b border-border bg-[var(--pane-header)] px-4">
         <div className="flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-destructive/70" />
-          <span className="h-2.5 w-2.5 rounded-full bg-warning/70" />
-          <span className="h-2.5 w-2.5 rounded-full bg-success/70" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
         </div>
-        <div className="mx-auto flex items-center gap-2 rounded-md border border-border bg-card px-2.5 py-0.5 font-mono text-[11px] text-muted-foreground">
-          <span className="text-brand">●</span> users.json · 4.2 KB
+        <div className="mx-auto flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1 font-mono text-[11px] text-muted-foreground">
+          <span className="text-info">●</span>
+          users.json · 4.2 KB
         </div>
-        <div className="hidden items-center gap-1 rounded-md border border-border bg-card/60 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground md:flex">
+        <div className="flex items-center gap-1 rounded-md border border-border bg-card px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
           <kbd className="rounded bg-muted px-1">⌘</kbd>
           <kbd className="rounded bg-muted px-1">P</kbd>
         </div>
       </div>
 
-      <div className="grid flex-1 grid-cols-[240px_1fr] overflow-hidden">
-        <div className="border-r border-border bg-[var(--source-bg)]">
-          <div className="flex h-10 items-center gap-2 border-b border-border bg-[var(--pane-header)] px-3">
-            <span className="text-sm font-medium">Source</span>
-            <span className="text-xs text-muted-foreground">· 12 lines</span>
+      <div className="grid min-h-0 flex-1 grid-cols-[220px_1fr]">
+        {/* Tree sidebar */}
+        <div className="flex flex-col border-r border-border bg-[var(--source-bg)]">
+          <div className="flex items-center gap-2 border-b border-border/80 px-3 py-2.5">
+            <Search className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+            <span className="text-[11px] text-muted-foreground">Search keys &amp; values…</span>
           </div>
-          <div className="p-2 font-mono text-[11px] leading-5">
-          <SourceLine n={1} indent={0} tokens={[{ t: "punct", v: "{" }]} />
-          <SourceLine n={2} indent={1} tokens={[{ t: "key", v: '"users"' }, { t: "punct", v: ": [" }]} open />
-          <SourceLine n={3} indent={2} tokens={[{ t: "punct", v: "{" }]} />
-          <SourceLine n={4} indent={3} tokens={[{ t: "key", v: '"id"' }, { t: "punct", v: ": " }, { t: "string", v: '"usr_94821"' }]} />
-          <SourceLine n={5} indent={3} tokens={[{ t: "key", v: '"name"' }, { t: "punct", v: ": " }, { t: "string", v: '"Alex Rivera"' }]} />
-          <SourceLine n={6} indent={2} tokens={[{ t: "punct", v: "}," }]} />
-          <SourceLine n={7} indent={2} tokens={[{ t: "punct", v: "…" }]} muted />
-          <SourceLine n={8} indent={1} tokens={[{ t: "punct", v: "]," }]} />
-          <SourceLine n={9} indent={1} tokens={[{ t: "key", v: '"meta"' }, { t: "punct", v: ": {" }]} />
-          <SourceLine n={10} indent={2} tokens={[{ t: "key", v: '"version"' }, { t: "punct", v: ": " }, { t: "string", v: '"2.4"' }]} />
-          <SourceLine n={11} indent={1} tokens={[{ t: "punct", v: "}" }]} />
-          <SourceLine n={12} indent={0} tokens={[{ t: "punct", v: "}" }]} />
+          <div className="flex-1 overflow-hidden p-2 font-mono text-[11px] leading-[1.6]">
+            <TreeNode label="root" open />
+            <TreeNode label="users" selected indent={1} badge="[3]" open />
+            <TreeNode label="0" suffix="{…}" indent={2} />
+            <TreeNode label="1" suffix="{…}" indent={2} />
+            <TreeNode label="2" suffix="{…}" indent={2} />
+            <TreeNode label="meta" indent={1} />
           </div>
         </div>
 
-        <div className="flex flex-col overflow-hidden">
-          <div className="flex h-10 items-center justify-between border-b border-border bg-[var(--pane-header)] px-3">
-            <div className="flex items-center gap-2 text-sm">
-              <span className="font-medium">Grid</span>
-              <span className="rounded-md bg-brand/10 px-1.5 py-0.5 text-[10px] font-medium text-brand">
-                users · 3 rows
+        {/* Grid */}
+        <div className="flex min-w-0 flex-col overflow-hidden bg-card">
+          <div className="flex h-10 shrink-0 items-center justify-between border-b border-border/80 bg-[var(--pane-header)] px-3">
+            <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+              <span>root</span>
+              <ChevronRight className="h-3 w-3" />
+              <span className="font-medium text-foreground">users</span>
+              <span className="rounded-md bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                array · 3
               </span>
             </div>
             <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-              <span className="inline-flex items-center gap-1 rounded-md border border-border bg-card/60 px-1.5 py-0.5">
-                <Filter className="h-2.5 w-2.5 text-brand" /> 1 filter
-              </span>
+              <span className="rounded bg-muted px-1.5 py-0.5 font-mono">#</span>
+              <span>1 filter</span>
+              <span>3 rows</span>
+              <span>4 cols</span>
             </div>
           </div>
-          <div className="flex-1 overflow-hidden">
-            <table className="w-full border-separate border-spacing-0 font-mono text-[11px]">
+
+          <div className="min-h-0 flex-1 overflow-hidden">
+            <table className="grid-table w-full font-mono text-[11px]">
               <thead>
                 <tr>
-                  <th className="w-10 border-b border-r border-border bg-card/80 px-2 py-1.5 text-right text-[10px] font-normal text-muted-foreground">
+                  <th className="grid-header-cell grid-row-index w-9 border-r border-border/60 px-2 py-2 text-right">
                     #
                   </th>
                   {COLS.map((c) => (
                     <th
                       key={c.k}
-                      className="border-b border-r border-border bg-card/80 px-2.5 py-1.5 text-left"
+                      className="grid-header-cell min-w-0 border-r border-border/60 px-2.5 py-2 text-left"
                     >
                       <div className="flex items-center gap-1.5">
-                        <GripVertical className="h-3 w-3 text-muted-foreground/60" />
-                        <span className="text-xs font-medium">{c.k}</span>
-                        <span className="rounded bg-muted/80 px-1 text-[9px] text-muted-foreground">
+                        <GripVertical className="h-3 w-3 text-muted-foreground/50" />
+                        <span className="text-[11px] font-medium text-foreground">{c.k}</span>
+                        <span className="rounded bg-muted px-1 text-[9px] text-muted-foreground">
                           {c.t}
                         </span>
                         <div className="ml-auto flex items-center gap-0.5">
@@ -92,11 +94,11 @@ export function PreviewMock({ compact = false }: Props) {
                             className={cn(
                               "h-3 w-3",
                               c.k === "role"
-                                ? "fill-brand/20 text-brand"
-                                : "text-muted-foreground/60"
+                                ? "fill-info/15 text-info"
+                                : "text-muted-foreground/45",
                             )}
                           />
-                          <MoreVertical className="h-3 w-3 text-muted-foreground/60" />
+                          <MoreVertical className="h-3 w-3 text-muted-foreground/45" />
                         </div>
                       </div>
                     </th>
@@ -120,32 +122,40 @@ export function PreviewMock({ compact = false }: Props) {
                     <Row
                       key={i}
                       {...rowProps}
-                      className={cn("group/row transition-colors duration-[var(--motion-duration-fast)] hover:bg-accent/30", i === 0 && "bg-brand/8")}
+                      className={cn(
+                        "transition-colors duration-[var(--motion-duration-fast)]",
+                        i === 0 && "bg-[var(--grid-row-hover)]",
+                      )}
                     >
-                      <td className="w-10 border-b border-r border-border bg-card/40 px-2 py-1 text-right text-[10px] text-muted-foreground">
+                      <td className="grid-row-index grid-body-cell w-9 border-r border-border/60 px-2 py-1.5 text-right">
                         {i + 1}
                       </td>
-                      <td className="border-b border-r border-border px-2.5 py-1 text-json-string">
-                        "{r.id}"
+                      <td className="grid-body-cell border-r border-border/60 px-2.5 py-1.5 text-json-string">
+                        &quot;{r.id}&quot;
                       </td>
-                      <td className="border-b border-r border-border px-2.5 py-1 text-json-string">
-                        "{r.name}"
+                      <td className="grid-body-cell border-r border-border/60 px-2.5 py-1.5 text-json-string">
+                        &quot;{r.name}&quot;
                       </td>
-                      <td className="border-b border-r border-border px-2.5 py-1">
+                      <td className="grid-body-cell border-r border-border/60 px-2.5 py-1.5">
                         <span
                           className={cn(
-                            "rounded px-1.5 py-0.5 text-[10px]",
+                            "rounded px-1.5 py-0.5 text-[10px] font-medium",
                             r.role === "admin"
-                              ? "bg-brand/15 text-brand"
+                              ? "bg-brand/12 text-brand"
                               : r.role === "developer"
-                                ? "bg-success/15 text-success"
-                                : "bg-muted text-muted-foreground"
+                                ? "bg-success/12 text-success"
+                                : "bg-muted text-muted-foreground",
                           )}
                         >
                           {r.role}
                         </span>
                       </td>
-                      <td className="border-b border-r border-border px-2.5 py-1 text-json-bool">
+                      <td
+                        className={cn(
+                          "grid-body-cell border-r border-border/60 px-2.5 py-1.5 text-[11px] font-medium",
+                          r.active ? "text-json-bool" : "text-destructive",
+                        )}
+                      >
                         {String(r.active)}
                       </td>
                     </Row>
@@ -165,59 +175,49 @@ const COLS = [
   { k: "name", t: "str" },
   { k: "role", t: "str" },
   { k: "active", t: "bool" },
-];
+] as const;
 
 const ROWS = [
   { id: "usr_94821", name: "Alex Rivera", role: "admin", active: true },
   { id: "usr_12830", name: "Sam Patel", role: "developer", active: true },
   { id: "usr_77105", name: "Jamie Liu", role: "viewer", active: false },
-];
+] as const;
 
-const INDENT_CLASS = ["pl-1", "pl-4", "pl-7", "pl-10", "pl-[52px]"] as const;
+const INDENT_CLASS = ["pl-0.5", "pl-4", "pl-8", "pl-12"] as const;
 
-function SourceLine({
-  n,
-  indent,
-  tokens,
+function TreeNode({
+  label,
+  indent = 0,
   open,
-  muted,
+  selected,
+  badge,
+  suffix,
 }: {
-  n: number;
-  indent: number;
-  tokens: { t: string; v: string }[];
+  label: string;
+  indent?: number;
   open?: boolean;
-  muted?: boolean;
+  selected?: boolean;
+  badge?: string;
+  suffix?: string;
 }) {
   const pad = INDENT_CLASS[indent] ?? INDENT_CLASS[INDENT_CLASS.length - 1];
   return (
     <div
       className={cn(
-        "flex items-start gap-1 rounded py-px transition-colors duration-[var(--motion-duration-fast)] hover:bg-accent/30",
+        "flex items-center gap-1 rounded-md py-0.5 pr-1",
         pad,
-        muted && "text-muted-foreground/60"
+        selected ? "bg-brand/15 text-foreground" : "text-muted-foreground",
       )}
     >
-      <span className="w-5 shrink-0 text-right text-[10px] text-muted-foreground/50 tabular-nums">
-        {n}
-      </span>
       {open ? (
-        <ChevronDown className="mt-0.5 h-3 w-3 shrink-0 text-muted-foreground" />
+        <ChevronDown className="h-3 w-3 shrink-0 text-muted-foreground" />
       ) : (
         <span className="w-3 shrink-0" />
       )}
-      <span>
-        {tokens.map((tok, j) => (
-          <span
-            key={j}
-            className={cn(
-              tok.t === "key" && "text-json-key",
-              tok.t === "string" && "text-json-string",
-              tok.t === "punct" && "text-muted-foreground"
-            )}
-          >
-            {tok.v}
-          </span>
-        ))}
+      <span className={cn("truncate", selected && "font-medium")}>
+        <span className={selected ? "text-foreground" : "text-json-key"}>{label}</span>
+        {badge && <span className="ml-1 text-muted-foreground">{badge}</span>}
+        {suffix && <span className="ml-1 text-muted-foreground">{suffix}</span>}
       </span>
     </div>
   );

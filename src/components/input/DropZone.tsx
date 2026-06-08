@@ -24,14 +24,13 @@ export function DropZone() {
       const txt = e.dataTransfer.getData("text");
       if (txt) await loadJson("dropped.json", txt);
     },
-    [loadJson]
+    [loadJson],
   );
 
   useEffect(() => {
     const onPaste = async (e: ClipboardEvent) => {
       const target = e.target as HTMLElement | null;
-      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA"))
-        return;
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) return;
       const t = e.clipboardData?.getData("text");
       if (t && (t.trim().startsWith("{") || t.trim().startsWith("["))) {
         await loadJson("pasted.json", t);

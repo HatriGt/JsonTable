@@ -23,9 +23,7 @@ export function Inspector() {
   return (
     <div className="flex h-full flex-col">
       <div className="border-b border-border px-4 py-3">
-        <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
-          Inspector
-        </div>
+        <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Inspector</div>
         <div className="mt-1 break-all font-mono text-[12px] text-foreground">
           {formatPath(selection)}
         </div>
@@ -34,10 +32,7 @@ export function Inspector() {
         <Field label="Type">
           <TypeBadge type={type} />
         </Field>
-        {(type === "string" ||
-          type === "number" ||
-          type === "boolean" ||
-          type === "null") && (
+        {(type === "string" || type === "number" || type === "boolean" || type === "null") && (
           <Field label="Value">
             <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-all rounded-md border border-border bg-muted/30 p-2 font-mono text-[12px]">
               {value === null ? "null" : String(value)}
@@ -51,16 +46,12 @@ export function Inspector() {
         )}
         {type === "array" && (
           <Field label="Items">
-            <span className="font-mono text-[12px]">
-              {(value as unknown[]).length}
-            </span>
+            <span className="font-mono text-[12px]">{(value as unknown[]).length}</span>
           </Field>
         )}
         {type === "object" && (
           <Field label="Keys">
-            <span className="font-mono text-[12px]">
-              {Object.keys(value as object).length}
-            </span>
+            <span className="font-mono text-[12px]">{Object.keys(value as object).length}</span>
           </Field>
         )}
         {(type === "object" || type === "array") && (
@@ -102,12 +93,8 @@ export function Inspector() {
             variant="secondary"
             onClick={() =>
               copy(
-                value === undefined
-                  ? ""
-                  : typeof value === "string"
-                    ? value
-                    : safeStringify(value),
-                "value"
+                value === undefined ? "" : typeof value === "string" ? value : safeStringify(value),
+                "value",
               )
             }
             className="col-span-2 h-8 justify-start gap-2 text-xs"
@@ -124,9 +111,7 @@ export function Inspector() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <div className="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">
-        {label}
-      </div>
+      <div className="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>
       {children}
     </div>
   );

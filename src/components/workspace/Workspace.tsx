@@ -11,12 +11,18 @@ import { useTheme } from "@/store/theme";
 import { Toolbar } from "./Toolbar";
 import { StatusBar } from "./StatusBar";
 import { EmptyState } from "./EmptyState";
-import { JsonSource } from "@/components/source/JsonSource";
-import { NestedGrid } from "@/components/grid/NestedGrid";
-import { loadPrefs, savePrefs } from "@/lib/storage/prefs";
-import { PaneHeader } from "@/components/layout/PaneHeader";
+import { LeftPane } from "./LeftPane";
+import { GridPane } from "./GridPane";
+import { loadPrefs, savePrefs, type LeftPaneTab } from "@/lib/storage/prefs";
 import { motionTransition } from "@/lib/motion/presets";
-import { Code2, PanelLeftOpen, PanelRightOpen, Search, Table2 } from "lucide-react";
+import {
+  Code2,
+  GitBranch,
+  PanelLeftClose,
+  PanelLeftOpen,
+  PanelRightOpen,
+  Table2,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function Workspace() {
@@ -25,10 +31,11 @@ export function Workspace() {
   const initTheme = useTheme((s) => s.init);
   const prefs = loadPrefs();
 
-  const sourceRef = useRef<ImperativePanelHandle>(null);
+  const leftRef = useRef<ImperativePanelHandle>(null);
   const gridRef = useRef<ImperativePanelHandle>(null);
-  const [sourceCollapsed, setSourceCollapsed] = useState(false);
+  const [leftCollapsed, setLeftCollapsed] = useState(false);
   const [gridCollapsed, setGridCollapsed] = useState(false);
+  const [leftPaneTab, setLeftPaneTab] = useState<LeftPaneTab>(prefs.leftPaneTab);
 
   useEffect(() => {
     initTheme();
@@ -51,36 +58,23 @@ export function Workspace() {
     };
   }, [loadJson]);
 
-  const collapseSource = () => sourceRef.current?.collapse();
-  const expandSource = () => sourceRef.current?.expand();
+  const collapseLeft = () => leftRef.current?.collapse();
+  const expandLeft = () => leftRef.current?.expand();
+  const toggleLeft = () => (leftCollapsed ? expandLeft() : collapseLeft());
   const collapseGrid = () => gridRef.current?.collapse();
   const expandGrid = () => gridRef.current?.expand();
 
-  const toggleSource = () => (sourceCollapsed ? expandSource() : collapseSource());
-  const toggleGrid = () => (gridCollapsed ? expandGrid() : collapseGrid());
-
-  const [sourceSize, gridSize] = (() => {
-    const p = prefs.panels;
-    if (p.length === 3) return [p[0], p[1] + p[2]];
-    return [p[0] ?? 38, p[1] ?? 62];
-  })();
+  const [leftSize, gridSize] = prefs.panels;
 
   return (
-    <div className="flex h-dvh w-screen flex-col bg-[var(--shell)] text-foreground">
-      <h1 className="sr-only">JSON to Table Workspace</h1>
-      <Toolbar
-        paneControls={
-          doc
-            ? {
-                sourceCollapsed,
-                gridCollapsed,
-                onToggleSource: toggleSource,
-                onToggleGrid: toggleGrid,
-              }
-            : undefined
-        }
+    <div className="workspace-page relative flex h-dvh w-screen flex-col text-foreground">
+      <div
+        className="workspace-grid-layer pointer-events-none absolute inset-0"
+        aria-hidden="true"
       />
-      <div className="relative flex flex-1 overflow-hidden shell-workspace">
+      <h1 className="sr-only">JSON to Table Workspace</h1>
+      <Toolbar />
+      <div className="relative z-10 flex flex-1 overflow-hidden shell-workspace">
         <AnimatePresence mode="wait">
           {!doc ? (
             <m.div
@@ -102,20 +96,27 @@ export function Workspace() {
               exit={{ opacity: 0 }}
               transition={motionTransition.normal}
             >
-              {sourceCollapsed && (
+              {leftCollapsed && (
                 <CollapsedEdgeRail
                   side="left"
-                  label="Source"
-                  icon={<Code2 className="h-4 w-4" />}
-                  onExpand={expandSource}
+                  label={leftPaneTab === "tree" ? "Tree" : "Source"}
+                  icon={
+                    leftPaneTab === "tree" ? (
+                      <GitBranch className="h-4 w-4" />
+                    ) : (
+                      <Code2 className="h-4 w-4" />
+                    )
+                  }
+                  onExpand={expandLeft}
                 />
               )}
               {gridCollapsed && (
                 <CollapsedEdgeRail
-                  side="right"
+                  side="left"
                   label="Grid"
                   icon={<Table2 className="h-4 w-4" />}
                   onExpand={expandGrid}
+                  offsetClass="left-11"
                 />
               )}
 
@@ -123,34 +124,31 @@ export function Workspace() {
                 direction="horizontal"
                 className="flex-1"
                 onLayout={(sizes: number[]) => {
-                  if (sizes.length === 2)
+                  if (sizes.length === 2) {
                     savePrefs({
-                      panels: [sizes[0], sizes[1], 0] as [number, number, number],
+                      panels: [sizes[0], sizes[1]] as [number, number],
                     });
+                  }
                 }}
               >
                 <Panel
-                  ref={sourceRef}
-                  defaultSize={sourceSize}
-                  minSize={18}
+                  ref={leftRef}
+                  defaultSize={leftSize}
+                  minSize={16}
                   collapsible
                   collapsedSize={0}
                   order={1}
-                  id="source"
-                  onCollapse={() => setSourceCollapsed(true)}
-                  onExpand={() => setSourceCollapsed(false)}
+                  id="left"
+                  onCollapse={() => setLeftCollapsed(true)}
+                  onExpand={() => setLeftCollapsed(false)}
                   className="relative border-r border-border/80 shell-pane"
                 >
-                  <JsonSource onHide={collapseSource} />
+                  <LeftPane tab={leftPaneTab} onTabChange={setLeftPaneTab} />
                 </Panel>
-                <PanelResizeHandle
-                  className={cn(
-                    "relative bg-transparent transition-[width,background-color] duration-[var(--motion-duration-fast)]",
-                    sourceCollapsed || gridCollapsed ? "w-2 bg-border/40" : "w-1",
-                    "before:absolute before:inset-y-0 before:left-1/2 before:w-px before:-translate-x-1/2 before:bg-border",
-                    "hover:bg-brand/10 hover:before:w-0.5 hover:before:bg-brand/60",
-                    "data-[resize-handle-state=drag]:bg-brand/15 data-[resize-handle-state=drag]:before:w-0.5 data-[resize-handle-state=drag]:before:bg-brand"
-                  )}
+                <LeftPaneResizeHandle
+                  collapsed={leftCollapsed}
+                  onToggle={toggleLeft}
+                  paneLabel={leftPaneTab === "tree" ? "tree" : "source"}
                 />
                 <Panel
                   ref={gridRef}
@@ -171,40 +169,54 @@ export function Workspace() {
           )}
         </AnimatePresence>
       </div>
-      <StatusBar />
+      <StatusBar className="relative z-10" />
     </div>
   );
 }
 
-function GridPane({ onHide }: { onHide: () => void }) {
-  const doc = useWorkspace((s) => s.doc);
-  if (!doc) return null;
+function LeftPaneResizeHandle({
+  collapsed,
+  onToggle,
+  paneLabel,
+}: {
+  collapsed: boolean;
+  onToggle: () => void;
+  paneLabel: string;
+}) {
+  const ToggleIcon = collapsed ? PanelLeftOpen : PanelLeftClose;
+  const label = collapsed ? `Expand ${paneLabel} pane` : `Collapse ${paneLabel} pane`;
+
   return (
-    <div className="flex h-full flex-col bg-[var(--shell)]">
-      <PaneHeader
-        title="Grid"
-        icon={<Table2 className="h-3.5 w-3.5" />}
-        meta="Nested tables · filter · sort · inline edit"
-        hideSide="right"
-        onHide={onHide}
-        actions={
-          <button
-            type="button"
-            title="Search rows (coming soon)"
-            aria-label="Search rows"
-            className="inline-flex h-7 w-7 cursor-not-allowed items-center justify-center rounded-md text-muted-foreground/35"
-            disabled
-          >
-            <Search className="h-3.5 w-3.5" />
-          </button>
-        }
-      />
-      <div className="flex-1 overflow-auto bg-[var(--shell)] p-3 sm:p-4">
-        <div className="inline-block min-w-full align-top">
-          <NestedGrid value={doc.value} />
-        </div>
-      </div>
-    </div>
+    <PanelResizeHandle
+      className={cn(
+        "group relative bg-transparent transition-[width,background-color] duration-[var(--motion-duration-fast)]",
+        "w-1 before:absolute before:inset-y-0 before:left-1/2 before:w-px before:-translate-x-1/2 before:bg-border",
+        "hover:bg-brand/10 hover:before:w-0.5 hover:before:bg-brand/60",
+        "data-[resize-handle-state=drag]:bg-brand/15 data-[resize-handle-state=drag]:before:w-0.5 data-[resize-handle-state=drag]:before:bg-brand",
+      )}
+    >
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggle();
+        }}
+        onPointerDown={(e) => e.stopPropagation()}
+        title={label}
+        aria-label={label}
+        aria-expanded={!collapsed}
+        className={cn(
+          "absolute left-1/2 top-1/2 z-20 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full",
+          "border border-info/40 bg-[var(--pane-header)]/95 text-info shadow-md backdrop-blur-md",
+          "transition-[background-color,color,box-shadow,border-color,transform] duration-[var(--motion-duration-fast)]",
+          "hover:border-info/60 hover:bg-info/10 hover:text-info hover:shadow-lg",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-info/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+          "active:scale-95",
+        )}
+      >
+        <ToggleIcon className="h-4 w-4" />
+      </button>
+    </PanelResizeHandle>
   );
 }
 
@@ -213,11 +225,13 @@ function CollapsedEdgeRail({
   label,
   icon,
   onExpand,
+  offsetClass,
 }: {
   side: "left" | "right";
   label: string;
   icon: React.ReactNode;
   onExpand: () => void;
+  offsetClass?: string;
 }) {
   const OpenIcon = side === "left" ? PanelLeftOpen : PanelRightOpen;
 
@@ -228,17 +242,16 @@ function CollapsedEdgeRail({
       title={`Show ${label.toLowerCase()} pane`}
       aria-label={`Show ${label.toLowerCase()} pane`}
       className={cn(
-        "absolute top-0 z-30 flex h-full w-11 cursor-pointer flex-col items-center justify-center gap-2 border-border bg-[var(--pane-header)] text-muted-foreground shadow-md transition-[background-color,color] duration-[var(--motion-duration-fast)] hover:bg-accent hover:text-foreground",
-        side === "left"
-          ? "left-0 border-r"
-          : "right-0 border-l"
+        "absolute top-0 z-30 flex h-full w-11 cursor-pointer flex-col items-center justify-center gap-2 border-border bg-[var(--pane-header)]/95 text-muted-foreground shadow-md backdrop-blur-md transition-[background-color,color] duration-[var(--motion-duration-fast)] hover:bg-accent hover:text-foreground",
+        side === "left" ? "border-r" : "border-l right-0",
+        side === "left" && (offsetClass ?? "left-0"),
       )}
     >
-      <OpenIcon className="h-4 w-4 shrink-0 text-brand" />
+      <OpenIcon className="h-4 w-4 shrink-0 text-info" />
       <span className="text-[10px] font-semibold uppercase tracking-wider [writing-mode:vertical-rl] rotate-180">
         {label}
       </span>
-      <span className="text-brand">{icon}</span>
+      <span className="text-info">{icon}</span>
     </button>
   );
 }
