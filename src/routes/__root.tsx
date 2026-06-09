@@ -18,8 +18,12 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-dvh items-center justify-center bg-background px-4">
       <div className="max-w-md text-center motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-500">
-        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">404</p>
-        <h1 className="mt-3 text-4xl font-semibold tracking-tight text-foreground">Page not found</h1>
+        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+          404
+        </p>
+        <h1 className="mt-3 text-4xl font-semibold tracking-tight text-foreground">
+          Page not found
+        </h1>
         <p className="mt-3 text-sm text-muted-foreground">
           The page you're looking for doesn't exist or has been moved.
         </p>
@@ -77,13 +81,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "JSON > Table" },
-      { name: "description", content: "Explore, edit, and understand JSON visually. The easiest way to view JSON as a table." },
+      {
+        name: "description",
+        content:
+          "Explore, edit, and understand JSON visually. The easiest way to view JSON as a table.",
+      },
       { property: "og:title", content: "JSON > Table" },
-      { property: "og:description", content: "Explore, edit, and understand JSON visually. The easiest way to view JSON as a table." },
+      {
+        property: "og:description",
+        content:
+          "Explore, edit, and understand JSON visually. The easiest way to view JSON as a table.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "JSON > Table" },
-      { name: "twitter:description", content: "Explore, edit, and understand JSON visually. The easiest way to view JSON as a table." },
+      {
+        name: "twitter:description",
+        content:
+          "Explore, edit, and understand JSON visually. The easiest way to view JSON as a table.",
+      },
     ],
     links: [
       {

@@ -296,7 +296,11 @@ function EmbeddedSourceEditor() {
                     <span
                       key={vi.key}
                       className="absolute right-0 left-0 block whitespace-pre"
-                      style={{ top: vi.start, height: vi.size, lineHeight: `${SOURCE_LINE_HEIGHT}px` }}
+                      style={{
+                        top: vi.start,
+                        height: vi.size,
+                        lineHeight: `${SOURCE_LINE_HEIGHT}px`,
+                      }}
                     >
                       {tokenizeLine(lines[vi.index]).map((tok, j) => (
                         <TokenSpan key={j} tok={tok} />

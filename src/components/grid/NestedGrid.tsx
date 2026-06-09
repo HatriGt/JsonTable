@@ -27,13 +27,7 @@ type Props = {
   scrollElementRef?: RefObject<HTMLElement | null>;
 };
 
-export function NestedGrid({
-  value,
-  label,
-  path = "",
-  depth = 0,
-  scrollElementRef,
-}: Props) {
+export function NestedGrid({ value, label, path = "", depth = 0, scrollElementRef }: Props) {
   if (Array.isArray(value)) {
     return (
       <ArrayTable
@@ -113,7 +107,7 @@ function CollapsibleBody({
         className,
       )}
     >
-      <div className="overflow-hidden">{children}</div>
+      <div className={cn("min-h-0", open ? "overflow-visible" : "overflow-hidden")}>{children}</div>
     </div>
   );
 }
@@ -167,13 +161,11 @@ function ObjectTable({
 
   if (label === undefined) {
     return (
-      <div className="overflow-hidden rounded-xl border border-border/80 bg-card/40 shadow-premium">
-        {body}
-      </div>
+      <div className="rounded-xl border border-border/80 bg-card/40 shadow-premium">{body}</div>
     );
   }
   return (
-    <div className="overflow-hidden rounded-xl border border-border/80 bg-card/40 shadow-premium">
+    <div className="rounded-xl border border-border/80 bg-card/40 shadow-premium">
       <Header
         label={label}
         open={open}
@@ -303,7 +295,10 @@ function ArrayTable({
           )}
           {shouldVirtualize && paddingTop > 0 && (
             <tr aria-hidden="true">
-              <td colSpan={columns.length + 1} style={{ height: paddingTop, padding: 0, border: 0 }} />
+              <td
+                colSpan={columns.length + 1}
+                style={{ height: paddingTop, padding: 0, border: 0 }}
+              />
             </tr>
           )}
           {shouldVirtualize
@@ -378,7 +373,7 @@ function ArrayTable({
   const totalFiltered = allObjects ? processed.length : value.length;
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border/80 bg-card/40 shadow-premium">
+    <div className="rounded-xl border border-border/80 bg-card/40 shadow-premium">
       {label !== undefined && (
         <div className="flex items-center justify-between border-b border-border bg-card/60">
           <Header
@@ -627,9 +622,7 @@ function ColumnHeaderRow({
           </span>
         </th>
         {columns.map((c) => {
-          const colValues = value
-            .slice(0, 200)
-            .map((row) => (row as Record<string, unknown>)[c]);
+          const colValues = value.slice(0, 200).map((row) => (row as Record<string, unknown>)[c]);
           const isOver = over === c && dragging && dragging !== c;
           return (
             <th

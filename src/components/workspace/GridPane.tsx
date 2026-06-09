@@ -28,7 +28,7 @@ export function GridPane({ onHide }: Props) {
   if (!doc) return null;
 
   return (
-    <div className="flex h-full flex-col bg-card">
+    <div className="flex h-full min-w-0 flex-col bg-card">
       <PaneHeader
         title="Grid"
         icon={<Table2 className="h-3.5 w-3.5" />}
@@ -37,8 +37,8 @@ export function GridPane({ onHide }: Props) {
         onHide={onHide}
         actions={<GridSearchButton onClick={() => setSearchOpen(true)} />}
       />
-      <div ref={scrollRef} className="flex-1 overflow-auto bg-card p-3 sm:p-4">
-        <div className="inline-block min-w-full align-top">
+      <div ref={scrollRef} className="min-h-0 min-w-0 flex-1 overflow-auto bg-card p-3 sm:p-4">
+        <div className="w-max min-w-full">
           <NestedGrid value={doc.value} scrollElementRef={scrollRef} />
         </div>
       </div>

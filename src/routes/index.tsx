@@ -14,15 +14,13 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "JSON\u2011Table \u2014 The fastest way to read JSON" },
       {
         property: "og:description",
-        content:
-          "Turn any JSON into a navigable tree and a sortable, filterable spreadsheet.",
+        content: "Turn any JSON into a navigable tree and a sortable, filterable spreadsheet.",
       },
       { property: "og:url", content: "/" },
       { name: "twitter:title", content: "JSON\u2011Table \u2014 The fastest way to read JSON" },
       {
         name: "twitter:description",
-        content:
-          "Turn any JSON into a navigable tree and a sortable, filterable spreadsheet.",
+        content: "Turn any JSON into a navigable tree and a sortable, filterable spreadsheet.",
       },
     ],
     links: [{ rel: "canonical", href: "/" }],
