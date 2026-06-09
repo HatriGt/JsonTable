@@ -12,7 +12,10 @@ export default defineConfig({
     tanstackStart({
       server: { entry: "server" },
     }),
-    nitro(),
+    nitro({
+      // Vercel Build Output API v3 — without this, builds emit node-server to .output/
+      preset: process.env.VERCEL ? "vercel" : "node-server",
+    }),
     viteReact(),
   ],
 });
