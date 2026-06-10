@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Moon, Sun, Monitor } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/store/theme";
 
@@ -12,9 +12,9 @@ export function LandingThemeToggle() {
     init();
   }, [init]);
 
-  const nextTheme = theme === "dark" ? "light" : theme === "light" ? "system" : "dark";
-  const ThemeIcon = theme === "dark" ? Moon : theme === "light" ? Sun : Monitor;
-  const label = theme === "dark" ? "Dark" : theme === "light" ? "Light" : "System";
+  const nextTheme = theme === "dark" ? "light" : "dark";
+  const ThemeIcon = theme === "dark" ? Moon : Sun;
+  const label = theme === "dark" ? "Dark" : "Light";
 
   return (
     <Button
@@ -22,7 +22,7 @@ export function LandingThemeToggle() {
       size="icon"
       variant="ghost"
       className="fixed top-4 right-4 z-50 h-9 w-9 cursor-pointer rounded-lg border border-border/50 bg-background/75 text-muted-foreground shadow-sm backdrop-blur-md hover:bg-accent hover:text-foreground sm:top-5 sm:right-6"
-      onClick={() => setTheme(nextTheme)}
+      onClick={(e) => setTheme(nextTheme, { x: e.clientX, y: e.clientY })}
       title={`Theme: ${label}`}
       aria-label={`Theme: ${label}. Click to switch.`}
     >

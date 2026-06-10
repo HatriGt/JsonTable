@@ -23,12 +23,12 @@ export function Landing() {
         Skip to main content
       </a>
       <main id="main-content" className="relative">
-        <LandingHero onOpenPaste={() => setPasteOpen(true)} />
+        <LandingHero onOpenPasteDialog={() => setPasteOpen(true)} />
       </main>
       <PasteDialog
         open={pasteOpen}
         onOpenChange={setPasteOpen}
-        onLoaded={() => navigate({ to: "/workspace" })}
+        onBeforeLoad={() => navigate({ to: "/workspace" })}
       />
     </div>
   );

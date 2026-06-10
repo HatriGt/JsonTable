@@ -25,8 +25,21 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+function ParsingShell() {
+  return (
+    <div className="flex flex-1 flex-col items-center justify-center gap-3 bg-card px-6 text-center">
+      <span className="h-2 w-2 animate-pulse rounded-full bg-brand" aria-hidden="true" />
+      <p className="font-mono text-sm text-foreground">Parsing JSON…</p>
+      <p className="max-w-sm text-xs text-muted-foreground">
+        Large files are parsed off the main thread. The grid will appear when ready.
+      </p>
+    </div>
+  );
+}
+
 export function Workspace() {
   const doc = useWorkspace((s) => s.doc);
+  const parsing = useWorkspace((s) => s.parsing);
   const loadJson = useWorkspace((s) => s.loadJson);
   const initTheme = useTheme((s) => s.init);
   const prefs = loadPrefs();
@@ -76,7 +89,18 @@ export function Workspace() {
       <Toolbar />
       <div className="relative z-10 flex flex-1 overflow-hidden shell-workspace">
         <AnimatePresence mode="wait">
-          {!doc ? (
+          {parsing && !doc ? (
+            <m.div
+              key="parsing"
+              className="flex flex-1"
+              initial={false}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={motionTransition.normal}
+            >
+              <ParsingShell />
+            </m.div>
+          ) : !doc ? (
             <m.div
               key="empty"
               className="flex flex-1"
@@ -116,13 +140,12 @@ export function Workspace() {
                   label="Grid"
                   icon={<Table2 className="h-4 w-4" />}
                   onExpand={expandGrid}
-                  offsetClass="left-11"
                 />
               )}
 
               <PanelGroup
                 direction="horizontal"
-                className="flex-1"
+                className="min-w-0 flex-1"
                 onLayout={(sizes: number[]) => {
                   if (sizes.length === 2) {
                     savePrefs({
@@ -183,8 +206,7 @@ function LeftPaneResizeHandle({
   onToggle: () => void;
   paneLabel: string;
 }) {
-  const ToggleIcon = collapsed ? PanelLeftOpen : PanelLeftClose;
-  const label = collapsed ? `Expand ${paneLabel} pane` : `Collapse ${paneLabel} pane`;
+  const label = `Collapse ${paneLabel} pane`;
 
   return (
     <PanelResizeHandle
@@ -195,27 +217,30 @@ function LeftPaneResizeHandle({
         "data-[resize-handle-state=drag]:bg-brand/15 data-[resize-handle-state=drag]:before:w-0.5 data-[resize-handle-state=drag]:before:bg-brand",
       )}
     >
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation();
-          onToggle();
-        }}
-        onPointerDown={(e) => e.stopPropagation()}
-        title={label}
-        aria-label={label}
-        aria-expanded={!collapsed}
-        className={cn(
-          "absolute left-1/2 top-1/2 z-20 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full",
-          "border border-info/40 bg-[var(--pane-header)]/95 text-info shadow-md backdrop-blur-md",
-          "transition-[background-color,color,box-shadow,border-color,transform] duration-[var(--motion-duration-fast)]",
-          "hover:border-info/60 hover:bg-info/10 hover:text-info hover:shadow-lg",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-info/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-          "active:scale-95",
-        )}
-      >
-        <ToggleIcon className="h-4 w-4" />
-      </button>
+      {!collapsed && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggle();
+          }}
+          onPointerDown={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          title={label}
+          aria-label={label}
+          aria-expanded
+          className={cn(
+            "absolute left-1/2 top-1/2 z-20 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 cursor-pointer pointer-events-auto items-center justify-center rounded-full",
+            "border border-info/40 bg-[var(--pane-header)]/95 text-info shadow-md backdrop-blur-md",
+            "transition-[background-color,color,box-shadow,border-color,transform] duration-[var(--motion-duration-fast)]",
+            "hover:border-info/60 hover:bg-info/10 hover:text-info hover:shadow-lg",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-info/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+            "active:scale-95",
+          )}
+        >
+          <PanelLeftClose className="h-4 w-4" />
+        </button>
+      )}
     </PanelResizeHandle>
   );
 }
@@ -225,13 +250,11 @@ function CollapsedEdgeRail({
   label,
   icon,
   onExpand,
-  offsetClass,
 }: {
   side: "left" | "right";
   label: string;
   icon: React.ReactNode;
   onExpand: () => void;
-  offsetClass?: string;
 }) {
   const OpenIcon = side === "left" ? PanelLeftOpen : PanelRightOpen;
 
@@ -242,9 +265,8 @@ function CollapsedEdgeRail({
       title={`Show ${label.toLowerCase()} pane`}
       aria-label={`Show ${label.toLowerCase()} pane`}
       className={cn(
-        "absolute top-0 z-30 flex h-full w-11 cursor-pointer flex-col items-center justify-center gap-2 border-border bg-[var(--pane-header)]/95 text-muted-foreground shadow-md backdrop-blur-md transition-[background-color,color] duration-[var(--motion-duration-fast)] hover:bg-accent hover:text-foreground",
-        side === "left" ? "border-r" : "border-l right-0",
-        side === "left" && (offsetClass ?? "left-0"),
+        "z-30 flex h-full w-11 shrink-0 cursor-pointer flex-col items-center justify-center gap-2 border-border bg-[var(--pane-header)]/95 text-muted-foreground shadow-md backdrop-blur-md transition-[background-color,color] duration-[var(--motion-duration-fast)] hover:bg-accent hover:text-foreground",
+        side === "left" ? "border-r" : "border-l",
       )}
     >
       <OpenIcon className="h-4 w-4 shrink-0 text-info" />

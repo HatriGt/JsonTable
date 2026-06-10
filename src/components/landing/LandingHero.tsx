@@ -1,55 +1,48 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
-import { toast } from "sonner";
+import { useCallback, useEffect } from "react";
 import { ArrowRight, ClipboardPaste, LayoutGrid, Sparkles } from "lucide-react";
 import { PreviewMock } from "./PreviewMock";
 import { Button } from "@/components/ui/button";
 import { useWorkspace } from "@/store/workspace";
+import { pasteFromClipboard } from "@/lib/json/pasteFromClipboard";
 import { SAMPLE_JSON } from "@/lib/json/sample";
 import { FadeIn } from "@/components/motion/FadeIn";
 
 type Props = {
-  onOpenPaste: () => void;
+  onOpenPasteDialog: () => void;
 };
 
-export function LandingHero({ onOpenPaste }: Props) {
+export function LandingHero({ onOpenPasteDialog }: Props) {
   const navigate = useNavigate();
   const loadJson = useWorkspace((s) => s.loadJson);
 
+  const pasteAndOpen = useCallback(() => {
+    void pasteFromClipboard({
+      loadJson,
+      onOpenDialog: onOpenPasteDialog,
+      onStart: () => navigate({ to: "/workspace" }),
+    });
+  }, [loadJson, navigate, onOpenPasteDialog]);
+
   async function loadSample() {
-    await loadJson("sample.json", SAMPLE_JSON);
     navigate({ to: "/workspace" });
+    await loadJson("sample.json", SAMPLE_JSON);
   }
 
   useEffect(() => {
-    async function onKey(e: KeyboardEvent) {
-      const isPaste = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "p";
-      if (!isPaste) return;
+    function onKey(e: KeyboardEvent) {
+      const target = e.target as HTMLElement | null;
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) return;
+
+      const key = e.key.toLowerCase();
+      const isPasteShortcut = (e.metaKey || e.ctrlKey) && (key === "v" || key === "p");
+      if (!isPasteShortcut) return;
       e.preventDefault();
-      try {
-        const text = await navigator.clipboard.readText();
-        if (!text?.trim()) {
-          toast.message("Clipboard is empty", {
-            description: "Copy some JSON and press ⌘P again.",
-          });
-          onOpenPaste();
-          return;
-        }
-        const ok = await loadJson("clipboard.json", text);
-        if (ok) {
-          toast.success("JSON loaded from clipboard");
-          navigate({ to: "/workspace" });
-        } else {
-          toast.error("That doesn't look like valid JSON");
-          onOpenPaste();
-        }
-      } catch {
-        onOpenPaste();
-      }
+      pasteAndOpen();
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [loadJson, navigate, onOpenPaste]);
+  }, [pasteAndOpen]);
 
   return (
     <section className="relative overflow-hidden">
@@ -73,7 +66,7 @@ export function LandingHero({ onOpenPaste }: Props) {
             <Button
               size="lg"
               className="h-11 cursor-pointer gap-2 rounded-lg border-0 bg-[oklch(0.55_0.19_258)] px-5 text-white shadow-[0_1px_2px_oklch(0.55_0.19_258/0.4)] hover:bg-[oklch(0.5_0.19_258)]"
-              onClick={onOpenPaste}
+              onClick={pasteAndOpen}
             >
               <ClipboardPaste className="h-4 w-4" />
               Paste JSON
@@ -103,7 +96,7 @@ export function LandingHero({ onOpenPaste }: Props) {
               ⌘
             </kbd>{" "}
             <kbd className="inline-flex min-w-[22px] items-center justify-center rounded border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] shadow-sm">
-              P
+              V
             </kbd>{" "}
             to paste &amp; open instantly
           </p>

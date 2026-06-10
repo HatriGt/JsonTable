@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 export function StatusBar({ className }: { className?: string }) {
-  const { doc, error, selection } = useWorkspace();
+  const { doc, error, parsing, selection } = useWorkspace();
   const pathLabel = doc ? formatPath(selection) : "";
 
   return (
@@ -17,7 +17,12 @@ export function StatusBar({ className }: { className?: string }) {
       )}
     >
       <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
-        {error ? (
+        {parsing ? (
+          <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand" />
+            Parsing…
+          </span>
+        ) : error ? (
           <Badge variant="destructive" className="h-5 gap-1 px-2 font-mono text-[10px] font-normal">
             {error.message} · L{error.line}:{error.column}
           </Badge>

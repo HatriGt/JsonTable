@@ -1,7 +1,14 @@
+import { startTransition } from "react";
 import { create } from "zustand";
 import type { PathSegment } from "@/lib/json/path";
 import { computeStats, type DocStats } from "@/lib/json/stats";
-import { parseJson, type ParseError } from "@/lib/json/parse";
+import {
+  HUGE_JSON_BYTES,
+  LARGE_JSON_BYTES,
+  parseJson,
+  parseJsonAsync,
+  type ParseError,
+} from "@/lib/json/parse";
 import { saveRecent } from "@/lib/storage/recents";
 
 const EMPTY_STATS: DocStats = {
@@ -33,64 +40,18 @@ type Doc = {
 
 export type SelectionSource = "tree" | "grid" | "inspector";
 
-type State = {
-  doc: Doc | null;
-  error: ParseError | null;
-  selection: PathSegment[];
-  source: SelectionSource;
-  setSelection: (p: PathSegment[], source?: SelectionSource) => void;
-  loadJson: (name: string, raw: string) => Promise<boolean>;
-  editRaw: (raw: string) => boolean;
-  updateAt: (path: PathSegment[], value: unknown) => void;
-  reset: () => void;
-  clearError: () => void;
-};
-
-export const useWorkspace = create<State>((set) => ({
-  doc: null,
-  error: null,
-  selection: [],
-  source: "tree",
-  setSelection: (p, source = "tree") => set({ selection: p, source }),
-  loadJson: async (name, raw) => {
-    const result = parseJson(raw);
-    if (!result.ok) {
-      set({ error: result.error, doc: null });
-      return false;
-    }
-    const sizeBytes = new Blob([raw]).size;
-    const value = result.value;
-    set({
-      error: null,
-      doc: {
-        name,
-        raw,
-        value,
-        sizeBytes,
-        stats: EMPTY_STATS,
-        loadedAt: Date.now(),
-      },
-      selection: [],
-      source: "tree",
-    });
-    scheduleStats(value, (stats) => {
-      set((s) => (s.doc?.value === value ? { doc: { ...s.doc, stats } } : s));
-    });
-    saveRecent(name, raw).catch(() => {});
-    return true;
-  },
-  editRaw: (raw) => {
-    const result = parseJson(raw);
-    if (!result.ok) {
-      set({ error: result.error });
-      return false;
-    }
-    const value = result.value;
-    const sizeBytes = new Blob([raw]).size;
+function applyParsedEdit(
+  set: (partial: Partial<State> | ((s: State) => Partial<State> | State)) => void,
+  raw: string,
+  value: unknown,
+) {
+  const sizeBytes = new Blob([raw]).size;
+  const apply = () => {
     set((s) => {
       if (!s.doc) return s;
       return {
         error: null,
+        parsing: false,
         doc: {
           ...s.doc,
           raw,
@@ -102,6 +63,102 @@ export const useWorkspace = create<State>((set) => ({
     });
     scheduleStats(value, (stats) => {
       set((s) => (s.doc?.value === value ? { doc: { ...s.doc, stats } } : s));
+    });
+  };
+  if (sizeBytes >= HUGE_JSON_BYTES) {
+    startTransition(apply);
+  } else {
+    apply();
+  }
+}
+
+type State = {
+  doc: Doc | null;
+  error: ParseError | null;
+  parsing: boolean;
+  selection: PathSegment[];
+  source: SelectionSource;
+  setSelection: (p: PathSegment[], source?: SelectionSource) => void;
+  loadJson: (name: string, raw: string) => Promise<boolean>;
+  editRaw: (raw: string) => boolean;
+  updateAt: (path: PathSegment[], value: unknown) => void;
+  reset: () => void;
+  clearError: () => void;
+};
+
+export const useWorkspace = create<State>((set, get) => ({
+  doc: null,
+  error: null,
+  parsing: false,
+  selection: [],
+  source: "tree",
+  setSelection: (p, source = "tree") => set({ selection: p, source }),
+  loadJson: async (name, raw) => {
+    set({ parsing: true, error: null });
+    const result = await parseJsonAsync(raw);
+    if (!result.ok) {
+      set({ error: result.error, doc: null, parsing: false });
+      return false;
+    }
+    const value = result.value;
+    const sizeBytes = new Blob([raw]).size;
+    const applyDoc = () => {
+      set({
+        error: null,
+        parsing: false,
+        doc: {
+          name,
+          raw,
+          value,
+          sizeBytes,
+          stats: EMPTY_STATS,
+          loadedAt: Date.now(),
+        },
+        selection: [],
+        source: "tree",
+      });
+      scheduleStats(value, (stats) => {
+        set((s) => (s.doc?.value === value ? { doc: { ...s.doc, stats } } : s));
+      });
+    };
+    if (sizeBytes >= HUGE_JSON_BYTES) {
+      startTransition(applyDoc);
+    } else {
+      applyDoc();
+    }
+    if (sizeBytes < HUGE_JSON_BYTES) {
+      saveRecent(name, raw).catch(() => {});
+    }
+    return true;
+  },
+  editRaw: (raw) => {
+    if (!get().doc) return false;
+
+    const runSync = () => {
+      const result = parseJson(raw);
+      if (!result.ok) {
+        set({ error: result.error, parsing: false });
+        return false;
+      }
+      applyParsedEdit(set, raw, result.value);
+      return true;
+    };
+
+    if (raw.length < LARGE_JSON_BYTES) {
+      return runSync();
+    }
+
+    set({ parsing: true, error: null });
+    void parseJsonAsync(raw).then((result) => {
+      if (!get().doc) {
+        set({ parsing: false });
+        return;
+      }
+      if (!result.ok) {
+        set({ error: result.error, parsing: false });
+        return;
+      }
+      applyParsedEdit(set, raw, result.value);
     });
     return true;
   },
@@ -121,7 +178,7 @@ export const useWorkspace = create<State>((set) => ({
         },
       };
     }),
-  reset: () => set({ doc: null, error: null, selection: [], source: "tree" }),
+  reset: () => set({ doc: null, error: null, parsing: false, selection: [], source: "tree" }),
   clearError: () => set({ error: null }),
 }));
 

@@ -15,10 +15,13 @@ import { Loader2 } from "lucide-react";
 export function PasteDialog({
   open,
   onOpenChange,
+  onBeforeLoad,
   onLoaded,
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
+  /** Called before parsing begins (e.g. navigate away immediately). */
+  onBeforeLoad?: () => void;
   onLoaded?: () => void;
 }) {
   const [text, setText] = useState("");
@@ -37,6 +40,7 @@ export function PasteDialog({
   }, [open, clearError]);
 
   async function handleLoad() {
+    onBeforeLoad?.();
     setLoading(true);
     clearError();
     const ok = await loadJson("pasted.json", text);
@@ -44,7 +48,7 @@ export function PasteDialog({
     if (ok) {
       setText("");
       onOpenChange(false);
-      window.setTimeout(() => onLoaded?.(), 200);
+      onLoaded?.();
     }
   }
 

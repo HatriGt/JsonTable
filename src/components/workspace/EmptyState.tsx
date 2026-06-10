@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { IconButton } from "@/components/ui/icon-button";
 import { PasteDialog } from "@/components/input/PasteDialog";
+import { pasteFromClipboard } from "@/lib/json/pasteFromClipboard";
 import { useWorkspace } from "@/store/workspace";
 import { SAMPLE_JSON } from "@/lib/json/sample";
 import { formatBytes } from "@/lib/format";
@@ -135,7 +136,12 @@ export function EmptyState() {
           <div className="mt-6 flex w-full flex-col gap-4">
             <Button
               size="lg"
-              onClick={() => setPasteOpen(true)}
+              onClick={() =>
+                void pasteFromClipboard({
+                  loadJson,
+                  onOpenDialog: () => setPasteOpen(true),
+                })
+              }
               className="h-11 w-full cursor-pointer gap-2 rounded-lg bg-brand text-white shadow-sm hover:bg-brand/90"
               aria-label="Paste JSON from clipboard"
             >

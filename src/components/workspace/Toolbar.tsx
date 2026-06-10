@@ -8,13 +8,17 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { formatBytes } from "@/lib/format";
 import { motionTransition } from "@/lib/motion/presets";
-import { ClipboardPaste, Upload, Sun, Moon, Monitor, Trash2, Braces } from "lucide-react";
+import { ClipboardPaste, Upload, Sun, Moon, Trash2, Braces } from "lucide-react";
 import { PasteDialog } from "@/components/input/PasteDialog";
+import { pasteFromClipboard } from "@/lib/json/pasteFromClipboard";
 
 export function Toolbar() {
   const fileRef = useRef<HTMLInputElement>(null);
-  const { doc, loadJson, reset } = useWorkspace();
-  const { theme, setTheme } = useTheme();
+  const doc = useWorkspace((s) => s.doc);
+  const loadJson = useWorkspace((s) => s.loadJson);
+  const reset = useWorkspace((s) => s.reset);
+  const theme = useTheme((s) => s.theme);
+  const setTheme = useTheme((s) => s.setTheme);
   const [pasteOpen, setPasteOpen] = useState(false);
 
   async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
@@ -25,9 +29,8 @@ export function Toolbar() {
     e.target.value = "";
   }
 
-  const nextTheme: "dark" | "light" | "system" =
-    theme === "dark" ? "light" : theme === "light" ? "system" : "dark";
-  const ThemeIcon = theme === "dark" ? Moon : theme === "light" ? Sun : Monitor;
+  const nextTheme = theme === "dark" ? "light" : "dark";
+  const ThemeIcon = theme === "dark" ? Moon : Sun;
 
   return (
     <div className="relative z-10 flex h-12 shrink-0 items-center justify-between gap-2 border-b border-border/80 bg-[var(--pane-header)]/90 px-3 shadow-[inset_0_1px_0_color-mix(in_oklab,var(--foreground)_4%,transparent)] backdrop-blur-md">
@@ -70,7 +73,12 @@ export function Toolbar() {
         <Button
           size="sm"
           variant="ghost"
-          onClick={() => setPasteOpen(true)}
+          onClick={() =>
+            void pasteFromClipboard({
+              loadJson,
+              onOpenDialog: () => setPasteOpen(true),
+            })
+          }
           className="h-8 cursor-pointer gap-1.5 text-xs"
         >
           <ClipboardPaste className="h-3.5 w-3.5" />
@@ -101,7 +109,7 @@ export function Toolbar() {
           size="icon"
           variant="ghost"
           className="h-8 w-8 cursor-pointer"
-          onClick={() => setTheme(nextTheme)}
+          onClick={(e) => setTheme(nextTheme, { x: e.clientX, y: e.clientY })}
           title={`Theme: ${theme}`}
         >
           <ThemeIcon className="h-4 w-4" />

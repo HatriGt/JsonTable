@@ -3,6 +3,7 @@ import { useWorkspace } from "@/store/workspace";
 import { Braces, Upload, ClipboardPaste } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PasteDialog } from "./PasteDialog";
+import { pasteFromClipboard } from "@/lib/json/pasteFromClipboard";
 import { m } from "@/lib/motion/framer";
 
 export function DropZone() {
@@ -68,7 +69,15 @@ export function DropZone() {
           Explore, search, and filter complex JSON like a spreadsheet.
         </p>
         <div className="mt-6 flex items-center justify-center gap-2">
-          <Button onClick={() => setPasteOpen(true)} className="gap-2">
+          <Button
+            onClick={() =>
+              void pasteFromClipboard({
+                loadJson,
+                onOpenDialog: () => setPasteOpen(true),
+              })
+            }
+            className="gap-2"
+          >
             <ClipboardPaste className="h-4 w-4" />
             Paste JSON
           </Button>
