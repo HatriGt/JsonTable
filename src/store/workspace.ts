@@ -62,7 +62,7 @@ function applyParsedEdit(
       };
     });
     scheduleStats(value, (stats) => {
-      set((s) => (s.doc?.value === value ? { doc: { ...s.doc, stats } } : s));
+      set((s) => (s.doc && s.doc.value === value ? { doc: { ...s.doc, stats } } : s));
     });
   };
   if (sizeBytes >= HUGE_JSON_BYTES) {
@@ -118,7 +118,7 @@ export const useWorkspace = create<State>((set, get) => ({
         source: "tree",
       });
       scheduleStats(value, (stats) => {
-        set((s) => (s.doc?.value === value ? { doc: { ...s.doc, stats } } : s));
+        set((s) => (s.doc && s.doc.value === value ? { doc: { ...s.doc, stats } } : s));
       });
     };
     if (sizeBytes >= HUGE_JSON_BYTES) {
@@ -162,10 +162,12 @@ export const useWorkspace = create<State>((set, get) => ({
     });
     return true;
   },
-  updateAt: (path, value) =>
+  updateAt: (path, value) => {
+    let nextValue: unknown;
     set((s) => {
       if (!s.doc) return s;
       const next = setDeep(s.doc.value, path, value);
+      nextValue = next;
       const raw = JSON.stringify(next, null, 2);
       const sizeBytes = new Blob([raw]).size;
       return {
@@ -174,10 +176,14 @@ export const useWorkspace = create<State>((set, get) => ({
           value: next,
           raw,
           sizeBytes,
-          stats: computeStats(next),
+          stats: s.doc.stats,
         },
       };
-    }),
+    });
+    scheduleStats(nextValue, (stats) => {
+      set((s) => (s.doc && s.doc.value === nextValue ? { doc: { ...s.doc, stats } } : s));
+    });
+  },
   reset: () => set({ doc: null, error: null, parsing: false, selection: [], source: "tree" }),
   clearError: () => set({ error: null }),
 }));
