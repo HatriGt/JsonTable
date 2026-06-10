@@ -14,6 +14,7 @@ import {
 import { toast } from "sonner";
 import { PaneHeader } from "@/components/layout/PaneHeader";
 import { IconButton } from "@/components/ui/icon-button";
+import { useAutoHideScrollbar } from "@/lib/hooks/useAutoHideScrollbar";
 import { cn } from "@/lib/utils";
 
 export function JsonSource({
@@ -58,6 +59,8 @@ export function JsonSource({
     });
   }
 
+  const bodyScrollRef = useAutoHideScrollbar<HTMLDivElement>();
+
   if (!doc) return null;
 
   function formatJson() {
@@ -68,7 +71,10 @@ export function JsonSource({
   }
 
   const sourceBody = (
-    <div className="relative flex-1 overflow-auto font-mono text-[12.5px] leading-[1.7]">
+    <div
+      ref={bodyScrollRef}
+      className="scroll-autohide relative flex-1 overflow-auto font-mono text-[12.5px] leading-[1.7]"
+    >
       <div className="py-2">
         {lines.map((line, i) => {
           if (hidden.has(i)) return null;
@@ -164,7 +170,7 @@ export function JsonSource({
 const SOURCE_LINE_HEIGHT = 21;
 const SOURCE_VIRTUAL_THRESHOLD = 80;
 /** Above this size, skip syntax highlight / fold scanning to keep paste responsive. */
-const LARGE_SOURCE_BYTES = 200_000;
+const LARGE_SOURCE_BYTES = 2_000_000;
 const LARGE_EDIT_DEBOUNCE_MS = 700;
 const EDIT_DEBOUNCE_MS = 400;
 
@@ -177,7 +183,7 @@ function EmbeddedSourceEditor() {
   const [draft, setDraft] = useState(doc?.raw ?? "");
   const [collapsed, setCollapsed] = useState<Set<number>>(new Set());
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useAutoHideScrollbar<HTMLDivElement>();
   const draftRef = useRef(draft);
   draftRef.current = draft;
 
@@ -275,12 +281,19 @@ function EmbeddedSourceEditor() {
   const useVirtual = displayIndices.length > SOURCE_VIRTUAL_THRESHOLD;
   const contentHeight = displayIndices.length * SOURCE_LINE_HEIGHT;
 
+  const scrollElementRef = useRef<HTMLDivElement | null>(null);
+
   const virtualizer = useVirtualizer({
     count: useVirtual ? displayIndices.length : 0,
-    getScrollElement: () => scrollRef.current,
+    getScrollElement: () => scrollElementRef.current,
     estimateSize: () => SOURCE_LINE_HEIGHT,
     overscan: 30,
   });
+
+  const setScrollRef = (el: HTMLDivElement | null) => {
+    scrollElementRef.current = el;
+    scrollRef(el);
+  };
 
   const virtualItems = useVirtual ? virtualizer.getVirtualItems() : [];
 
@@ -368,21 +381,18 @@ function EmbeddedSourceEditor() {
           </IconButton>
         </div>
         <div
+          ref={scrollRef}
           className={cn(
-            "relative min-h-0 flex-1 overflow-auto",
+            "scroll-autohide relative min-h-0 flex-1 overflow-auto",
             error && "ring-1 ring-inset ring-destructive/40",
           )}
         >
-          {parsing && (
-            <div className="pointer-events-none absolute inset-x-0 top-0 z-20 border-b border-border/60 bg-[var(--source-bg)]/90 px-3 py-1.5 text-[11px] text-muted-foreground">
-              Parsing JSON…
-            </div>
-          )}
+          {parsing && <SourceParsingSkeleton />}
           <textarea
             value={draft}
             onChange={(e) => onDraftChange(e.target.value)}
             spellCheck={false}
-            className="h-full min-h-full w-full resize-none border-0 bg-transparent px-3 py-2 font-mono text-[12.5px] leading-[1.7] text-foreground shadow-none focus-visible:ring-0"
+            className="source-textarea-plain block w-full resize-none border-0 bg-transparent px-3 py-2 font-mono text-[12.5px] leading-[1.7] text-foreground shadow-none focus-visible:ring-0"
             aria-label="Edit JSON source"
           />
         </div>
@@ -410,17 +420,13 @@ function EmbeddedSourceEditor() {
         </IconButton>
       </div>
       <div
-        ref={scrollRef}
+        ref={setScrollRef}
         className={cn(
-          "relative min-h-0 flex-1 overflow-auto",
+          "scroll-autohide relative min-h-0 flex-1 overflow-auto",
           error && "ring-1 ring-inset ring-destructive/40",
         )}
       >
-        {parsing && (
-          <div className="pointer-events-none absolute inset-x-0 top-0 z-30 border-b border-border/60 bg-[var(--source-bg)]/90 px-3 py-1.5 text-[11px] text-muted-foreground">
-            Parsing JSON…
-          </div>
-        )}
+        {parsing && <SourceParsingSkeleton />}
         <div
           className="flex py-2"
           style={useVirtual ? { minHeight: contentHeight + 16 } : { minHeight: "100%" }}
@@ -489,6 +495,27 @@ function EmbeddedSourceEditor() {
             />
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+const SKEL_SOURCE_WIDTHS = [65, 40, 80, 55, 30, 72, 48, 60, 35, 68, 45, 78, 52, 38, 70];
+
+function SourceParsingSkeleton() {
+  return (
+    <div className="pointer-events-none absolute inset-0 z-20 bg-[var(--source-bg)]/90 px-3 py-2">
+      <div className="mb-3 flex items-center gap-2">
+        <span className="skel-pulse h-1.5 w-1.5 rounded-full bg-brand" />
+        <span className="text-[11px] text-muted-foreground">Parsing JSON…</span>
+      </div>
+      <div className="space-y-1.5">
+        {SKEL_SOURCE_WIDTHS.map((w, i) => (
+          <div key={i} className="flex items-center gap-3">
+            <span className="skel-line h-2.5 w-6 shrink-0" />
+            <span className="skel-line h-2.5" style={{ width: `${w}%`, animationDelay: `${i * 60}ms` }} />
+          </div>
+        ))}
       </div>
     </div>
   );
