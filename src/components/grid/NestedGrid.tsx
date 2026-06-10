@@ -1,4 +1,13 @@
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type RefObject } from "react";
+import {
+  memo,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type RefObject,
+} from "react";
+import { useShallow } from "zustand/react/shallow";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import {
   ChevronDown,
@@ -14,11 +23,24 @@ import { HUGE_JSON_BYTES } from "@/lib/json/parse";
 import { slashPathToSegments, valueType } from "@/lib/json/path";
 import { useWorkspace } from "@/store/workspace";
 import { useResolvedOrder, moveColumn } from "@/store/columnOrder";
-import { isFilterActive, matchesFilter, useFilters, valueToText } from "@/store/filters";
+import {
+  isFilterActive,
+  matchesFilter,
+  useFilters,
+  valueToText,
+  type ColumnFilter,
+} from "@/store/filters";
 import { FilterPopover } from "./FilterPopover";
 
 const VIRTUAL_ROW_THRESHOLD = 40;
 const GRID_ROW_HEIGHT = 36;
+/**
+ * Nested virtualizers all measure against the single outer scroll element, so deep
+ * instances add scroll/resize listener contention and their offsets drift under the
+ * grid's CSS transform: scale(). Only virtualize the outermost collections; render
+ * deeper ones plainly (they're already inside a virtualized + collapsed ancestor).
+ */
+const VIRTUAL_MAX_DEPTH = 1;
 
 type Props = {
   value: unknown;
@@ -91,7 +113,7 @@ function Header({
     <button
       type="button"
       onClick={onToggle}
-      className="group flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left hover:bg-[var(--grid-row-hover)]"
+      className="group flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left hover:bg-[var(--grid-row-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand/50"
     >
       <span className="inline-flex h-4 w-4 items-center justify-center text-muted-foreground group-hover:text-foreground">
         {open ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
@@ -146,7 +168,10 @@ function ObjectTable({
   const entries = Object.entries(value);
   const [open, setOpen] = useState(() => defaultSectionOpen(depth, entries.length, hugeFile));
 
-  const shouldVirtualize = entries.length > VIRTUAL_ROW_THRESHOLD && scrollElementRef != null;
+  const shouldVirtualize =
+    depth <= VIRTUAL_MAX_DEPTH &&
+    entries.length > VIRTUAL_ROW_THRESHOLD &&
+    scrollElementRef != null;
 
   const rowVirtualizer = useVirtualizer({
     count: shouldVirtualize ? entries.length : 0,
@@ -239,7 +264,6 @@ function ArrayTable({
   const hugeFile = useWorkspace((s) => (s.doc?.sizeBytes ?? 0) >= HUGE_JSON_BYTES);
   const [open, setOpen] = useState(() => defaultSectionOpen(depth, value.length, hugeFile));
   const [modalOpen, setModalOpen] = useState(false);
-  const filterState = useFilters((s) => s.filters);
   const clearArray = useFilters((s) => s.clearArray);
 
   const allObjects =
@@ -253,6 +277,19 @@ function ArrayTable({
     }
     return Array.from(keys);
   }, [value, allObjects]);
+
+  // Subscribe only to filters for this array's columns so edits on other
+  // arrays don't trigger a re-filter/re-sort here.
+  const filterState = useFilters(
+    useShallow((s) => {
+      const slice: Record<string, ColumnFilter> = {};
+      for (const c of columns) {
+        const f = s.filters[`${path}::${c}`];
+        if (f) slice[`${path}::${c}`] = f;
+      }
+      return slice;
+    }),
+  );
 
   const orderedColumns = useResolvedOrder(path, columns);
 
@@ -304,7 +341,10 @@ function ArrayTable({
   }, [columns, filterState, path, allObjects]);
 
   const shouldVirtualize =
-    allObjects && processed.length > VIRTUAL_ROW_THRESHOLD && scrollElementRef != null;
+    depth <= VIRTUAL_MAX_DEPTH &&
+    allObjects &&
+    processed.length > VIRTUAL_ROW_THRESHOLD &&
+    scrollElementRef != null;
 
   const rowVirtualizer = useVirtualizer({
     count: shouldVirtualize ? processed.length : 0,
@@ -431,7 +471,7 @@ function ArrayTable({
             {activeFilterCount > 0 && (
               <button
                 onClick={() => clearArray(path)}
-                className="rounded px-1.5 py-0.5 hover:bg-accent hover:text-foreground"
+                className="rounded px-1.5 py-0.5 hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50"
                 title="Clear all filters on this array"
               >
                 Clear {activeFilterCount}
@@ -440,7 +480,7 @@ function ArrayTable({
             <button
               type="button"
               onClick={() => setModalOpen(true)}
-              className="inline-flex min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-brand sm:min-h-8 sm:min-w-8"
+              className="inline-flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 sm:min-h-8 sm:min-w-8"
               title="Open array in modal"
               aria-label="Open array in modal"
             >
@@ -463,7 +503,7 @@ function ArrayTable({
   );
 }
 
-function ObjectEntryRow({
+const ObjectEntryRow = memo(function ObjectEntryRow({
   entryKey,
   entryValue,
   path,
@@ -501,7 +541,7 @@ function ObjectEntryRow({
       </td>
     </tr>
   );
-}
+});
 
 function ObjectKeyCell({ path, label }: { path: string; label: string }) {
   const setSelection = useWorkspace((s) => s.setSelection);
@@ -510,7 +550,7 @@ function ObjectKeyCell({ path, label }: { path: string; label: string }) {
       <button
         type="button"
         onClick={() => setSelection(slashPathToSegments(path), "grid")}
-        className="w-full cursor-pointer text-left hover:text-brand"
+        className="w-full cursor-pointer text-left hover:text-brand focus-visible:text-brand focus-visible:outline-none"
       >
         {label}
       </button>
@@ -518,7 +558,7 @@ function ObjectKeyCell({ path, label }: { path: string; label: string }) {
   );
 }
 
-function ObjectArrayRow({
+const ObjectArrayRow = memo(function ObjectArrayRow({
   rowIndex,
   value,
   orderedColumns,
@@ -538,7 +578,7 @@ function ObjectArrayRow({
   const row = value[rowIndex] as Record<string, unknown>;
   return (
     <tr
-      className={cn("group align-top", rowIndex % 2 === 1 && "bg-[var(--grid-row-alt)]")}
+      className={cn("group align-top transition-colors duration-[var(--motion-duration-fast)]", rowIndex % 2 === 1 && "bg-[var(--grid-row-alt)]")}
       style={rowStyle}
     >
       <RowIndexCell path={joinPath(path, String(rowIndex))} index={rowIndex + 1} />
@@ -569,16 +609,16 @@ function ObjectArrayRow({
       })}
     </tr>
   );
-}
+});
 
 function RowIndexCell({ path, index }: { path: string; index: number }) {
   const setSelection = useWorkspace((s) => s.setSelection);
   return (
-    <td className="grid-row-index grid-body-cell grid-line-v w-11 px-2.5 py-2.5 text-right">
+    <td className="grid-row-index grid-row-hover-indicator grid-body-cell grid-line-v w-11 px-2.5 py-2.5 text-right">
       <button
         type="button"
         onClick={() => setSelection(slashPathToSegments(path), "grid")}
-        className="w-full cursor-pointer text-right tabular-nums hover:text-brand"
+        className="w-full cursor-pointer text-right tabular-nums hover:text-brand focus-visible:text-brand focus-visible:outline-none"
       >
         {index}
       </button>
@@ -648,7 +688,7 @@ function PrimitiveCell({ value, path }: { value: unknown; path?: string }) {
       title={path ? "Click to inspect · double-click to edit" : undefined}
       className={cn(
         "group/cell flex w-full items-center gap-1 px-2.5 py-1.5 text-left break-words",
-        path && "cursor-pointer hover:bg-brand/5",
+        path && "cursor-pointer hover:bg-brand/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand/50",
       )}
     >
       <span className={cn("flex-1 break-words", tokenClass(kind))}>{text}</span>
@@ -701,7 +741,6 @@ function ColumnHeaderRow({
           </span>
         </th>
         {columns.map((c) => {
-          const colValues = value.slice(0, 200).map((row) => (row as Record<string, unknown>)[c]);
           const isOver = over === c && dragging && dragging !== c;
           return (
             <th
@@ -749,12 +788,18 @@ function ColumnHeaderRow({
                 >
                   {c}
                 </span>
-                <FilterPopover arrayPath={path} column={c} values={colValues} />
+                <FilterPopover
+                  arrayPath={path}
+                  column={c}
+                  getValues={() =>
+                    value.slice(0, 200).map((row) => (row as Record<string, unknown>)[c])
+                  }
+                />
                 <button
                   type="button"
                   title="Column actions"
                   aria-label="Column actions"
-                  className="inline-flex h-6 w-5 items-center justify-center rounded text-muted-foreground/70 hover:bg-accent hover:text-foreground"
+                  className="inline-flex h-6 w-5 items-center justify-center rounded text-muted-foreground/70 hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50"
                 >
                   <MoreVertical className="h-3.5 w-3.5" />
                 </button>

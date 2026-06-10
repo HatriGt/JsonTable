@@ -58,9 +58,12 @@ export function TreeNode({
   return (
     <div>
       <div
-        className={`group flex cursor-pointer items-center gap-1 rounded px-1.5 py-0.5 ${
+        role="treeitem"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(e as unknown as React.MouseEvent); } }}
+        className={`group flex min-h-[28px] cursor-pointer items-center gap-1 rounded px-1.5 py-0.5 ${
           selected ? "bg-brand/15 text-foreground" : "hover:bg-accent/60"
-        }`}
+        } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand/50`}
         style={{ paddingLeft: depth * 12 + 6 }}
         onClick={onClick}
       >

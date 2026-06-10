@@ -153,11 +153,11 @@
   --brand: oklch(0.68 0.18 258);
   --brand-2: oklch(0.65 0.16 230);
   --brand-3: oklch(0.76 0.14 95);
-  --json-key: oklch(0.75 0.14 258);
-  --json-string: oklch(0.78 0.14 150);
-  --json-number: oklch(0.8 0.16 60);
-  --json-bool: oklch(0.75 0.2 320);
-  --json-null: oklch(0.55 0.02 260);
+  --json-key: oklch(0.78 0.15 258);
+  --json-string: oklch(0.8 0.15 150);
+  --json-number: oklch(0.82 0.16 60);
+  --json-bool: oklch(0.78 0.2 320);
+  --json-null: oklch(0.6 0.02 260);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -466,6 +466,27 @@ html.theme-transition-active::view-transition-new(root) {
   font-variant-numeric: tabular-nums;
 }
 
+/* Row hover indicator — 2px brand accent on the leading edge */
+@utility grid-row-hover-indicator {
+  position: relative;
+}
+
+.grid-row-hover-indicator::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--brand);
+  opacity: 0;
+  transition: opacity var(--motion-duration-fast);
+}
+
+tr:hover > .grid-row-hover-indicator::after {
+  opacity: 1;
+}
+
 @utility transition-pane {
   transition-property: color, background-color, border-color, opacity, transform, box-shadow;
   transition-duration: var(--motion-duration-normal);
@@ -762,6 +783,8 @@ html.theme-transition-active::view-transition-new(root) {
 
 .source-editor-stack > textarea {
   resize: none;
+  overflow: hidden;
+  field-sizing: content;
   background: transparent;
   color: transparent;
   caret-color: var(--foreground);
@@ -772,4 +795,187 @@ html.theme-transition-active::view-transition-new(root) {
 .source-editor-stack > textarea::selection {
   background: color-mix(in oklab, var(--primary) 28%, transparent);
   color: transparent;
+}
+
+/* Large plain-text source editor — parent scrolls, textarea grows with content */
+.source-textarea-plain {
+  overflow: hidden;
+  field-sizing: content;
+  min-height: 100%;
+}
+
+/*
+ * Auto-hiding scrollbar: the track/thumb stay hidden until the user scrolls.
+ * The `.is-scrolling` class is toggled by a scroll handler and removed after
+ * a short idle delay, so the scrollbar only appears while actively scrolling.
+ */
+.scroll-autohide {
+  scrollbar-width: none; /* Firefox */
+}
+
+.scroll-autohide::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.scroll-autohide.is-scrolling {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: color-mix(in oklab, var(--foreground) 28%, transparent) transparent;
+}
+
+.scroll-autohide.is-scrolling::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scroll-autohide.is-scrolling::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  background-color: color-mix(in oklab, var(--foreground) 28%, transparent);
+  transition: background-color var(--motion-duration-normal) var(--motion-ease-out);
+}
+
+.scroll-autohide.is-scrolling::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in oklab, var(--foreground) 42%, transparent);
+}
+
+.scroll-autohide.is-scrolling::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Pane divider — drag handle + collapse control */
+.pane-resize-handle {
+  position: relative;
+  display: flex;
+  width: 0.75rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  cursor: col-resize;
+  background: transparent;
+  transition: background-color var(--motion-duration-fast);
+}
+
+.pane-resize-handle::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+  background: var(--border);
+  transition:
+    width var(--motion-duration-fast),
+    background-color var(--motion-duration-fast);
+}
+
+.pane-resize-handle:hover::before,
+.pane-resize-handle[data-resize-handle-state="drag"]::before {
+  width: 2px;
+  background: color-mix(in oklab, var(--brand) 60%, transparent);
+}
+
+.pane-divider-control {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+  background: color-mix(in oklab, var(--pane-header) 95%, transparent);
+  padding: 0.25rem;
+  box-shadow: 0 1px 3px color-mix(in oklab, var(--foreground) 8%, transparent);
+  backdrop-filter: blur(8px);
+  opacity: 0.55;
+  transition:
+    opacity var(--motion-duration-fast),
+    border-color var(--motion-duration-fast),
+    box-shadow var(--motion-duration-fast);
+}
+
+.pane-resize-handle:hover .pane-divider-control,
+.pane-resize-handle[data-resize-handle-state="drag"] .pane-divider-control,
+.pane-divider-control:focus-within {
+  opacity: 1;
+  border-color: color-mix(in oklab, var(--brand) 35%, var(--border));
+  box-shadow: 0 2px 8px color-mix(in oklab, var(--foreground) 12%, transparent);
+}
+
+.pane-divider-control__collapse {
+  display: inline-flex;
+  height: 1.5rem;
+  width: 1.5rem;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  color: var(--muted-foreground);
+  transition:
+    background-color var(--motion-duration-fast),
+    color var(--motion-duration-fast),
+    transform var(--motion-duration-fast);
+}
+
+.pane-divider-control__collapse:hover {
+  background: color-mix(in oklab, var(--brand) 12%, transparent);
+  color: var(--brand);
+}
+
+.pane-divider-control__collapse:active {
+  transform: scale(0.94);
+}
+
+.pane-divider-control__collapse:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--brand) 50%, transparent);
+}
+
+.pane-divider-control__grip {
+  display: flex;
+  height: 1.25rem;
+  width: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  color: color-mix(in oklab, var(--muted-foreground) 70%, transparent);
+  pointer-events: none;
+}
+
+.pane-resize-handle:hover .pane-divider-control__grip,
+.pane-resize-handle[data-resize-handle-state="drag"] .pane-divider-control__grip {
+  color: var(--brand);
+}
+
+/* ─── Pane skeleton loaders ─── */
+@keyframes skel-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skel-line {
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--foreground) 6%, transparent) 25%,
+    color-mix(in oklab, var(--foreground) 12%, transparent) 37%,
+    color-mix(in oklab, var(--foreground) 6%, transparent) 63%
+  );
+  background-size: 200% 100%;
+  animation: skel-shimmer 1.6s ease-in-out infinite;
+}
+
+.dark .skel-line {
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--foreground) 8%, transparent) 25%,
+    color-mix(in oklab, var(--foreground) 18%, transparent) 37%,
+    color-mix(in oklab, var(--foreground) 8%, transparent) 63%
+  );
+  background-size: 200% 100%;
+}
+
+.skel-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

@@ -34,7 +34,7 @@ export function PaneHeader({
     >
       <div className="flex min-w-0 items-center gap-2.5">
         {icon && (
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-card text-info">
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-brand/15 bg-brand/5 text-brand">
             {icon}
           </span>
         )}
@@ -47,7 +47,7 @@ export function PaneHeader({
           )}
         </div>
       </div>
-      <div className="flex items-center gap-0.5 rounded-lg border border-border/60 bg-background/40 p-0.5">
+      <div className="flex items-center gap-0.5 rounded-lg border border-border/50 bg-background/50 p-0.5 backdrop-blur-sm">
         {actions}
         {onHide && (
           <IconButton
