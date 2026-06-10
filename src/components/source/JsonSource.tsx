@@ -169,8 +169,8 @@ export function JsonSource({
 
 const SOURCE_LINE_HEIGHT = 21;
 const SOURCE_VIRTUAL_THRESHOLD = 80;
-/** Above this size, skip syntax highlight / fold scanning to keep paste responsive. */
-const LARGE_SOURCE_BYTES = 2_000_000;
+/** Above this character count, use a longer debounce for edits. */
+const LARGE_SOURCE_CHARS = 500_000;
 const LARGE_EDIT_DEBOUNCE_MS = 700;
 const EDIT_DEBOUNCE_MS = 400;
 
@@ -199,14 +199,13 @@ function EmbeddedSourceEditor() {
     };
   }, []);
 
-  const isLargeSource = draft.length >= LARGE_SOURCE_BYTES;
   const deferredDraft = useDeferredValue(draft);
 
   function onDraftChange(value: string) {
     setDraft(value);
     if (debounceRef.current) clearTimeout(debounceRef.current);
     const debounceMs =
-      value.length >= LARGE_SOURCE_BYTES ? LARGE_EDIT_DEBOUNCE_MS : EDIT_DEBOUNCE_MS;
+      value.length >= LARGE_SOURCE_CHARS ? LARGE_EDIT_DEBOUNCE_MS : EDIT_DEBOUNCE_MS;
     debounceRef.current = setTimeout(() => {
       editRaw(value);
     }, debounceMs);
@@ -249,14 +248,8 @@ function EmbeddedSourceEditor() {
     setCollapsed(new Set());
   }
 
-  const lines = useMemo(
-    () => (isLargeSource ? [] : deferredDraft.split("\n")),
-    [deferredDraft, isLargeSource],
-  );
-  const folds = useMemo(
-    () => (isLargeSource ? new Map<number, number>() : computeFolds(deferredDraft)),
-    [deferredDraft, isLargeSource],
-  );
+  const lines = useMemo(() => deferredDraft.split("\n"), [deferredDraft]);
+  const folds = useMemo(() => computeFolds(deferredDraft), [deferredDraft]);
 
   const hidden = useMemo(() => {
     const h = new Set<number>();
@@ -353,50 +346,6 @@ function EmbeddedSourceEditor() {
           </span>
         )}
       </span>
-    );
-  }
-
-  if (isLargeSource) {
-    return (
-      <div className="flex h-full flex-col bg-[var(--source-bg)]">
-        <div className="flex shrink-0 items-center justify-end gap-0.5 border-b border-border/60 px-2 py-1">
-          <IconButton title={compact ? "Format" : "Minify"} onClick={toggleCompact}>
-            {compact ? (
-              <Maximize2 className="h-3.5 w-3.5" />
-            ) : (
-              <Minimize2 className="h-3.5 w-3.5" />
-            )}
-          </IconButton>
-          <IconButton title="Format JSON" onClick={formatJson}>
-            <AlignLeft className="h-3.5 w-3.5" />
-          </IconButton>
-          <IconButton
-            title="Copy JSON"
-            onClick={() => {
-              navigator.clipboard.writeText(draft);
-              toast.success("Copied to clipboard");
-            }}
-          >
-            <Copy className="h-3.5 w-3.5" />
-          </IconButton>
-        </div>
-        <div
-          ref={scrollRef}
-          className={cn(
-            "scroll-autohide relative min-h-0 flex-1 overflow-auto",
-            error && "ring-1 ring-inset ring-destructive/40",
-          )}
-        >
-          {parsing && <SourceParsingSkeleton />}
-          <textarea
-            value={draft}
-            onChange={(e) => onDraftChange(e.target.value)}
-            spellCheck={false}
-            className="source-textarea-plain block w-full resize-none border-0 bg-transparent px-3 py-2 font-mono text-[12.5px] leading-[1.7] text-foreground shadow-none focus-visible:ring-0"
-            aria-label="Edit JSON source"
-          />
-        </div>
-      </div>
     );
   }
 
