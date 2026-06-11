@@ -52,16 +52,24 @@ function GridContent({
 
 export function GridPane({ onHide }: Props) {
   const doc = useWorkspace((s) => s.doc);
+  const parsing = useWorkspace((s) => s.parsing);
   const [searchOpen, setSearchOpen] = useState(false);
   const [gridZoom, setGridZoom] = useState(() => loadPrefs().gridZoom);
   const scrollRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [naturalSize, setNaturalSize] = useState({ w: 0, h: 0 });
+  const [zooming, setZooming] = useState(false);
   const zoomRafRef = useRef<number | null>(null);
+  const zoomIdleRef = useRef<number | null>(null);
 
   const scale = gridZoom / 100;
 
   const setZoomTransition = useCallback((updater: (z: number) => number) => {
+    setZooming(true);
+    if (zoomIdleRef.current !== null) {
+      window.clearTimeout(zoomIdleRef.current);
+    }
+    zoomIdleRef.current = window.setTimeout(() => setZooming(false), 250);
     if (zoomRafRef.current !== null) {
       cancelAnimationFrame(zoomRafRef.current);
     }
@@ -94,6 +102,9 @@ export function GridPane({ onHide }: Props) {
     return () => {
       if (zoomRafRef.current !== null) {
         cancelAnimationFrame(zoomRafRef.current);
+      }
+      if (zoomIdleRef.current !== null) {
+        window.clearTimeout(zoomIdleRef.current);
       }
     };
   }, []);
@@ -160,7 +171,7 @@ export function GridPane({ onHide }: Props) {
   const contentStyle: CSSProperties = {
     transform: `scale(${scale})`,
     transformOrigin: "top left",
-    willChange: "transform",
+    willChange: zooming ? "transform" : "auto",
   };
 
   return (
@@ -208,7 +219,8 @@ export function GridPane({ onHide }: Props) {
           </>
         }
       />
-      <div ref={scrollRef} className="min-h-0 min-w-0 flex-1 overflow-auto bg-card p-3 sm:p-4">
+      <div ref={scrollRef} className="relative min-h-0 min-w-0 flex-1 overflow-auto bg-card p-3 sm:p-4">
+        {parsing && <GridParsingSkeleton />}
         <div style={scalerStyle}>
           <div ref={contentRef} className="w-max min-w-full" style={contentStyle}>
             <GridContent value={doc.value} scrollElementRef={scrollRef} />
@@ -216,6 +228,40 @@ export function GridPane({ onHide }: Props) {
         </div>
       </div>
       <GridSearch open={searchOpen} onOpenChange={setSearchOpen} />
+    </div>
+  );
+}
+
+const SKEL_GRID_COL_WIDTHS = [100, 140, 120, 160, 110];
+const SKEL_GRID_ROWS = 8;
+
+function GridParsingSkeleton() {
+  return (
+    <div className="pointer-events-none absolute inset-0 z-10 bg-card/90 p-4">
+      <div className="mb-4 flex items-center gap-2">
+        <span className="skel-pulse h-1.5 w-1.5 rounded-full bg-brand" />
+        <span className="text-[11px] text-muted-foreground">Updating grid…</span>
+      </div>
+      {/* Header */}
+      <div className="mb-2 flex gap-2">
+        <span className="skel-line h-5 w-8 shrink-0" />
+        {SKEL_GRID_COL_WIDTHS.map((w, i) => (
+          <span key={i} className="skel-line h-5" style={{ width: w, animationDelay: `${i * 80}ms` }} />
+        ))}
+      </div>
+      {/* Rows */}
+      {Array.from({ length: SKEL_GRID_ROWS }, (_, r) => (
+        <div key={r} className="mb-1.5 flex gap-2">
+          <span className="skel-line h-4 w-8 shrink-0" style={{ animationDelay: `${r * 50}ms` }} />
+          {SKEL_GRID_COL_WIDTHS.map((w, i) => (
+            <span
+              key={i}
+              className="skel-line h-4"
+              style={{ width: w * (0.5 + Math.abs(Math.sin(r * i + 1)) * 0.5), animationDelay: `${(r * 5 + i) * 40}ms` }}
+            />
+          ))}
+        </div>
+      ))}
     </div>
   );
 }

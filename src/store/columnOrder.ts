@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { create } from "zustand";
 
 type State = {
@@ -39,15 +40,16 @@ export const useColumnOrder = create<State>((set, get) => ({
     }),
 }));
 
-/** Seed an order for an array path if not present, returning the resolved order. */
+/** Seed an order for an array path if not present, returning a stable resolved order. */
 export function useResolvedOrder(arrayPath: string, defaultCols: string[]) {
-  const orders = useColumnOrder((s) => s.orders);
-  const saved = orders[arrayPath];
-  if (!saved) return defaultCols;
-  const known = new Set(defaultCols);
-  const filtered = saved.filter((c) => known.has(c));
-  const missing = defaultCols.filter((c) => !filtered.includes(c));
-  return [...filtered, ...missing];
+  const saved = useColumnOrder((s) => s.orders[arrayPath]);
+  return useMemo(() => {
+    if (!saved) return defaultCols;
+    const known = new Set(defaultCols);
+    const filtered = saved.filter((c) => known.has(c));
+    const missing = defaultCols.filter((c) => !filtered.includes(c));
+    return [...filtered, ...missing];
+  }, [saved, defaultCols]);
 }
 
 /** Persist a move; seeds default order if needed. */

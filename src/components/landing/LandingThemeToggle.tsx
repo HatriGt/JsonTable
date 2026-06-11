@@ -21,7 +21,7 @@ export function LandingThemeToggle() {
       type="button"
       size="icon"
       variant="ghost"
-      className="fixed top-4 right-4 z-50 h-9 w-9 cursor-pointer rounded-lg border border-border/50 bg-background/75 text-muted-foreground shadow-sm backdrop-blur-md hover:bg-accent hover:text-foreground sm:top-5 sm:right-6"
+      className="h-9 w-9 shrink-0 cursor-pointer rounded-lg border border-border/60 bg-card text-muted-foreground hover:bg-accent hover:text-foreground"
       onClick={(e) => setTheme(nextTheme, { x: e.clientX, y: e.clientY })}
       title={`Theme: ${label}`}
       aria-label={`Theme: ${label}. Click to switch.`}

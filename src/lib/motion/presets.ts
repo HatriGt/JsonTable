@@ -42,10 +42,29 @@ export const pageEnter: Variants = {
   exit: { opacity: 0 },
 };
 
+/** Route depth for directional enter/exit (landing = 0, workspace = 1). */
+export function routeDepth(pathname: string): number {
+  if (pathname === "/workspace") return 1;
+  return 0;
+}
+
+/** Opacity-only fallback when View Transitions API is unavailable. */
+export const pageFade: Variants = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit: { opacity: 0 },
+};
+
+export const pageTransition: Transition = {
+  duration: 0.2,
+  ease: EASE_OUT,
+};
+
 export const motionTransition = {
   fast: { duration: 0.12, ease: EASE_OUT },
   normal: { duration: 0.22, ease: EASE_OUT },
   slow: { duration: 0.36, ease: EASE_OUT },
+  page: pageTransition,
 } as const;
 
 export const viewportOnce = {

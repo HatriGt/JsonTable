@@ -18,6 +18,7 @@ import { motionTransition } from "@/lib/motion/presets";
 import {
   Code2,
   GitBranch,
+  GripVertical,
   PanelLeftClose,
   PanelLeftOpen,
   PanelRightOpen,
@@ -209,38 +210,29 @@ function LeftPaneResizeHandle({
   const label = `Collapse ${paneLabel} pane`;
 
   return (
-    <PanelResizeHandle
-      className={cn(
-        "group relative bg-transparent transition-[width,background-color] duration-[var(--motion-duration-fast)]",
-        "w-1 before:absolute before:inset-y-0 before:left-1/2 before:w-px before:-translate-x-1/2 before:bg-border",
-        "hover:bg-brand/10 hover:before:w-0.5 hover:before:bg-brand/60",
-        "data-[resize-handle-state=drag]:bg-brand/15 data-[resize-handle-state=drag]:before:w-0.5 data-[resize-handle-state=drag]:before:bg-brand",
-      )}
-    >
-      {!collapsed && (
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggle();
-          }}
-          onPointerDown={(e) => e.stopPropagation()}
-          onMouseDown={(e) => e.stopPropagation()}
-          title={label}
-          aria-label={label}
-          aria-expanded
-          className={cn(
-            "absolute left-1/2 top-1/2 z-20 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 cursor-pointer pointer-events-auto items-center justify-center rounded-full",
-            "border border-info/40 bg-[var(--pane-header)]/95 text-info shadow-md backdrop-blur-md",
-            "transition-[background-color,color,box-shadow,border-color,transform] duration-[var(--motion-duration-fast)]",
-            "hover:border-info/60 hover:bg-info/10 hover:text-info hover:shadow-lg",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-info/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-            "active:scale-95",
-          )}
-        >
-          <PanelLeftClose className="h-4 w-4" />
-        </button>
-      )}
+    <PanelResizeHandle className="pane-resize-handle">
+      <div className="pane-divider-control pointer-events-none">
+        {!collapsed && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggle();
+            }}
+            onPointerDown={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            title={label}
+            aria-label={label}
+            aria-expanded
+            className="pane-divider-control__collapse pointer-events-auto"
+          >
+            <PanelLeftClose className="h-3.5 w-3.5" />
+          </button>
+        )}
+        <span className="pane-divider-control__grip" aria-hidden="true">
+          <GripVertical className="h-3.5 w-3.5" />
+        </span>
+      </div>
     </PanelResizeHandle>
   );
 }
@@ -265,15 +257,19 @@ function CollapsedEdgeRail({
       title={`Show ${label.toLowerCase()} pane`}
       aria-label={`Show ${label.toLowerCase()} pane`}
       className={cn(
-        "z-30 flex h-full w-11 shrink-0 cursor-pointer flex-col items-center justify-center gap-2 border-border bg-[var(--pane-header)]/95 text-muted-foreground shadow-md backdrop-blur-md transition-[background-color,color] duration-[var(--motion-duration-fast)] hover:bg-accent hover:text-foreground",
+        "group/rail z-30 flex h-full w-10 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 border-border bg-[var(--pane-header)] text-muted-foreground transition-[background-color,color] duration-[var(--motion-duration-fast)] hover:bg-brand/10 hover:text-brand",
         side === "left" ? "border-r" : "border-l",
       )}
     >
-      <OpenIcon className="h-4 w-4 shrink-0 text-info" />
+      <span className="flex h-6 w-6 items-center justify-center rounded-md text-info transition-colors duration-[var(--motion-duration-fast)] group-hover/rail:bg-brand/15 group-hover/rail:text-brand">
+        <OpenIcon className="h-4 w-4 shrink-0" />
+      </span>
       <span className="text-[10px] font-semibold uppercase tracking-wider [writing-mode:vertical-rl] rotate-180">
         {label}
       </span>
-      <span className="text-info">{icon}</span>
+      <span className="text-info transition-colors duration-[var(--motion-duration-fast)] group-hover/rail:text-brand">
+        {icon}
+      </span>
     </button>
   );
 }

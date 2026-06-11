@@ -614,7 +614,7 @@ const ObjectArrayRow = memo(function ObjectArrayRow({
 function RowIndexCell({ path, index }: { path: string; index: number }) {
   const setSelection = useWorkspace((s) => s.setSelection);
   return (
-    <td className="grid-row-index grid-row-hover-indicator grid-body-cell grid-line-v w-11 px-2.5 py-2.5 text-right">
+    <td className="grid-row-index grid-row-index-cell grid-body-cell grid-line-v w-11 px-2.5 py-2.5 text-right">
       <button
         type="button"
         onClick={() => setSelection(slashPathToSegments(path), "grid")}

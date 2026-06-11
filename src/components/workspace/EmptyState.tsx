@@ -6,7 +6,6 @@ import {
   Braces,
   ClipboardPaste,
   FileJson,
-  LayoutGrid,
   Sparkles,
   Trash2,
   Upload,
@@ -87,25 +86,18 @@ export function EmptyState() {
     >
       <FadeIn className="empty-state-shell relative w-full">
         <div className="flex flex-col items-center text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-background/80 px-3.5 py-1.5 text-xs text-muted-foreground shadow-sm backdrop-blur-sm">
-            <LayoutGrid className="h-3.5 w-3.5 text-info" aria-hidden="true" />
-            Local-first · 10 MB ready · Zero uploads
-          </div>
-
-          <div className="empty-state-orb mt-8" aria-hidden="true">
-            <div className="empty-state-orb-icon">
-              <Braces className="h-7 w-7" />
-            </div>
+          <div className="empty-state-mark" aria-hidden="true">
+            <Braces className="h-6 w-6" />
           </div>
 
           <h2
             id="empty-state-heading"
-            className="mt-7 max-w-sm text-balance text-[1.75rem] font-semibold leading-tight tracking-tight text-foreground sm:text-3xl"
+            className="mt-6 max-w-sm text-balance text-[1.75rem] font-semibold leading-tight tracking-tight text-foreground sm:text-2xl"
           >
-            Open a <span className="text-gradient-spreadsheet">JSON</span> document
+            Open a <span className="font-mono font-medium text-brand">JSON</span> file
           </h2>
           <p className="mt-3 max-w-sm text-pretty text-[15px] leading-relaxed text-muted-foreground sm:text-base">
-            Drop a file, paste from clipboard, or explore with sample data.
+            Drop a file, paste from clipboard, or load sample data to start exploring.
           </p>
 
           <m.div

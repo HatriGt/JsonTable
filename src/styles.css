@@ -79,11 +79,12 @@
   --motion-duration-slow: 360ms;
   --motion-duration-slower: 500ms;
   --theme-transition-duration: 280ms;
+  --route-transition-duration: 240ms;
   --motion-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --motion-ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
   --motion-stagger-step: 60ms;
-  --background: oklch(0.995 0.002 250);
-  --foreground: oklch(0.16 0.02 260);
+  --background: oklch(0.988 0.004 258);
+  --foreground: oklch(0.17 0.02 258);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.18 0.02 260);
   --popover: oklch(1 0 0);
@@ -201,6 +202,82 @@
   }
 }
 
+/* Route changes — GPU-composited snapshots (smooth on heavy workspace DOM) */
+.route-page-shell {
+  view-transition-name: route-page;
+}
+
+html.route-transition-active::view-transition-old(route-page),
+html.route-transition-active::view-transition-new(route-page) {
+  animation-duration: var(--route-transition-duration);
+  animation-timing-function: var(--motion-ease-out);
+  mix-blend-mode: normal;
+}
+
+html.route-transition-active[data-route-dir="forward"]::view-transition-old(route-page) {
+  animation-name: route-exit-forward;
+}
+
+html.route-transition-active[data-route-dir="forward"]::view-transition-new(route-page) {
+  animation-name: route-enter-forward;
+}
+
+html.route-transition-active[data-route-dir="back"]::view-transition-old(route-page) {
+  animation-name: route-exit-back;
+}
+
+html.route-transition-active[data-route-dir="back"]::view-transition-new(route-page) {
+  animation-name: route-enter-back;
+}
+
+@keyframes route-enter-forward {
+  from {
+    opacity: 0;
+    transform: translate3d(14px, 0, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes route-exit-forward {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(-10px, 0, 0);
+  }
+}
+
+@keyframes route-enter-back {
+  from {
+    opacity: 0;
+    transform: translate3d(-14px, 0, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes route-exit-back {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(10px, 0, 0);
+  }
+}
+
 /* View Transitions API — circular reveal from theme toggle */
 html.theme-transition-active::view-transition-old(root),
 html.theme-transition-active::view-transition-new(root) {
@@ -230,7 +307,7 @@ html.theme-transition-active::view-transition-new(root) {
 .theme-fade-overlay {
   position: fixed;
   inset: 0;
-  z-index: 99999;
+  z-index: 60;
   pointer-events: none;
   opacity: 1;
   transition: opacity var(--theme-transition-duration) var(--motion-ease-out);
@@ -268,7 +345,7 @@ html.theme-transition-active::view-transition-new(root) {
 }
 
 .landing-page {
-  background-color: oklch(0.995 0.002 250);
+  background-color: oklch(0.988 0.004 258);
 }
 
 .dark .landing-page {
@@ -354,17 +431,13 @@ html.theme-transition-active::view-transition-new(root) {
 }
 
 @utility shadow-landing-demo {
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--border) 100%, transparent),
-    0 32px 80px -24px color-mix(in oklab, black 14%, transparent),
-    0 12px 32px -16px color-mix(in oklab, black 6%, transparent);
+  border: 1px solid color-mix(in oklab, var(--border) 100%, transparent);
+  box-shadow: 0 8px 24px -12px color-mix(in oklab, black 12%, transparent);
 }
 
 .dark .shadow-landing-demo {
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--border) 100%, transparent),
-    0 32px 80px -24px oklch(0 0 0 / 0.45),
-    0 12px 32px -16px oklch(0 0 0 / 0.25);
+  border: 1px solid color-mix(in oklab, var(--border) 100%, transparent);
+  box-shadow: 0 8px 24px -12px oklch(0 0 0 / 0.35);
 }
 
 @utility glow-brand {
@@ -466,25 +539,8 @@ html.theme-transition-active::view-transition-new(root) {
   font-variant-numeric: tabular-nums;
 }
 
-/* Row hover indicator — 2px brand accent on the leading edge */
-@utility grid-row-hover-indicator {
+@utility grid-row-index-cell {
   position: relative;
-}
-
-.grid-row-hover-indicator::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: var(--brand);
-  opacity: 0;
-  transition: opacity var(--motion-duration-fast);
-}
-
-tr:hover > .grid-row-hover-indicator::after {
-  opacity: 1;
 }
 
 @utility transition-pane {
@@ -534,6 +590,12 @@ tr:hover > .grid-row-hover-indicator::after {
     --motion-duration-slower: 0ms;
     --motion-stagger-step: 0ms;
     --theme-transition-duration: 0ms;
+    --route-transition-duration: 0ms;
+  }
+
+  html.route-transition-active::view-transition-old(route-page),
+  html.route-transition-active::view-transition-new(route-page) {
+    animation: none;
   }
 
   html.theme-transition-active::view-transition-new(root) {
@@ -570,7 +632,7 @@ tr:hover > .grid-row-hover-indicator::after {
 }
 
 .workspace-page {
-  background-color: oklch(0.995 0.002 250);
+  background-color: oklch(0.988 0.004 258);
 }
 
 .dark .workspace-page {
@@ -603,59 +665,22 @@ tr:hover > .grid-row-hover-indicator::after {
   }
 }
 
-.empty-state-orb {
-  position: relative;
+.empty-state-mark {
   display: flex;
+  height: 3rem;
+  width: 3rem;
   align-items: center;
   justify-content: center;
-  width: 5.5rem;
-  height: 5.5rem;
-}
-
-.empty-state-orb::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 50% 45%,
-    color-mix(in oklab, var(--brand) 22%, transparent) 0%,
-    color-mix(in oklab, var(--brand-2) 10%, transparent) 42%,
-    transparent 72%
-  );
-}
-
-.empty-state-orb-icon {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  height: 4rem;
-  width: 4rem;
-  align-items: center;
-  justify-content: center;
-  border-radius: calc(var(--radius) + 6px);
-  border: 1px solid color-mix(in oklab, var(--brand) 18%, transparent);
-  background: color-mix(in oklab, var(--background) 55%, var(--card) 45%);
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+  background: var(--card);
   color: var(--brand);
-  box-shadow:
-    0 1px 2px oklch(0.2 0.02 260 / 0.05),
-    0 8px 24px color-mix(in oklab, var(--brand) 10%, transparent);
-}
-
-.dark .empty-state-orb-icon {
-  background: color-mix(in oklab, var(--card) 70%, var(--background) 30%);
-  box-shadow:
-    0 1px 2px oklch(0 0 0 / 0.25),
-    0 8px 24px color-mix(in oklab, var(--brand) 14%, transparent);
 }
 
 .empty-state-drop-zone {
   border: 1.5px dashed color-mix(in oklab, var(--border) 75%, transparent);
-  border-radius: var(--radius-2xl);
-  background: color-mix(in oklab, var(--card) 50%, var(--background) 50%);
-  box-shadow:
-    0 1px 2px oklch(0.2 0.02 260 / 0.04),
-    0 4px 16px oklch(0.2 0.02 260 / 0.03);
+  border-radius: var(--radius-xl);
+  background: color-mix(in oklab, var(--card) 60%, var(--background) 40%);
   transition:
     border-color var(--motion-duration-normal) var(--motion-ease-out),
     background-color var(--motion-duration-normal) var(--motion-ease-out),
@@ -666,9 +691,7 @@ tr:hover > .grid-row-hover-indicator::after {
 .empty-state-drop-zone[data-active="true"] {
   border-color: color-mix(in oklab, var(--brand) 50%, transparent);
   background: color-mix(in oklab, var(--brand) 5%, var(--card) 95%);
-  box-shadow:
-    0 0 0 4px color-mix(in oklab, var(--brand) 10%, transparent),
-    0 4px 20px color-mix(in oklab, var(--brand) 12%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand) 10%, transparent);
 }
 
 .empty-state-drop-zone-error {
@@ -694,12 +717,9 @@ tr:hover > .grid-row-hover-indicator::after {
 
 .empty-state-recent-list {
   overflow: hidden;
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   border: 1px solid color-mix(in oklab, var(--border) 65%, transparent);
-  background: color-mix(in oklab, var(--card) 55%, transparent);
-  box-shadow:
-    0 1px 2px oklch(0.2 0.02 260 / 0.03),
-    0 4px 12px oklch(0.2 0.02 260 / 0.02);
+  background: var(--card);
 }
 
 .empty-state-recent-row {
@@ -737,22 +757,8 @@ tr:hover > .grid-row-hover-indicator::after {
   color: var(--brand);
 }
 
-.dark .empty-state-drop-zone {
-  box-shadow:
-    0 1px 2px oklch(0 0 0 / 0.2),
-    0 4px 16px oklch(0 0 0 / 0.12);
-}
-
 .dark .empty-state-drop-zone[data-active="true"] {
-  box-shadow:
-    0 0 0 4px color-mix(in oklab, var(--brand) 14%, transparent),
-    0 4px 20px color-mix(in oklab, var(--brand) 16%, transparent);
-}
-
-.dark .empty-state-recent-list {
-  box-shadow:
-    0 1px 2px oklch(0 0 0 / 0.15),
-    0 4px 12px oklch(0 0 0 / 0.1);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand) 14%, transparent);
 }
 
 /* Editable JSON source — highlight layer + transparent textarea stack */

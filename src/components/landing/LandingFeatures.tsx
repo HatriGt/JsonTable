@@ -1,48 +1,58 @@
-import { ClipboardPaste, Filter, Search, Table2 } from "lucide-react";
 import { FadeIn } from "@/components/motion/FadeIn";
-import { Stagger, StaggerItem } from "@/components/motion/Stagger";
 
-const FEATURES = [
+const CAPABILITIES = [
   {
-    icon: Table2,
-    title: "Navigable tree",
-    body: "Browse nested keys and values with search — jump to any node instantly.",
+    label: "tree",
+    title: "Navigate nested keys",
+    body: "Search the document tree and jump to any node without losing context.",
   },
   {
-    icon: Filter,
-    title: "Filterable grid",
-    body: "Per-column filters, sort, and inline edit on nested spreadsheet tables.",
+    label: "grid",
+    title: "Filter like a spreadsheet",
+    body: "Per-column filters, sort, and inline edit on tabular views of arrays and objects.",
   },
   {
-    icon: Search,
-    title: "Global search",
-    body: "Find any key or value across the document with ⌘F.",
+    label: "search",
+    title: "Find anything fast",
+    body: "Global search across keys and values with keyboard shortcuts built for flow.",
   },
   {
-    icon: ClipboardPaste,
-    title: "Local-first",
-    body: "Paste, drop, or open files — your data never leaves the browser.",
+    label: "local",
+    title: "Stays on your machine",
+    body: "Paste, drop, or open files up to 10 MB. No uploads, no accounts.",
   },
 ] as const;
 
 export function LandingFeatures() {
   return (
-    <section id="features" className="mx-auto max-w-5xl px-4 py-16 sm:px-6">
-      <Stagger className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {FEATURES.map((f) => (
-          <StaggerItem key={f.title}>
-            <FadeIn inView>
-              <div className="h-full rounded-xl border border-border/80 bg-card/40 p-5 transition-[border-color,box-shadow] duration-[var(--motion-duration-normal)] hover:border-brand/25 hover:shadow-md">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand/10 text-brand">
-                  <f.icon className="h-4 w-4" />
-                </div>
-                <h3 className="mt-3 text-sm font-semibold">{f.title}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
+    <section id="features" className="border-t border-border/60 bg-card/30">
+      <div className="mx-auto max-w-3xl px-5 py-14 sm:px-6 sm:py-16">
+        <FadeIn inView>
+          <h2 className="text-balance text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+            Built for inspection, not pretty-printing
+          </h2>
+          <p className="mt-2 max-w-xl text-pretty text-sm leading-relaxed text-muted-foreground">
+            The same workspace you see in the demo — tree on the left, grid on the right, shortcuts
+            everywhere.
+          </p>
+        </FadeIn>
+
+        <dl className="mt-10 divide-y divide-border/70">
+          {CAPABILITIES.map((item, index) => (
+            <FadeIn key={item.label} inView delay={index * 0.04}>
+              <div className="grid gap-2 py-5 sm:grid-cols-[7rem_1fr] sm:gap-6 sm:py-6">
+                <dt className="font-mono text-xs font-medium uppercase tracking-[0.12em] text-brand">
+                  {item.label}
+                </dt>
+                <dd>
+                  <p className="text-sm font-medium text-foreground">{item.title}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
+                </dd>
               </div>
             </FadeIn>
-          </StaggerItem>
-        ))}
-      </Stagger>
+          ))}
+        </dl>
+      </div>
     </section>
   );
 }

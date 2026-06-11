@@ -80,25 +80,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "JSON > Table" },
+      { title: "JSON\u2011Table" },
       {
         name: "description",
         content:
-          "Explore, edit, and understand JSON visually. The easiest way to view JSON as a table.",
+          "Turn any JSON into a navigable tree and a sortable, filterable spreadsheet. Local\u2011first, fast, free.",
       },
-      { property: "og:title", content: "JSON > Table" },
+      { property: "og:title", content: "JSON\u2011Table" },
       {
         property: "og:description",
         content:
-          "Explore, edit, and understand JSON visually. The easiest way to view JSON as a table.",
+          "Turn any JSON into a navigable tree and a sortable, filterable spreadsheet.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "JSON > Table" },
+      { name: "twitter:title", content: "JSON\u2011Table" },
       {
         name: "twitter:description",
         content:
-          "Explore, edit, and understand JSON visually. The easiest way to view JSON as a table.",
+          "Turn any JSON into a navigable tree and a sortable, filterable spreadsheet.",
       },
     ],
     links: [

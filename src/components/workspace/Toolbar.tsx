@@ -33,7 +33,7 @@ export function Toolbar() {
   const ThemeIcon = theme === "dark" ? Moon : Sun;
 
   return (
-    <div className="relative z-10 flex h-12 shrink-0 items-center justify-between gap-2 border-b border-border/80 bg-[var(--pane-header)]/90 px-3 shadow-[inset_0_1px_0_color-mix(in_oklab,var(--foreground)_4%,transparent)] backdrop-blur-md">
+    <div className="relative z-10 flex h-12 shrink-0 items-center justify-between gap-2 border-b border-border/80 bg-[var(--pane-header)] px-3">
       <div className="flex min-w-0 items-center gap-2">
         <Link
           to="/"

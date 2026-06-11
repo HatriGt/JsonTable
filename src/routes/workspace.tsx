@@ -1,5 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { Workspace } from "@/components/workspace/Workspace";
+import { SAMPLE_JSON } from "@/lib/json/sample";
+import { useWorkspace } from "@/store/workspace";
+
+const PENDING_SAMPLE_KEY = "json-table:pending-sample";
 
 export const Route = createFileRoute("/workspace")({
   head: () => ({
@@ -23,5 +28,14 @@ export const Route = createFileRoute("/workspace")({
 });
 
 function WorkspacePage() {
+  const doc = useWorkspace((s) => s.doc);
+  const loadJson = useWorkspace((s) => s.loadJson);
+
+  useEffect(() => {
+    if (doc || sessionStorage.getItem(PENDING_SAMPLE_KEY) !== "1") return;
+    sessionStorage.removeItem(PENDING_SAMPLE_KEY);
+    void loadJson("sample.json", SAMPLE_JSON);
+  }, [doc, loadJson]);
+
   return <Workspace />;
 }
