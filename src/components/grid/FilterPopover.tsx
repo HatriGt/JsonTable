@@ -40,7 +40,8 @@ import { cn } from "@/lib/utils";
 type Props = {
   arrayPath: string;
   column: string;
-  values: unknown[];
+  /** Lazy provider of column values — only invoked while the popover is open. */
+  getValues: () => unknown[];
 };
 
 const OPERATORS: { value: ConditionOp; label: string }[] = [
@@ -55,7 +56,7 @@ const OPERATORS: { value: ConditionOp; label: string }[] = [
   { value: "between", label: "Between" },
 ];
 
-export function FilterPopover({ arrayPath, column, values }: Props) {
+export function FilterPopover({ arrayPath, column, getValues }: Props) {
   const getFilter = useFilters((s) => s.get);
   const setFilter = useFilters((s) => s.set);
   const clearFilter = useFilters((s) => s.clear);
@@ -76,16 +77,23 @@ export function FilterPopover({ arrayPath, column, values }: Props) {
     setOpen(v);
   }
 
-  const distinct = useMemo(() => {
+  // Only materialize distinct values while the popover is open.
+  const { distinct, totalCount } = useMemo(() => {
+    if (!open) return { distinct: [] as { value: string; count: number }[], totalCount: 0 };
+    const raw = getValues();
+    const vals = Array.isArray(raw) ? raw : [];
     const counts = new Map<string, number>();
-    for (const v of values) {
+    let total = 0;
+    for (const v of vals) {
+      total++;
       const t = valueToText(v);
       counts.set(t, (counts.get(t) ?? 0) + 1);
     }
-    return Array.from(counts.entries())
+    const list = Array.from(counts.entries())
       .sort((a, b) => a[0].localeCompare(b[0]))
       .map(([value, count]) => ({ value, count }));
-  }, [values]);
+    return { distinct: list, totalCount: total };
+  }, [open, getValues]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -170,7 +178,7 @@ export function FilterPopover({ arrayPath, column, values }: Props) {
             <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
               <span className="inline-flex items-center gap-1">
                 <Hash className="h-3 w-3" />
-                {values.length.toLocaleString()} rows
+                {totalCount.toLocaleString()} rows
               </span>
               <span>·</span>
               <span>{distinct.length.toLocaleString()} unique</span>
