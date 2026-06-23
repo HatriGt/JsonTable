@@ -10,6 +10,7 @@ import { formatBytes } from "@/lib/format";
 import { motionTransition } from "@/lib/motion/presets";
 import { ClipboardPaste, Upload, Sun, Moon, Trash2, Braces } from "lucide-react";
 import { PasteDialog } from "@/components/input/PasteDialog";
+import { ShareButton } from "./ShareButton";
 import { pasteFromClipboard } from "@/lib/json/pasteFromClipboard";
 
 export function Toolbar() {
@@ -93,6 +94,7 @@ export function Toolbar() {
           <Upload className="h-3.5 w-3.5" />
           <span className="hidden sm:inline">Open</span>
         </Button>
+        <ShareButton />
         {doc && (
           <Button
             size="sm"
