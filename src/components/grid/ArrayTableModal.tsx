@@ -1,4 +1,4 @@
-import { NestedGrid } from "@/components/grid/NestedGrid";
+import type { ReactNode } from "react";
 import {
   Dialog,
   DialogContent,
@@ -22,19 +22,19 @@ type Props = {
   label: string;
   path: string;
   value: unknown[];
+  /** The grid body to render inside the modal (passed in to avoid a NestedGrid import cycle). */
+  children: ReactNode;
 };
 
-function ModalGridBody({ value, path }: { value: unknown[]; path: string }) {
+function ModalGridBody({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-0 flex-1 overflow-auto bg-card p-3 sm:p-4">
-      <div className="inline-block min-w-full align-top">
-        <NestedGrid value={value} path={path} />
-      </div>
+      <div className="inline-block min-w-full align-top">{children}</div>
     </div>
   );
 }
 
-export function ArrayTableModal({ open, onOpenChange, label, path, value }: Props) {
+export function ArrayTableModal({ open, onOpenChange, label, path, value, children }: Props) {
   const isMobile = useIsMobile();
   const pathLabel = path ? formatPath(slashPathToSegments(path)) : "root";
   const rowCount = value.length;
@@ -52,7 +52,7 @@ export function ArrayTableModal({ open, onOpenChange, label, path, value }: Prop
               {rowCount} rows · {pathLabel}
             </SheetDescription>
           </SheetHeader>
-          <ModalGridBody value={value} path={path} />
+          <ModalGridBody>{children}</ModalGridBody>
         </SheetContent>
       </Sheet>
     );
@@ -67,7 +67,7 @@ export function ArrayTableModal({ open, onOpenChange, label, path, value }: Prop
             {rowCount} rows · {pathLabel}
           </DialogDescription>
         </DialogHeader>
-        <ModalGridBody value={value} path={path} />
+        <ModalGridBody>{children}</ModalGridBody>
       </DialogContent>
     </Dialog>
   );

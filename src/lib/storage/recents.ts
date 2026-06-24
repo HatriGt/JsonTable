@@ -68,7 +68,3 @@ export async function deleteRecent(id: string): Promise<void> {
     idx.filter((r) => r.id !== id),
   );
 }
-
-export async function _clearAll() {
-  for (const k of await keys()) await del(k);
-}

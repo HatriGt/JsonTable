@@ -3,7 +3,7 @@
 // payload is deflate-compressed (when the browser supports CompressionStream)
 // and base64url-encoded so it survives copy/paste and address bars.
 
-export const SHARE_HASH_KEY = "share";
+const SHARE_HASH_KEY = "share";
 
 // Links much larger than this are unwieldy and may be truncated by some
 // clients (chat apps, email). We still generate them, but warn the caller.
@@ -12,7 +12,7 @@ export const SHARE_URL_WARN_BYTES = 16_000;
 // At/above this raw size we stop encoding the document into the URL and switch
 // to a server-backed short link (/workspace/link/{id}). Below it, the inline
 // path is used and the data never leaves the browser.
-export const SHARE_INLINE_MAX_BYTES = 32 * 1024;
+const SHARE_INLINE_MAX_BYTES = 32 * 1024;
 
 // Hard cap on what we'll accept into the server store, to protect the free
 // storage tier. Above this we offer Download only.
@@ -22,7 +22,7 @@ export const SHARE_SERVER_MAX_BYTES = 5 * 1024 * 1024;
 export const SHARE_TTL_SECONDS = 30 * 24 * 60 * 60;
 
 /** UTF-8 byte length of a string. */
-export function byteLength(value: string): number {
+function byteLength(value: string): number {
   return new TextEncoder().encode(value).length;
 }
 
@@ -104,7 +104,7 @@ async function inflate(bytes: Uint8Array): Promise<Uint8Array> {
  * Encode a document into a share token. The first character flags the encoding:
  * "c" = compressed, "u" = uncompressed (fallback).
  */
-export async function encodeShare(name: string, raw: string): Promise<string> {
+async function encodeShare(name: string, raw: string): Promise<string> {
   const payload: SharePayload = { n: name, r: raw };
   const bytes = new TextEncoder().encode(JSON.stringify(payload));
   if (hasCompressionStream()) {

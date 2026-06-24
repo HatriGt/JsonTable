@@ -497,7 +497,9 @@ function ArrayTable({
           label={label}
           path={path}
           value={value}
-        />
+        >
+          <NestedGrid value={value} path={path} />
+        </ArrayTableModal>
       )}
     </NestedShell>
   );
@@ -578,7 +580,10 @@ const ObjectArrayRow = memo(function ObjectArrayRow({
   const row = value[rowIndex] as Record<string, unknown>;
   return (
     <tr
-      className={cn("group align-top transition-colors duration-[var(--motion-duration-fast)]", rowIndex % 2 === 1 && "bg-[var(--grid-row-alt)]")}
+      className={cn(
+        "group align-top transition-colors duration-[var(--motion-duration-fast)]",
+        rowIndex % 2 === 1 && "bg-[var(--grid-row-alt)]",
+      )}
       style={rowStyle}
     >
       <RowIndexCell path={joinPath(path, String(rowIndex))} index={rowIndex + 1} />
@@ -688,7 +693,8 @@ function PrimitiveCell({ value, path }: { value: unknown; path?: string }) {
       title={path ? "Click to inspect · double-click to edit" : undefined}
       className={cn(
         "group/cell flex w-full items-center gap-1 px-2.5 py-1.5 text-left break-words",
-        path && "cursor-pointer hover:bg-brand/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand/50",
+        path &&
+          "cursor-pointer hover:bg-brand/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand/50",
       )}
     >
       <span className={cn("flex-1 break-words", tokenClass(kind))}>{text}</span>

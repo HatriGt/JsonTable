@@ -1,16 +1,5 @@
 export type PathSegment = string | number;
 
-export function getAtPath(root: unknown, path: PathSegment[]): unknown {
-  let cur: unknown = root;
-  for (const seg of path) {
-    if (cur == null) return undefined;
-    if (Array.isArray(cur) && typeof seg === "number") cur = cur[seg];
-    else if (typeof cur === "object") cur = (cur as Record<string, unknown>)[String(seg)];
-    else return undefined;
-  }
-  return cur;
-}
-
 export function formatPath(path: PathSegment[]): string {
   if (path.length === 0) return "root";
   let out = "root";
@@ -20,11 +9,6 @@ export function formatPath(path: PathSegment[]): string {
     else out += `[${JSON.stringify(seg)}]`;
   }
   return out;
-}
-
-export function toJsonPointer(path: PathSegment[]): string {
-  if (path.length === 0) return "";
-  return "/" + path.map((s) => String(s).replace(/~/g, "~0").replace(/\//g, "~1")).join("/");
 }
 
 export function valueType(v: unknown): string {
