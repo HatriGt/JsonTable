@@ -1,6 +1,13 @@
 {
   "$schema": "https://react.doctor/schema/config.json",
   "ignore": {
-    "files": ["**/.output/**", "**/dist/**", "**/node_modules/**"]
+    "files": [
+      "**/.output/**",
+      "**/dist/**",
+      "**/node_modules/**"
+    ]
+  },
+  "rules": {
+    "react-doctor/forward-ref-uses-ref": "off"
   }
 }
