@@ -13,6 +13,8 @@ export type Prefs = {
   panels: [number, number];
   leftPaneTab: LeftPaneTab;
   gridZoom: number;
+  /** One-time consent to upload large JSON for server-backed short links. */
+  shareUploadConsent: boolean;
 };
 
 const DEFAULTS: Prefs = {
@@ -20,6 +22,7 @@ const DEFAULTS: Prefs = {
   panels: [30, 70],
   leftPaneTab: "tree",
   gridZoom: GRID_ZOOM_DEFAULT,
+  shareUploadConsent: false,
 };
 
 function migrateGridZoom(value: unknown): number {
@@ -60,6 +63,7 @@ export function loadPrefs(): Prefs {
       leftPaneTab: parsed.leftPaneTab ?? DEFAULTS.leftPaneTab,
       panels: migratePanels(parsed.panels),
       gridZoom: migrateGridZoom(parsed.gridZoom),
+      shareUploadConsent: parsed.shareUploadConsent ?? DEFAULTS.shareUploadConsent,
     };
   } catch {
     return DEFAULTS;
