@@ -26,13 +26,9 @@ export function PreviewMock() {
           <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
         </div>
         <div className="mx-auto flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1 font-mono text-[11px] text-muted-foreground">
-          <span className="text-info">●</span>
-          users.json · 4.2 KB
+          users.json
         </div>
-        <div className="flex items-center gap-1 rounded-md border border-border bg-card px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
-          <kbd className="rounded bg-muted px-1">⌘</kbd>
-          <kbd className="rounded bg-muted px-1">P</kbd>
-        </div>
+        <div className="w-12" aria-hidden="true" />
       </div>
 
       <div className="grid min-h-0 flex-1 grid-cols-[220px_1fr]">
