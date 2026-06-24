@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { Workspace } from "@/components/workspace/Workspace";
@@ -61,5 +61,12 @@ function WorkspacePage() {
     void loadJson("sample.json", SAMPLE_JSON);
   }, [doc, loadJson]);
 
-  return <Workspace />;
+  return (
+    <>
+      <Workspace />
+      {/* Child route /workspace/link/$id renders a loading overlay here while
+          it resolves a shared short link into the workspace. */}
+      <Outlet />
+    </>
+  );
 }

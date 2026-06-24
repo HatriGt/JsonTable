@@ -102,6 +102,9 @@ export const useWorkspace = create<State>((set, get) => ({
     }
     const value = result.value;
     const sizeBytes = new Blob([raw]).size;
+    // The worker computes stats off the main thread for large docs; reuse them
+    // and only fall back to the main-thread walk for the small sync path.
+    const workerStats = result.stats;
     const applyDoc = () => {
       set({
         error: null,
@@ -111,17 +114,19 @@ export const useWorkspace = create<State>((set, get) => ({
           raw,
           value,
           sizeBytes,
-          stats: EMPTY_STATS,
+          stats: workerStats ?? EMPTY_STATS,
           loadedAt: Date.now(),
         },
         selection: [],
         source: "tree",
       });
-      scheduleStats(value, (stats) => {
-        set((s) => (s.doc && s.doc.value === value ? { doc: { ...s.doc, stats } } : s));
-      });
+      if (!workerStats) {
+        scheduleStats(value, (stats) => {
+          set((s) => (s.doc && s.doc.value === value ? { doc: { ...s.doc, stats } } : s));
+        });
+      }
     };
-    if (sizeBytes >= HUGE_JSON_BYTES) {
+    if (sizeBytes >= LARGE_JSON_BYTES) {
       startTransition(applyDoc);
     } else {
       applyDoc();

@@ -12,7 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkspaceRouteImport } from './routes/workspace'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SIdRouteImport } from './routes/s/$id'
+import { Route as WorkspaceLinkIdRouteImport } from './routes/workspace.link.$id'
 
 const WorkspaceRoute = WorkspaceRouteImport.update({
   id: '/workspace',
@@ -29,44 +29,43 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SIdRoute = SIdRouteImport.update({
-  id: '/s/$id',
-  path: '/s/$id',
-  getParentRoute: () => rootRouteImport,
+const WorkspaceLinkIdRoute = WorkspaceLinkIdRouteImport.update({
+  id: '/link/$id',
+  path: '/link/$id',
+  getParentRoute: () => WorkspaceRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/workspace': typeof WorkspaceRoute
-  '/s/$id': typeof SIdRoute
+  '/workspace': typeof WorkspaceRouteWithChildren
+  '/workspace/link/$id': typeof WorkspaceLinkIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/workspace': typeof WorkspaceRoute
-  '/s/$id': typeof SIdRoute
+  '/workspace': typeof WorkspaceRouteWithChildren
+  '/workspace/link/$id': typeof WorkspaceLinkIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/workspace': typeof WorkspaceRoute
-  '/s/$id': typeof SIdRoute
+  '/workspace': typeof WorkspaceRouteWithChildren
+  '/workspace/link/$id': typeof WorkspaceLinkIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/sitemap.xml' | '/workspace' | '/s/$id'
+  fullPaths: '/' | '/sitemap.xml' | '/workspace' | '/workspace/link/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sitemap.xml' | '/workspace' | '/s/$id'
-  id: '__root__' | '/' | '/sitemap.xml' | '/workspace' | '/s/$id'
+  to: '/' | '/sitemap.xml' | '/workspace' | '/workspace/link/$id'
+  id: '__root__' | '/' | '/sitemap.xml' | '/workspace' | '/workspace/link/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  WorkspaceRoute: typeof WorkspaceRoute
-  SIdRoute: typeof SIdRoute
+  WorkspaceRoute: typeof WorkspaceRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -92,21 +91,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/s/$id': {
-      id: '/s/$id'
-      path: '/s/$id'
-      fullPath: '/s/$id'
-      preLoaderRoute: typeof SIdRouteImport
-      parentRoute: typeof rootRouteImport
+    '/workspace/link/$id': {
+      id: '/workspace/link/$id'
+      path: '/link/$id'
+      fullPath: '/workspace/link/$id'
+      preLoaderRoute: typeof WorkspaceLinkIdRouteImport
+      parentRoute: typeof WorkspaceRoute
     }
   }
 }
 
+interface WorkspaceRouteChildren {
+  WorkspaceLinkIdRoute: typeof WorkspaceLinkIdRoute
+}
+
+const WorkspaceRouteChildren: WorkspaceRouteChildren = {
+  WorkspaceLinkIdRoute: WorkspaceLinkIdRoute,
+}
+
+const WorkspaceRouteWithChildren = WorkspaceRoute._addFileChildren(
+  WorkspaceRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  WorkspaceRoute: WorkspaceRoute,
-  SIdRoute: SIdRoute,
+  WorkspaceRoute: WorkspaceRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
