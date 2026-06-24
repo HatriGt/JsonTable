@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useWorkspace } from "@/store/workspace";
 import { searchJson, type SearchMatch } from "@/lib/json/search";
 import { formatPath } from "@/lib/json/path";
@@ -22,9 +22,10 @@ export function GridSearch({ open, onOpenChange }: Props) {
   const setSelection = useWorkspace((s) => s.setSelection);
   const [query, setQuery] = useState("");
 
-  useEffect(() => {
-    if (!open) setQuery("");
-  }, [open]);
+  function handleOpenChange(next: boolean) {
+    if (!next) setQuery(""); // clear the search when the dialog closes
+    onOpenChange(next);
+  }
 
   const results = useMemo(() => {
     if (!doc || !query.trim()) return [] as SearchMatch[];
@@ -33,11 +34,11 @@ export function GridSearch({ open, onOpenChange }: Props) {
 
   function selectMatch(match: SearchMatch) {
     setSelection(match.path, "grid");
-    onOpenChange(false);
+    handleOpenChange(false);
   }
 
   return (
-    <CommandDialog open={open} onOpenChange={onOpenChange}>
+    <CommandDialog open={open} onOpenChange={handleOpenChange}>
       <CommandInput placeholder="Search keys and values…" value={query} onValueChange={setQuery} />
       <CommandList>
         <CommandEmpty>

@@ -8,7 +8,7 @@ type State = {
   reset: (arrayPath: string) => void;
 };
 
-export const useColumnOrder = create<State>((set, get) => ({
+const useColumnOrder = create<State>((set, get) => ({
   orders: {},
   get: (arrayPath, defaultCols) => {
     const saved = get().orders[arrayPath];

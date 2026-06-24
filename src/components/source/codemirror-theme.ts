@@ -23,6 +23,7 @@ export const appEditorTheme = EditorView.theme({
   ".cm-content": {
     caretColor: "var(--foreground)",
     paddingBlock: "0.5rem",
+    paddingLeft: "0.75rem",
   },
   ".cm-cursor, .cm-dropCursor": {
     borderLeftColor: "var(--foreground)",
@@ -38,18 +39,25 @@ export const appEditorTheme = EditorView.theme({
     backgroundColor: "var(--source-bg)",
     color: "color-mix(in oklab, var(--muted-foreground) 60%, transparent)",
     borderRight: "1px solid var(--gutter-border)",
+    paddingRight: "0.25rem",
   },
   ".cm-activeLineGutter": {
     backgroundColor: "color-mix(in oklab, var(--brand) 6%, transparent)",
     color: "var(--foreground)",
   },
   ".cm-lineNumbers .cm-gutterElement": {
-    padding: "0 0.5rem 0 0.75rem",
-    minWidth: "2rem",
+    padding: "0 0.5rem 0 0.875rem",
+    minWidth: "2.25rem",
+    textAlign: "right",
   },
   ".cm-foldGutter .cm-gutterElement": {
     color: "color-mix(in oklab, var(--muted-foreground) 70%, transparent)",
     cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "1.1rem",
+    padding: "0",
   },
   ".cm-foldPlaceholder": {
     backgroundColor: "color-mix(in oklab, var(--muted-foreground) 18%, transparent)",
@@ -75,6 +83,54 @@ export const appEditorTheme = EditorView.theme({
   ".cm-panels": {
     backgroundColor: "var(--popover)",
     color: "var(--popover-foreground)",
+  },
+  ".cm-panels.cm-panels-bottom": {
+    borderTop: "1px solid var(--border)",
+  },
+  ".cm-panels.cm-panels-top": {
+    borderBottom: "1px solid var(--border)",
+  },
+  ".cm-panel.cm-search": {
+    padding: "6px 8px",
+    fontFamily: "var(--font-mono)",
+    fontSize: "12px",
+  },
+  ".cm-panel.cm-search input, .cm-panel.cm-search button, .cm-panel.cm-search label": {
+    fontSize: "12px",
+  },
+  ".cm-panel.cm-search input[type=text]": {
+    backgroundColor: "var(--background)",
+    color: "var(--foreground)",
+    border: "1px solid var(--input)",
+    borderRadius: "6px",
+    padding: "3px 6px",
+    outline: "none",
+  },
+  ".cm-panel.cm-search input[type=text]:focus": {
+    borderColor: "var(--ring)",
+  },
+  ".cm-panel.cm-search button": {
+    backgroundColor: "var(--secondary)",
+    color: "var(--secondary-foreground)",
+    border: "1px solid var(--border)",
+    borderRadius: "6px",
+    padding: "3px 8px",
+    cursor: "pointer",
+    backgroundImage: "none",
+  },
+  ".cm-panel.cm-search button:hover": {
+    backgroundColor: "var(--accent)",
+    color: "var(--accent-foreground)",
+  },
+  ".cm-panel.cm-search .cm-button:active": {
+    backgroundImage: "none",
+  },
+  ".cm-panel.cm-search label": {
+    color: "var(--muted-foreground)",
+  },
+  ".cm-panel button[name=close]": {
+    color: "var(--muted-foreground)",
+    cursor: "pointer",
   },
   ".cm-tooltip": {
     backgroundColor: "var(--popover)",

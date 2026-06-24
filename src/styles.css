@@ -79,7 +79,7 @@
   --motion-duration-slow: 360ms;
   --motion-duration-slower: 500ms;
   --theme-transition-duration: 280ms;
-  --route-transition-duration: 240ms;
+  --route-transition-duration: 300ms;
   --motion-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --motion-ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
   --motion-stagger-step: 60ms;
@@ -233,7 +233,7 @@ html.route-transition-active[data-route-dir="back"]::view-transition-new(route-p
 @keyframes route-enter-forward {
   from {
     opacity: 0;
-    transform: translate3d(14px, 0, 0);
+    transform: translate3d(24px, 0, 0);
   }
 
   to {
@@ -250,14 +250,14 @@ html.route-transition-active[data-route-dir="back"]::view-transition-new(route-p
 
   to {
     opacity: 0;
-    transform: translate3d(-10px, 0, 0);
+    transform: translate3d(-16px, 0, 0);
   }
 }
 
 @keyframes route-enter-back {
   from {
     opacity: 0;
-    transform: translate3d(-14px, 0, 0);
+    transform: translate3d(-24px, 0, 0);
   }
 
   to {
@@ -274,7 +274,7 @@ html.route-transition-active[data-route-dir="back"]::view-transition-new(route-p
 
   to {
     opacity: 0;
-    transform: translate3d(10px, 0, 0);
+    transform: translate3d(16px, 0, 0);
   }
 }
 
@@ -463,7 +463,31 @@ html.theme-transition-active::view-transition-new(root) {
 
 @utility shell-pane {
   background: var(--card);
-  box-shadow: 0 0 0 1px color-mix(in oklab, var(--border) 85%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--border) 90%, transparent),
+    0 10px 30px -24px color-mix(in oklab, black 55%, transparent);
+}
+
+@utility brand-mark {
+  background-image: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+  color: white;
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, white 30%, transparent),
+    0 2px 10px -3px color-mix(in oklab, var(--brand) 55%, transparent);
+}
+
+@utility chrome-elevation {
+  box-shadow:
+    0 1px 0 0 color-mix(in oklab, var(--border) 70%, transparent),
+    0 8px 18px -16px color-mix(in oklab, black 65%, transparent);
+}
+
+@utility workspace-top-glow {
+  background-image: radial-gradient(
+    ellipse 70% 55% at 50% -25%,
+    color-mix(in oklab, var(--brand) 9%, transparent),
+    transparent 60%
+  );
 }
 
 @utility shadow-premium {

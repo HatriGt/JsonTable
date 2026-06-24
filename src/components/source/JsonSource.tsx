@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { AlignLeft, Code2, Copy, Minimize2 } from "lucide-react";
+import { AlignLeft, Code2, Copy, Minimize2, Search } from "lucide-react";
 import { PaneHeader } from "@/components/layout/PaneHeader";
 import { IconButton } from "@/components/ui/icon-button";
 import { useWorkspace } from "@/store/workspace";
@@ -19,6 +19,9 @@ export function JsonSource({
 
   const actions = (
     <>
+      <IconButton title="Search (⌘F)" onClick={() => editorRef.current?.openSearch()}>
+        <Search className="h-3.5 w-3.5" />
+      </IconButton>
       <IconButton title="Minify" onClick={() => editorRef.current?.minify()}>
         <Minimize2 className="h-3.5 w-3.5" />
       </IconButton>

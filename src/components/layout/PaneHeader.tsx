@@ -34,14 +34,14 @@ export function PaneHeader({
     >
       <div className="flex min-w-0 items-center gap-2.5">
         {icon && (
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-brand/15 bg-brand/5 text-brand">
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center text-brand">
             {icon}
           </span>
         )}
-        <div className="min-w-0">
+        <div className="min-w-0 leading-tight">
           <span className="text-[13px] font-semibold tracking-tight text-foreground">{title}</span>
           {meta && (
-            <span className="mt-0.5 hidden truncate text-[11px] text-muted-foreground sm:block">
+            <span className="mt-0.5 hidden truncate text-[10.5px] text-muted-foreground/80 sm:block">
               {meta}
             </span>
           )}

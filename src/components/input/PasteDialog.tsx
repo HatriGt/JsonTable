@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -30,14 +30,14 @@ export function PasteDialog({
   const clearError = useWorkspace((s) => s.clearError);
   const error = useWorkspace((s) => s.error);
 
-  useEffect(() => {
-    if (open) {
-      clearError();
-    } else {
+  function handleOpenChange(next: boolean) {
+    if (!next) {
+      // reset the dialog when it closes
       setText("");
       setLoading(false);
     }
-  }, [open, clearError]);
+    onOpenChange(next);
+  }
 
   async function handleLoad() {
     onBeforeLoad?.();
@@ -53,7 +53,7 @@ export function PasteDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-2xl gap-0 overflow-hidden p-0">
         <DialogHeader className="border-b border-border px-6 py-4">
           <DialogTitle>Paste JSON</DialogTitle>
@@ -85,7 +85,7 @@ export function PasteDialog({
           <Button
             variant="ghost"
             className="cursor-pointer"
-            onClick={() => onOpenChange(false)}
+            onClick={() => handleOpenChange(false)}
             disabled={loading}
           >
             Cancel

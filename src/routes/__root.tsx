@@ -55,6 +55,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-2">
           <button
+            type="button"
             onClick={() => {
               router.invalidate();
               reset();
@@ -89,16 +90,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "JSON\u2011Table" },
       {
         property: "og:description",
-        content:
-          "Turn any JSON into a navigable tree and a sortable, filterable spreadsheet.",
+        content: "Turn any JSON into a navigable tree and a sortable, filterable spreadsheet.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "JSON\u2011Table" },
       {
         name: "twitter:description",
-        content:
-          "Turn any JSON into a navigable tree and a sortable, filterable spreadsheet.",
+        content: "Turn any JSON into a navigable tree and a sortable, filterable spreadsheet.",
       },
     ],
     links: [

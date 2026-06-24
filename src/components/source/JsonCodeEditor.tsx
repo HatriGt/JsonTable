@@ -4,6 +4,7 @@ import { EditorView } from "@codemirror/view";
 import { basicSetup } from "codemirror";
 import { json, jsonParseLinter } from "@codemirror/lang-json";
 import { linter } from "@codemirror/lint";
+import { openSearchPanel } from "@codemirror/search";
 import { toast } from "sonner";
 import { appEditorTheme, appHighlighting } from "./codemirror-theme";
 import { useWorkspace } from "@/store/workspace";
@@ -26,6 +27,8 @@ export type JsonCodeEditorHandle = {
   minify: () => boolean;
   /** Copy the current document text to the clipboard. */
   copy: () => void;
+  /** Open CodeMirror's find/replace panel and focus the editor. */
+  openSearch: () => void;
 };
 
 export const JsonCodeEditor = forwardRef<JsonCodeEditorHandle, { className?: string }>(
@@ -167,6 +170,12 @@ export const JsonCodeEditor = forwardRef<JsonCodeEditorHandle, { className?: str
         if (!view) return;
         void navigator.clipboard.writeText(view.state.doc.toString());
         toast.success("Copied to clipboard");
+      },
+      openSearch: () => {
+        const view = viewRef.current;
+        if (!view) return;
+        view.focus();
+        openSearchPanel(view);
       },
     }));
 
