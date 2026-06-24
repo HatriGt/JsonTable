@@ -34,7 +34,7 @@ export function PaneHeader({
     >
       <div className="flex min-w-0 items-center gap-2.5">
         {icon && (
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-brand/20 bg-gradient-to-br from-brand/15 to-brand/5 text-brand shadow-[inset_0_1px_0_color-mix(in_oklab,white_18%,transparent)]">
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center text-brand">
             {icon}
           </span>
         )}
