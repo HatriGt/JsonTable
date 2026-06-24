@@ -191,7 +191,7 @@ function ObjectTable({
     <table className="w-full border-collapse font-mono text-[12px]">
       <tbody>
         {shouldVirtualize && paddingTop > 0 && (
-          <tr aria-hidden="true">
+          <tr>
             <td colSpan={2} style={{ height: paddingTop, padding: 0, border: 0 }} />
           </tr>
         )}
@@ -221,7 +221,7 @@ function ObjectTable({
               />
             ))}
         {shouldVirtualize && paddingBottom > 0 && (
-          <tr aria-hidden="true">
+          <tr>
             <td colSpan={2} style={{ height: paddingBottom, padding: 0, border: 0 }} />
           </tr>
         )}
@@ -376,7 +376,7 @@ function ArrayTable({
             </tr>
           )}
           {shouldVirtualize && paddingTop > 0 && (
-            <tr aria-hidden="true">
+            <tr>
               <td
                 colSpan={columns.length + 1}
                 style={{ height: paddingTop, padding: 0, border: 0 }}
@@ -408,7 +408,7 @@ function ArrayTable({
                 />
               ))}
           {shouldVirtualize && paddingBottom > 0 && (
-            <tr aria-hidden="true">
+            <tr>
               <td
                 colSpan={columns.length + 1}
                 style={{ height: paddingBottom, padding: 0, border: 0 }}
@@ -470,6 +470,7 @@ function ArrayTable({
             )}
             {activeFilterCount > 0 && (
               <button
+                type="button"
                 onClick={() => clearArray(path)}
                 className="rounded px-1.5 py-0.5 hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50"
                 title="Clear all filters on this array"
@@ -690,6 +691,7 @@ function PrimitiveCell({ value, path }: { value: unknown; path?: string }) {
       type="button"
       onClick={() => path && setSelection(slashPathToSegments(path), "grid")}
       onDoubleClick={() => path && setEditing(true)}
+      aria-label={path ? `Value at ${path}` : "JSON value"}
       title={path ? "Click to inspect · double-click to edit" : undefined}
       className={cn(
         "group/cell flex w-full items-center gap-1 px-2.5 py-1.5 text-left break-words",

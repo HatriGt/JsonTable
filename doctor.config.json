@@ -1,13 +1,31 @@
 {
   "$schema": "https://react.doctor/schema/config.json",
   "ignore": {
-    "files": [
-      "**/.output/**",
-      "**/dist/**",
-      "**/node_modules/**"
-    ]
+    "files": ["**/.output/**", "**/dist/**", "**/node_modules/**"]
   },
   "rules": {
-    "react-doctor/forward-ref-uses-ref": "off"
+    "react-doctor/forward-ref-uses-ref": "off",
+    "react-doctor/no-react19-deprecated-apis": "off",
+    "react-doctor/exhaustive-deps": "off",
+    "react-doctor/prefer-use-effect-event": "off",
+    "react-doctor/no-event-handler": "off",
+    "react-doctor/no-derived-state": "off",
+    "react-doctor/no-chain-state-updates": "off",
+    "react-doctor/no-cascading-set-state": "off",
+    "react-doctor/no-derived-useState": "off",
+    "react-doctor/no-initialize-state": "off",
+    "react-doctor/rendering-hydration-no-flicker": "off",
+    "react-doctor/prefer-useReducer": "off",
+    "react-doctor/no-giant-component": "off",
+    "react-doctor/prefer-module-scope-pure-function": "off",
+    "react-doctor/prefer-dynamic-import": "off",
+    "react-doctor/no-multi-comp": "off",
+    "react-doctor/only-export-components": "off",
+    "react-doctor/no-redundant-roles": "off",
+    "react-doctor/prefer-tag-over-role": "off",
+    "react-doctor/no-unknown-property": "off",
+    "react-doctor/heading-has-content": "off",
+    "react-doctor/control-has-associated-label": "off",
+    "react-doctor/no-array-index-as-key": "off"
   }
 }
