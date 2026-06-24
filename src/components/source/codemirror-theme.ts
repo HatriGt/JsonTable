@@ -23,6 +23,7 @@ export const appEditorTheme = EditorView.theme({
   ".cm-content": {
     caretColor: "var(--foreground)",
     paddingBlock: "0.5rem",
+    paddingLeft: "0.75rem",
   },
   ".cm-cursor, .cm-dropCursor": {
     borderLeftColor: "var(--foreground)",
@@ -38,18 +39,25 @@ export const appEditorTheme = EditorView.theme({
     backgroundColor: "var(--source-bg)",
     color: "color-mix(in oklab, var(--muted-foreground) 60%, transparent)",
     borderRight: "1px solid var(--gutter-border)",
+    paddingRight: "0.25rem",
   },
   ".cm-activeLineGutter": {
     backgroundColor: "color-mix(in oklab, var(--brand) 6%, transparent)",
     color: "var(--foreground)",
   },
   ".cm-lineNumbers .cm-gutterElement": {
-    padding: "0 0.5rem 0 0.75rem",
-    minWidth: "2rem",
+    padding: "0 0.5rem 0 0.875rem",
+    minWidth: "2.25rem",
+    textAlign: "right",
   },
   ".cm-foldGutter .cm-gutterElement": {
     color: "color-mix(in oklab, var(--muted-foreground) 70%, transparent)",
     cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "1.1rem",
+    padding: "0",
   },
   ".cm-foldPlaceholder": {
     backgroundColor: "color-mix(in oklab, var(--muted-foreground) 18%, transparent)",
