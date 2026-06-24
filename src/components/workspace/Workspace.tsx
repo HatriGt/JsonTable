@@ -86,6 +86,10 @@ export function Workspace() {
         className="workspace-grid-layer pointer-events-none absolute inset-0"
         aria-hidden="true"
       />
+      <div
+        className="workspace-top-glow pointer-events-none absolute inset-x-0 top-0 h-64"
+        aria-hidden="true"
+      />
       <h1 className="sr-only">JSON to Table Workspace</h1>
       <Toolbar />
       <div className="relative z-10 flex flex-1 overflow-hidden shell-workspace">
