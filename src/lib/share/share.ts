@@ -10,8 +10,8 @@ export const SHARE_HASH_KEY = "share";
 export const SHARE_URL_WARN_BYTES = 16_000;
 
 // At/above this raw size we stop encoding the document into the URL and switch
-// to a server-backed short link (/s/{id}). Below it, the inline path is used
-// and the data never leaves the browser.
+// to a server-backed short link (/workspace/link/{id}). Below it, the inline
+// path is used and the data never leaves the browser.
 export const SHARE_INLINE_MAX_BYTES = 32 * 1024;
 
 // Hard cap on what we'll accept into the server store, to protect the free
@@ -39,7 +39,7 @@ export function exceedsServerLimit(raw: string): boolean {
 /** Build the full short-link URL for the current origin. */
 export function buildShortLinkUrl(id: string): string {
   const origin = typeof window !== "undefined" ? window.location.origin : "";
-  return `${origin}/s/${id}`;
+  return `${origin}/workspace/link/${id}`;
 }
 
 /** Trigger a client-side download of the raw JSON as a .json file. */

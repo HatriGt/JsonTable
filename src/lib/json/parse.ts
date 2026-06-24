@@ -6,6 +6,8 @@
  * - JSONGrid (jsongrid.com) also uses plain JSON.parse + deferred/virtualized UI — no WASM.
  * WASM only wins for streaming or partial field access, which we do not use today.
  */
+import type { DocStats } from "@/lib/json/stats";
+
 export type ParseError = {
   message: string;
   line: number;
@@ -14,7 +16,9 @@ export type ParseError = {
 };
 
 export type ParseResult =
-  | { ok: true; value: unknown; error: null }
+  // `stats` is present only when parsing happens in the worker (large docs),
+  // which computes it off the main thread. The sync path omits it.
+  | { ok: true; value: unknown; error: null; stats?: DocStats }
   | { ok: false; value: null; error: ParseError };
 
 /** JSON payloads at or above this size are parsed off the main thread. */

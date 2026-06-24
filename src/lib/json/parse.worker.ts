@@ -1,3 +1,5 @@
+import { computeStats, type DocStats } from "./stats";
+
 type ParseError = {
   message: string;
   line: number;
@@ -6,7 +8,7 @@ type ParseError = {
 };
 
 type ParseResult =
-  | { ok: true; value: unknown; error: null }
+  | { ok: true; value: unknown; error: null; stats: DocStats }
   | { ok: false; value: null; error: ParseError };
 
 type WorkerRequest = { id: number; raw: string };
@@ -22,7 +24,10 @@ function parseInWorker(raw: string): ParseResult {
     };
   }
   try {
-    return { ok: true, value: JSON.parse(text), error: null };
+    // Compute stats here too so the main thread never has to walk the full
+    // object graph for large documents (that walk is what janks the UI).
+    const value = JSON.parse(text);
+    return { ok: true, value, error: null, stats: computeStats(value) };
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     const pos = extractPosition(msg);

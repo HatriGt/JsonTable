@@ -155,11 +155,11 @@ export function ShareButton() {
               <div className="flex items-start gap-2">
                 <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                 <div>
-                  <p className="text-sm font-semibold">Store this JSON to share it?</p>
+                  <p className="text-sm font-semibold">Store this file to share it</p>
                   <p className="mt-0.5 text-xs text-muted-foreground">
-                    This file is too large for an inline link. To share it, JSON&#8209;Table will
-                    store the JSON on its server and give you a private link that expires in 30
-                    days. We&apos;ll only ask this once.
+                    This file is too large to share within a link. With your permission, its
+                    contents will be stored securely and made available through a private link that
+                    expires after 30 days.
                   </p>
                 </div>
               </div>
