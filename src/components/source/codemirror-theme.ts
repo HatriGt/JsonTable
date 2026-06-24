@@ -84,6 +84,54 @@ export const appEditorTheme = EditorView.theme({
     backgroundColor: "var(--popover)",
     color: "var(--popover-foreground)",
   },
+  ".cm-panels.cm-panels-bottom": {
+    borderTop: "1px solid var(--border)",
+  },
+  ".cm-panels.cm-panels-top": {
+    borderBottom: "1px solid var(--border)",
+  },
+  ".cm-panel.cm-search": {
+    padding: "6px 8px",
+    fontFamily: "var(--font-mono)",
+    fontSize: "12px",
+  },
+  ".cm-panel.cm-search input, .cm-panel.cm-search button, .cm-panel.cm-search label": {
+    fontSize: "12px",
+  },
+  ".cm-panel.cm-search input[type=text]": {
+    backgroundColor: "var(--background)",
+    color: "var(--foreground)",
+    border: "1px solid var(--input)",
+    borderRadius: "6px",
+    padding: "3px 6px",
+    outline: "none",
+  },
+  ".cm-panel.cm-search input[type=text]:focus": {
+    borderColor: "var(--ring)",
+  },
+  ".cm-panel.cm-search button": {
+    backgroundColor: "var(--secondary)",
+    color: "var(--secondary-foreground)",
+    border: "1px solid var(--border)",
+    borderRadius: "6px",
+    padding: "3px 8px",
+    cursor: "pointer",
+    backgroundImage: "none",
+  },
+  ".cm-panel.cm-search button:hover": {
+    backgroundColor: "var(--accent)",
+    color: "var(--accent-foreground)",
+  },
+  ".cm-panel.cm-search .cm-button:active": {
+    backgroundImage: "none",
+  },
+  ".cm-panel.cm-search label": {
+    color: "var(--muted-foreground)",
+  },
+  ".cm-panel button[name=close]": {
+    color: "var(--muted-foreground)",
+    cursor: "pointer",
+  },
   ".cm-tooltip": {
     backgroundColor: "var(--popover)",
     color: "var(--popover-foreground)",
