@@ -20,7 +20,7 @@ export type Prefs = {
 const DEFAULTS: Prefs = {
   theme: "dark",
   panels: [30, 70],
-  leftPaneTab: "tree",
+  leftPaneTab: "source",
   gridZoom: GRID_ZOOM_DEFAULT,
   shareUploadConsent: false,
 };
