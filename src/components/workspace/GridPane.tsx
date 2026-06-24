@@ -33,19 +33,18 @@ const MemoizedNestedGrid = memo(NestedGrid);
 function GridContent({
   value,
   scrollElementRef,
+  stale,
 }: {
   value: unknown;
   scrollElementRef: RefObject<HTMLDivElement | null>;
+  stale: boolean;
 }) {
-  const deferredValue = useDeferredValue(value);
-  const isStale = deferredValue !== value;
-
   return (
     <div className="relative">
-      {isStale && (
+      {stale && (
         <div className="pointer-events-none absolute inset-0 z-10 bg-card/40" aria-hidden="true" />
       )}
-      <MemoizedNestedGrid value={deferredValue} scrollElementRef={scrollElementRef} />
+      <MemoizedNestedGrid value={value} scrollElementRef={scrollElementRef} />
     </div>
   );
 }
@@ -55,6 +54,23 @@ export function GridPane({ onHide }: Props) {
   const parsing = useWorkspace((s) => s.parsing);
   const [searchOpen, setSearchOpen] = useState(false);
   const [gridZoom, setGridZoom] = useState(() => loadPrefs().gridZoom);
+
+  // Defer the heavy grid render off the value change so the UI stays responsive,
+  // and show the skeleton until the *new document's* first render has committed.
+  const docValue = doc?.value;
+  const loadedAt = doc?.loadedAt;
+  const deferredValue = useDeferredValue(docValue);
+  const committed = deferredValue === docValue;
+  const lastRenderedId = useRef<number | undefined>(undefined);
+  useEffect(() => {
+    if (committed) lastRenderedId.current = loadedAt;
+  }, [committed, loadedAt]);
+  // Keyed to loadedAt (changes only on load, not on inline edits) so cell edits
+  // never trigger the skeleton — they fall back to the faint stale overlay.
+  const newDocLoading = loadedAt !== lastRenderedId.current;
+  const showSkeleton = parsing || newDocLoading;
+  const stale = !committed && !showSkeleton;
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [naturalSize, setNaturalSize] = useState({ w: 0, h: 0 });
@@ -219,11 +235,14 @@ export function GridPane({ onHide }: Props) {
           </>
         }
       />
-      <div ref={scrollRef} className="relative min-h-0 min-w-0 flex-1 overflow-auto bg-card p-3 sm:p-4">
-        {parsing && <GridParsingSkeleton />}
+      <div
+        ref={scrollRef}
+        className="relative min-h-0 min-w-0 flex-1 overflow-auto bg-card p-3 sm:p-4"
+      >
+        {showSkeleton && <GridParsingSkeleton />}
         <div style={scalerStyle}>
           <div ref={contentRef} className="w-max min-w-full" style={contentStyle}>
-            <GridContent value={doc.value} scrollElementRef={scrollRef} />
+            <GridContent value={deferredValue} scrollElementRef={scrollRef} stale={stale} />
           </div>
         </div>
       </div>
@@ -246,7 +265,11 @@ function GridParsingSkeleton() {
       <div className="mb-2 flex gap-2">
         <span className="skel-line h-5 w-8 shrink-0" />
         {SKEL_GRID_COL_WIDTHS.map((w, i) => (
-          <span key={i} className="skel-line h-5" style={{ width: w, animationDelay: `${i * 80}ms` }} />
+          <span
+            key={i}
+            className="skel-line h-5"
+            style={{ width: w, animationDelay: `${i * 80}ms` }}
+          />
         ))}
       </div>
       {/* Rows */}
@@ -257,7 +280,10 @@ function GridParsingSkeleton() {
             <span
               key={i}
               className="skel-line h-4"
-              style={{ width: w * (0.5 + Math.abs(Math.sin(r * i + 1)) * 0.5), animationDelay: `${(r * 5 + i) * 40}ms` }}
+              style={{
+                width: w * (0.5 + Math.abs(Math.sin(r * i + 1)) * 0.5),
+                animationDelay: `${(r * 5 + i) * 40}ms`,
+              }}
             />
           ))}
         </div>

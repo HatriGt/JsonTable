@@ -26,12 +26,12 @@ export function LeftPane({ tab, onTabChange }: Props) {
         meta={tab === "tree" ? "Navigate · search keys & values" : "Edit JSON · format · copy"}
         actions={
           <div className="flex items-center gap-0.5 rounded-md border border-border bg-muted/30 p-0.5">
-            <TabButton active={tab === "tree"} onClick={() => switchTab("tree")} label="Tree" />
             <TabButton
               active={tab === "source"}
               onClick={() => switchTab("source")}
               label="Source"
             />
+            <TabButton active={tab === "tree"} onClick={() => switchTab("tree")} label="Tree" />
           </div>
         }
       />
