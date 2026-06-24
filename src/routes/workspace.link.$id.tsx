@@ -7,7 +7,7 @@ import { useWorkspace } from "@/store/workspace";
 
 export const Route = createFileRoute("/workspace/link/$id")({
   head: () => ({
-    meta: [{ title: "Opening shared JSON — JSON‑Table" }, { name: "robots", content: "noindex" }],
+    meta: [{ title: "Opening shared JSON · JSON‑Table" }, { name: "robots", content: "noindex" }],
   }),
   component: SharedLinkPage,
 });

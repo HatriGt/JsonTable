@@ -77,7 +77,7 @@ export function PasteDialog({
               className="mt-3 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 font-mono text-xs text-destructive"
               role="alert"
             >
-              {error.message} — line {error.line}, col {error.column}
+              {error.message} (line {error.line}, col {error.column})
             </p>
           )}
         </div>

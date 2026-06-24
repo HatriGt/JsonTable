@@ -126,7 +126,7 @@ export function ShareButton() {
     } catch {
       // Clipboard blocked — select the text so the user can copy manually.
       inputRef.current?.select();
-      toast.error("Copy failed — select the link and copy manually");
+      toast.error("Copy failed. Select the link and copy manually");
     }
   }
 
@@ -191,7 +191,7 @@ export function ShareButton() {
                     ? tooLarge
                       ? "This file is too large to share as a link. Download it and send the file instead."
                       : "Stored on the server as a private link that expires in 30 days."
-                    : "The link contains the data itself — nothing is uploaded to a server."}
+                    : "The link contains the data itself, so nothing is uploaded to a server."}
                 </p>
               </div>
 
