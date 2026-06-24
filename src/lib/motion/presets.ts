@@ -48,15 +48,15 @@ export function routeDepth(pathname: string): number {
   return 0;
 }
 
-/** Opacity-only fallback when View Transitions API is unavailable. */
+/** Fade + slide fallback when the View Transitions API is unavailable. */
 export const pageFade: Variants = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1 },
-  exit: { opacity: 0 },
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -8 },
 };
 
 export const pageTransition: Transition = {
-  duration: 0.2,
+  duration: 0.28,
   ease: EASE_OUT,
 };
 

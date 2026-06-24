@@ -79,7 +79,7 @@
   --motion-duration-slow: 360ms;
   --motion-duration-slower: 500ms;
   --theme-transition-duration: 280ms;
-  --route-transition-duration: 240ms;
+  --route-transition-duration: 300ms;
   --motion-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --motion-ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
   --motion-stagger-step: 60ms;
@@ -233,7 +233,7 @@ html.route-transition-active[data-route-dir="back"]::view-transition-new(route-p
 @keyframes route-enter-forward {
   from {
     opacity: 0;
-    transform: translate3d(14px, 0, 0);
+    transform: translate3d(24px, 0, 0);
   }
 
   to {
@@ -250,14 +250,14 @@ html.route-transition-active[data-route-dir="back"]::view-transition-new(route-p
 
   to {
     opacity: 0;
-    transform: translate3d(-10px, 0, 0);
+    transform: translate3d(-16px, 0, 0);
   }
 }
 
 @keyframes route-enter-back {
   from {
     opacity: 0;
-    transform: translate3d(-14px, 0, 0);
+    transform: translate3d(-24px, 0, 0);
   }
 
   to {
@@ -274,7 +274,7 @@ html.route-transition-active[data-route-dir="back"]::view-transition-new(route-p
 
   to {
     opacity: 0;
-    transform: translate3d(10px, 0, 0);
+    transform: translate3d(16px, 0, 0);
   }
 }
 
