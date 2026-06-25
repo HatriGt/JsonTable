@@ -11,6 +11,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Search } from "lucide-react";
+import { useModKey } from "@/lib/platform";
 
 type Props = {
   open: boolean;
@@ -70,10 +71,11 @@ export function GridSearch({ open, onOpenChange }: Props) {
 }
 
 export function GridSearchButton({ onClick }: { onClick: () => void }) {
+  const mod = useModKey();
   return (
     <button
       type="button"
-      title="Search document (⌘F)"
+      title={`Search document (${mod}F)`}
       aria-label="Search document"
       onClick={onClick}
       className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"

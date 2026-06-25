@@ -3,6 +3,7 @@ import { AlignLeft, Code2, Copy, Minimize2, Search } from "lucide-react";
 import { PaneHeader } from "@/components/layout/PaneHeader";
 import { IconButton } from "@/components/ui/icon-button";
 import { useWorkspace } from "@/store/workspace";
+import { useModKey } from "@/lib/platform";
 import { JsonCodeEditor, type JsonCodeEditorHandle } from "./JsonCodeEditor";
 
 export function JsonSource({
@@ -14,12 +15,13 @@ export function JsonSource({
 }) {
   const doc = useWorkspace((s) => s.doc);
   const editorRef = useRef<JsonCodeEditorHandle>(null);
+  const mod = useModKey();
 
   if (!doc) return null;
 
   const actions = (
     <>
-      <IconButton title="Search (⌘F)" onClick={() => editorRef.current?.openSearch()}>
+      <IconButton title={`Search (${mod}F)`} onClick={() => editorRef.current?.openSearch()}>
         <Search className="h-3.5 w-3.5" />
       </IconButton>
       <IconButton title="Minify" onClick={() => editorRef.current?.minify()}>

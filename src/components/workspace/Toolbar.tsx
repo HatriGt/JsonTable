@@ -10,6 +10,7 @@ import { motionTransition } from "@/lib/motion/presets";
 import { ClipboardPaste, Upload, Sun, Moon, Trash2, Braces } from "lucide-react";
 import { PasteDialog } from "@/components/input/PasteDialog";
 import { ShareButton } from "./ShareButton";
+import { ShortcutsOverlay } from "./ShortcutsOverlay";
 import { pasteFromClipboard } from "@/lib/json/pasteFromClipboard";
 
 export function Toolbar() {
@@ -99,6 +100,7 @@ export function Toolbar() {
         </div>
 
         <div className="flex items-center gap-0.5 rounded-lg border border-border/50 bg-background/50 p-0.5 backdrop-blur-sm">
+          <ShortcutsOverlay />
           <ShareButton />
           {doc && (
             <Button

@@ -927,7 +927,7 @@ html.theme-transition-active::view-transition-new(root) {
   padding: 0.25rem;
   box-shadow: 0 1px 3px color-mix(in oklab, var(--foreground) 8%, transparent);
   backdrop-filter: blur(8px);
-  opacity: 0.55;
+  opacity: 0.75;
   transition:
     opacity var(--motion-duration-fast),
     border-color var(--motion-duration-fast),
@@ -977,7 +977,7 @@ html.theme-transition-active::view-transition-new(root) {
   width: 1.5rem;
   align-items: center;
   justify-content: center;
-  color: color-mix(in oklab, var(--muted-foreground) 70%, transparent);
+  color: color-mix(in oklab, var(--muted-foreground) 90%, transparent);
   pointer-events: none;
 }
 
