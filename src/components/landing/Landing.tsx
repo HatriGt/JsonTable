@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { LandingNav } from "./LandingNav";
 import { LandingHero } from "./LandingHero";
 import { LandingFeatures } from "./LandingFeatures";
+import { LandingFaq } from "./LandingFaq";
 import { LandingFooter } from "./LandingFooter";
 import { PasteDialog } from "@/components/input/PasteDialog";
 
@@ -17,6 +18,7 @@ export function Landing() {
       <main id="main-content" className="relative flex-1">
         <LandingHero onOpenPasteDialog={() => setPasteOpen(true)} />
         <LandingFeatures />
+        <LandingFaq />
       </main>
       <LandingFooter />
       <PasteDialog

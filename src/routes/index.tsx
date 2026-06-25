@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Landing } from "@/components/landing/Landing";
+import { FAQ_ITEMS } from "@/components/landing/LandingFaq";
 import { getSiteUrl } from "@/lib/site";
 
 export const Route = createFileRoute("/")({
@@ -52,6 +53,28 @@ export const Route = createFileRoute("/")({
             price: "0",
             priceCurrency: "USD",
           },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "JSON\u2011Table",
+          url: getSiteUrl(),
+          logo: `${getSiteUrl()}/favicon.svg`,
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: FAQ_ITEMS.map((item) => ({
+            "@type": "Question",
+            name: item.q,
+            acceptedAnswer: { "@type": "Answer", text: item.a },
+          })),
         }),
       },
     ],

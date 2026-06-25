@@ -48,7 +48,7 @@ export function LandingFeatures() {
                 <span className="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-brand">
                   {item.label}
                 </span>
-                <p className="mt-4 text-base font-medium text-foreground">{item.title}</p>
+                <h3 className="mt-4 text-base font-medium text-foreground">{item.title}</h3>
                 <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
               </div>
             </StaggerItem>
