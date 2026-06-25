@@ -5,6 +5,7 @@ import { Workspace } from "@/components/workspace/Workspace";
 import { SAMPLE_JSON } from "@/lib/json/sample";
 import { useWorkspace } from "@/store/workspace";
 import { decodeShare, readShareToken } from "@/lib/share/share";
+import { getSiteUrl } from "@/lib/site";
 
 const PENDING_SAMPLE_KEY = "json-table:pending-sample";
 
@@ -22,9 +23,9 @@ export const Route = createFileRoute("/workspace")({
         property: "og:description",
         content: "Explore, search, sort, and filter JSON as a spreadsheet.",
       },
-      { property: "og:url", content: "/workspace" },
+      { property: "og:url", content: `${getSiteUrl()}/workspace` },
     ],
-    links: [{ rel: "canonical", href: "/workspace" }],
+    links: [{ rel: "canonical", href: `${getSiteUrl()}/workspace` }],
   }),
   component: WorkspacePage,
 });

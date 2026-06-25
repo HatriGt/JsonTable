@@ -81,7 +81,7 @@ export function Workspace() {
   const [leftSize, gridSize] = prefs.panels;
 
   return (
-    <div className="workspace-page relative flex h-dvh w-screen flex-col text-foreground">
+    <div className="workspace-page relative flex h-dvh w-full flex-col text-foreground">
       <div
         className="workspace-grid-layer pointer-events-none absolute inset-0"
         aria-hidden="true"
@@ -211,7 +211,7 @@ function LeftPaneResizeHandle({
   onToggle: () => void;
   paneLabel: string;
 }) {
-  const label = `Collapse ${paneLabel} pane`;
+  const label = `Hide ${paneLabel} pane`;
 
   return (
     <PanelResizeHandle className="pane-resize-handle">

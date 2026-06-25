@@ -9,14 +9,8 @@ import {
 } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import {
-  ChevronDown,
-  ChevronRight,
-  Maximize2,
-  MoreVertical,
-  GripVertical,
-  Pencil,
-} from "lucide-react";
+import { ChevronDown, ChevronRight, Maximize2, GripVertical, Pencil } from "lucide-react";
+import { toast } from "sonner";
 import { ArrayTableModal } from "./ArrayTableModal";
 import { cn } from "@/lib/utils";
 import { HUGE_JSON_BYTES } from "@/lib/json/parse";
@@ -34,6 +28,8 @@ import { FilterPopover } from "./FilterPopover";
 
 const VIRTUAL_ROW_THRESHOLD = 40;
 const GRID_ROW_HEIGHT = 36;
+/** Rows sampled to discover columns for an object-array (bounds huge arrays). */
+const COLUMN_SAMPLE_ROWS = 200;
 /**
  * Nested virtualizers all measure against the single outer scroll element, so deep
  * instances add scroll/resize listener contention and their offsets drift under the
@@ -266,14 +262,40 @@ function ArrayTable({
   const [modalOpen, setModalOpen] = useState(false);
   const clearArray = useFilters((s) => s.clearArray);
 
+  // Clear all of this array's filters, but offer a one-tap undo so it isn't a
+  // silent destructive action (the filter set can be tedious to rebuild).
+  const handleClearFilters = (count: number) => {
+    const prefix = `${path}::`;
+    const snapshot = Object.entries(useFilters.getState().filters).filter(([k]) =>
+      k.startsWith(prefix),
+    );
+    clearArray(path);
+    toast.success(`Cleared ${count} ${count === 1 ? "filter" : "filters"}`, {
+      action: {
+        label: "Undo",
+        onClick: () => {
+          const setFilter = useFilters.getState().set;
+          for (const [k, v] of snapshot) {
+            setFilter(path, k.slice(prefix.length), v);
+          }
+        },
+      },
+    });
+  };
+
   const allObjects =
     value.length > 0 && value.every((v) => v && typeof v === "object" && !Array.isArray(v));
 
   const columns = useMemo(() => {
     if (!allObjects) return [] as string[];
+    // Sample the first N rows for column discovery so huge arrays don't block the
+    // main thread on every render. Columns that only appear in later rows of a
+    // very large array won't get a dedicated header (their cells stay reachable
+    // via the tree / source views).
     const keys = new Set<string>();
-    for (const row of value) {
-      for (const k of Object.keys(row as Record<string, unknown>)) keys.add(k);
+    const limit = Math.min(value.length, COLUMN_SAMPLE_ROWS);
+    for (let i = 0; i < limit; i++) {
+      for (const k of Object.keys(value[i] as Record<string, unknown>)) keys.add(k);
     }
     return Array.from(keys);
   }, [value, allObjects]);
@@ -471,7 +493,7 @@ function ArrayTable({
             {activeFilterCount > 0 && (
               <button
                 type="button"
-                onClick={() => clearArray(path)}
+                onClick={() => handleClearFilters(activeFilterCount)}
                 className="rounded px-1.5 py-0.5 hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50"
                 title="Clear all filters on this array"
               >
@@ -481,7 +503,7 @@ function ArrayTable({
             <button
               type="button"
               onClick={() => setModalOpen(true)}
-              className="inline-flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 sm:min-h-8 sm:min-w-8"
+              className="inline-flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 pointer-fine:min-h-8 pointer-fine:min-w-8"
               title="Open array in modal"
               aria-label="Open array in modal"
             >
@@ -662,7 +684,15 @@ function PrimitiveCell({ value, path }: { value: unknown; path?: string }) {
   function commit() {
     setEditing(false);
     if (!path || draft === text) return;
-    updateAt(slashPathToSegments(path), coerce(draft, value));
+    const next = coerce(draft, value);
+    const prevKind = valueType(value);
+    const nextKind = valueType(next);
+    updateAt(slashPathToSegments(path), next);
+    // A boolean/number/null cell edited to text it can't represent silently
+    // changes the JSON type — surface that so it isn't a surprise.
+    if (prevKind !== nextKind) {
+      toast.info(`Changed type: ${prevKind} → ${nextKind}`);
+    }
   }
 
   function cancel() {
@@ -803,14 +833,6 @@ function ColumnHeaderRow({
                     value.slice(0, 200).map((row) => (row as Record<string, unknown>)[c])
                   }
                 />
-                <button
-                  type="button"
-                  title="Column actions"
-                  aria-label="Column actions"
-                  className="inline-flex h-6 w-5 items-center justify-center rounded text-muted-foreground/70 hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50"
-                >
-                  <MoreVertical className="h-3.5 w-3.5" />
-                </button>
               </div>
             </th>
           );

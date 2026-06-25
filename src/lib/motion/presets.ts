@@ -36,3 +36,24 @@ export const viewportOnce = {
   once: true,
   margin: "-80px" as const,
 };
+
+/** Soft spring for premium, settled entrances. */
+const springSoft: Transition = {
+  type: "spring",
+  stiffness: 120,
+  damping: 20,
+  mass: 0.9,
+};
+
+/** Staggered container + item for orchestrated entrances (hero, card grids). */
+export const staggerContainer: Variants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.08, delayChildren: 0.04 },
+  },
+};
+
+export const staggerItem: Variants = {
+  hidden: { opacity: 0, y: 18 },
+  visible: { opacity: 1, y: 0, transition: springSoft },
+};

@@ -168,8 +168,10 @@ export const JsonCodeEditor = forwardRef<JsonCodeEditorHandle, { className?: str
       copy: () => {
         const view = viewRef.current;
         if (!view) return;
-        void navigator.clipboard.writeText(view.state.doc.toString());
-        toast.success("Copied to clipboard");
+        navigator.clipboard
+          .writeText(view.state.doc.toString())
+          .then(() => toast.success("Copied to clipboard"))
+          .catch(() => toast.error("Copy failed"));
       },
       openSearch: () => {
         const view = viewRef.current;

@@ -5,6 +5,17 @@ import { pathEquals, type PathSegment } from "@/lib/json/path";
 
 type Matcher = ((key: string, value: unknown) => boolean) | null;
 
+/** How many array items to render per "Show more" step in the tree. */
+const ARRAY_CHUNK = 1000;
+
+/** Indent per nesting level, clamped so very deep trees don't push content
+ *  off-screen (especially in the narrow side pane on phones). */
+const INDENT_STEP = 12;
+const MAX_INDENT_LEVELS = 14;
+function indentFor(depth: number) {
+  return Math.min(depth, MAX_INDENT_LEVELS) * INDENT_STEP + 6;
+}
+
 export function TreeNode({
   name,
   value,
@@ -23,6 +34,7 @@ export function TreeNode({
   const isObj = value !== null && typeof value === "object";
   const isArr = Array.isArray(value);
   const [open, setOpen] = useState(defaultOpen || depth < 1);
+  const [visibleCount, setVisibleCount] = useState(ARRAY_CHUNK);
   const selection = useWorkspace((s) => s.selection);
   const setSelection = useWorkspace((s) => s.setSelection);
 
@@ -32,11 +44,11 @@ export function TreeNode({
     if (!isObj) return [] as Array<readonly [string | number, unknown]>;
     if (isArr) {
       const arr = value as unknown[];
-      const cap = Math.min(arr.length, 1000);
+      const cap = Math.min(arr.length, visibleCount);
       return Array.from({ length: cap }, (_, i) => [i, arr[i]] as const);
     }
     return Object.entries(value as Record<string, unknown>);
-  }, [value, isObj, isArr]);
+  }, [value, isObj, isArr, visibleCount]);
 
   const filtered = useMemo(() => {
     if (!matcher) return entries;
@@ -60,11 +72,16 @@ export function TreeNode({
       <div
         role="treeitem"
         tabIndex={0}
-        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(e as unknown as React.MouseEvent); } }}
-        className={`group flex min-h-[28px] cursor-pointer items-center gap-1 rounded px-1.5 py-0.5 ${
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onClick(e as unknown as React.MouseEvent);
+          }
+        }}
+        className={`group flex min-h-[28px] w-full min-w-0 cursor-pointer items-center gap-1 overflow-hidden rounded px-1.5 py-0.5 ${
           selected ? "bg-brand/15 text-foreground" : "hover:bg-accent/60"
         } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand/50`}
-        style={{ paddingLeft: depth * 12 + 6 }}
+        style={{ paddingLeft: indentFor(depth) }}
         onClick={onClick}
       >
         {isObj ? (
@@ -76,17 +93,19 @@ export function TreeNode({
         ) : (
           <span className="inline-block w-3 shrink-0" />
         )}
-        <span className="text-json-key">{String(name)}</span>
+        <span className="min-w-0 truncate text-json-key" title={String(name)}>
+          {String(name)}
+        </span>
         {isObj ? (
-          <span className="ml-1 text-muted-foreground">
+          <span className="ml-1 shrink-0 text-muted-foreground">
             {isArr
               ? `[${(value as unknown[]).length}]`
               : `{${Object.keys(value as object).length}}`}
           </span>
         ) : (
           <>
-            <span className="text-muted-foreground">:</span>
-            <span className={`truncate ${tokenClass(value)}`}>{preview(value)}</span>
+            <span className="shrink-0 text-muted-foreground">:</span>
+            <span className={`min-w-0 truncate ${tokenClass(value)}`}>{preview(value)}</span>
           </>
         )}
       </div>
@@ -103,12 +122,19 @@ export function TreeNode({
             />
           ))}
           {matcher === null && isArr && (value as unknown[]).length > entries.length && (
-            <div
-              className="px-1.5 py-0.5 text-[11px] italic text-muted-foreground"
-              style={{ paddingLeft: (depth + 1) * 12 + 18 }}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setVisibleCount((c) => c + ARRAY_CHUNK);
+              }}
+              className="cursor-pointer rounded px-1.5 py-0.5 text-[11px] font-medium text-brand hover:bg-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand/50"
+              style={{ paddingLeft: indentFor(depth + 1) + 12 }}
             >
-              … {(value as unknown[]).length - entries.length} more items
-            </div>
+              Show{" "}
+              {Math.min(ARRAY_CHUNK, (value as unknown[]).length - entries.length).toLocaleString()}{" "}
+              more of {(value as unknown[]).length.toLocaleString()}
+            </button>
           )}
         </div>
       )}

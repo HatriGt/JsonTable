@@ -10,6 +10,7 @@ import {
 import { type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import { getSiteUrl } from "@/lib/site";
 import { Toaster } from "@/components/ui/sonner";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { PageTransition } from "@/components/motion/PageTransition";
@@ -93,18 +94,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content: "Turn any JSON into a navigable tree and a sortable, filterable spreadsheet.",
       },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
+      { property: "og:image", content: `${getSiteUrl()}/og.png` },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "JSON\u2011Table" },
       {
         name: "twitter:description",
         content: "Turn any JSON into a navigable tree and a sortable, filterable spreadsheet.",
       },
+      { name: "twitter:image", content: `${getSiteUrl()}/og.png` },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+      { rel: "apple-touch-icon", href: "/favicon.svg" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

@@ -21,6 +21,7 @@ import { formatBytes } from "@/lib/format";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { motionTransition } from "@/lib/motion/presets";
 import { deleteRecent, listRecents, loadRecent, type RecentMeta } from "@/lib/storage/recents";
+import { useModKey } from "@/lib/platform";
 import { cn } from "@/lib/utils";
 
 const FILE_INPUT_ID = "empty-state-file-input";
@@ -29,6 +30,7 @@ export function EmptyState() {
   const loadJson = useWorkspace((s) => s.loadJson);
   const error = useWorkspace((s) => s.error);
   const reducedMotion = useReducedMotion();
+  const modKey = useModKey();
   const [over, setOver] = useState(false);
   const [pasteOpen, setPasteOpen] = useState(false);
   const [recents, setRecents] = useState<RecentMeta[]>([]);
@@ -153,9 +155,6 @@ export function EmptyState() {
                 <Upload className="h-3.5 w-3.5" aria-hidden="true" />
                 Open file
               </Button>
-              <span className="hidden text-muted-foreground/30 sm:inline" aria-hidden="true">
-                ·
-              </span>
               <Button
                 variant="ghost"
                 size="sm"
@@ -189,15 +188,15 @@ export function EmptyState() {
               <AlertCircle className="h-4 w-4" aria-hidden="true" />
               <AlertTitle>Invalid JSON</AlertTitle>
               <AlertDescription className="font-mono text-xs">
-                {error.message} — line {error.line}, col {error.column}
+                {error.message} (line {error.line}, col {error.column})
               </AlertDescription>
             </Alert>
           )}
 
           <p className="mt-6 text-xs text-muted-foreground">
-            Tip — paste JSON anywhere with{" "}
+            Tip: paste JSON anywhere with{" "}
             <kbd className="inline-flex min-h-[22px] min-w-[22px] items-center justify-center rounded border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] shadow-sm">
-              ⌘
+              {modKey}
             </kbd>{" "}
             <kbd className="inline-flex min-h-[22px] min-w-[22px] items-center justify-center rounded border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] shadow-sm">
               V

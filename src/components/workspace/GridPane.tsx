@@ -15,6 +15,7 @@ import { NestedGrid } from "@/components/grid/NestedGrid";
 import { GridSearch, GridSearchButton } from "@/components/grid/GridSearch";
 import { PaneHeader } from "@/components/layout/PaneHeader";
 import { IconButton } from "@/components/ui/icon-button";
+import { useModKey } from "@/lib/platform";
 import {
   GRID_ZOOM_DEFAULT,
   GRID_ZOOM_MAX,
@@ -54,6 +55,7 @@ export function GridPane({ onHide }: Props) {
   const parsing = useWorkspace((s) => s.parsing);
   const [searchOpen, setSearchOpen] = useState(false);
   const [gridZoom, setGridZoom] = useState(() => loadPrefs().gridZoom);
+  const mod = useModKey();
 
   // Defer the heavy grid render off the value change so the UI stays responsive,
   // and show the skeleton until the *new document's* first render has committed.
@@ -201,10 +203,10 @@ export function GridPane({ onHide }: Props) {
         actions={
           <>
             <IconButton
-              title={`Zoom out (${gridZoom}%, ⌘−)`}
+              title={`Zoom out (${gridZoom}%, ${mod}−)`}
               onClick={zoomOut}
               disabled={atMin}
-              className="h-9 w-9 min-h-[44px] min-w-[44px] sm:h-7 sm:min-h-0 sm:w-7 sm:min-w-0"
+              className="h-11 w-11 pointer-fine:h-7 pointer-fine:w-7"
             >
               <ZoomOut className="h-3.5 w-3.5" />
             </IconButton>
@@ -216,18 +218,18 @@ export function GridPane({ onHide }: Props) {
               {gridZoom}%
             </span>
             <IconButton
-              title={`Zoom in (${gridZoom}%, ⌘+)`}
+              title={`Zoom in (${gridZoom}%, ${mod}+)`}
               onClick={zoomIn}
               disabled={atMax}
-              className="h-9 w-9 min-h-[44px] min-w-[44px] sm:h-7 sm:min-h-0 sm:w-7 sm:min-w-0"
+              className="h-11 w-11 pointer-fine:h-7 pointer-fine:w-7"
             >
               <ZoomIn className="h-3.5 w-3.5" />
             </IconButton>
             <IconButton
-              title={`Reset zoom (${GRID_ZOOM_DEFAULT}%, ⌘0)`}
+              title={`Reset zoom (${GRID_ZOOM_DEFAULT}%, ${mod}0)`}
               onClick={resetZoom}
               disabled={atDefault}
-              className="h-9 w-9 min-h-[44px] min-w-[44px] sm:h-7 sm:min-h-0 sm:w-7 sm:min-w-0"
+              className="h-11 w-11 pointer-fine:h-7 pointer-fine:w-7"
             >
               <RotateCcw className="h-3.5 w-3.5" />
             </IconButton>

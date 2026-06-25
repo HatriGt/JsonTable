@@ -1,4 +1,5 @@
 import { FadeIn } from "@/components/motion/FadeIn";
+import { Stagger, StaggerItem } from "@/components/motion/Stagger";
 
 const CAPABILITIES = [
   {
@@ -26,32 +27,33 @@ const CAPABILITIES = [
 export function LandingFeatures() {
   return (
     <section id="features" className="border-t border-border/60 bg-card/30">
-      <div className="mx-auto max-w-3xl px-5 py-14 sm:px-6 sm:py-16">
+      <div className="mx-auto max-w-6xl px-5 py-16 sm:px-6 sm:py-20">
         <FadeIn inView>
-          <h2 className="text-balance text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+          <h2 className="max-w-xl text-balance text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
             Built for inspection, not pretty-printing
           </h2>
-          <p className="mt-2 max-w-xl text-pretty text-sm leading-relaxed text-muted-foreground">
-            The same workspace you see in the demo — tree on the left, grid on the right, shortcuts
-            everywhere.
+          <p className="mt-3 max-w-xl text-pretty text-sm leading-relaxed text-muted-foreground sm:text-base">
+            The same workspace you see in the demo: a tree on the left, a grid on the right, and
+            shortcuts everywhere.
           </p>
         </FadeIn>
 
-        <dl className="mt-10 divide-y divide-border/70">
-          {CAPABILITIES.map((item, index) => (
-            <FadeIn key={item.label} inView delay={index * 0.04}>
-              <div className="grid gap-2 py-5 sm:grid-cols-[7rem_1fr] sm:gap-6 sm:py-6">
-                <dt className="font-mono text-xs font-medium uppercase tracking-[0.12em] text-brand">
+        <Stagger
+          inView
+          className="mt-10 grid gap-px overflow-hidden rounded-xl border border-border/70 bg-border/60 sm:mt-12 sm:grid-cols-2"
+        >
+          {CAPABILITIES.map((item) => (
+            <StaggerItem key={item.label} className="bg-card">
+              <div className="h-full p-6 transition-colors duration-[var(--motion-duration-fast)] hover:bg-[var(--grid-row-hover)] sm:p-8">
+                <span className="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-brand">
                   {item.label}
-                </dt>
-                <dd>
-                  <p className="text-sm font-medium text-foreground">{item.title}</p>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
-                </dd>
+                </span>
+                <p className="mt-4 text-base font-medium text-foreground">{item.title}</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
               </div>
-            </FadeIn>
+            </StaggerItem>
           ))}
-        </dl>
+        </Stagger>
       </div>
     </section>
   );
