@@ -16,14 +16,14 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content: "Turn any JSON into a navigable tree and a sortable, filterable spreadsheet.",
       },
-      { property: "og:url", content: "/" },
+      { property: "og:url", content: `${getSiteUrl()}/` },
       { name: "twitter:title", content: "JSON\u2011Table \u2014 The fastest way to read JSON" },
       {
         name: "twitter:description",
         content: "Turn any JSON into a navigable tree and a sortable, filterable spreadsheet.",
       },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [{ rel: "canonical", href: `${getSiteUrl()}/` }],
     scripts: [
       {
         type: "application/ld+json",

@@ -211,7 +211,7 @@ function LeftPaneResizeHandle({
   onToggle: () => void;
   paneLabel: string;
 }) {
-  const label = `Collapse ${paneLabel} pane`;
+  const label = `Hide ${paneLabel} pane`;
 
   return (
     <PanelResizeHandle className="pane-resize-handle">
