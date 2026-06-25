@@ -230,6 +230,14 @@ html.route-transition-active[data-route-dir="back"]::view-transition-new(route-p
   animation-name: route-enter-back;
 }
 
+/* Only the route-page group animates; suppress the default root crossfade so the
+   two don't stack into a muddy double-fade. */
+html.route-transition-active::view-transition-old(root),
+html.route-transition-active::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
 @keyframes route-enter-forward {
   from {
     opacity: 0;

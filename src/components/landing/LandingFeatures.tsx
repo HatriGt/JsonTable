@@ -1,4 +1,5 @@
 import { FadeIn } from "@/components/motion/FadeIn";
+import { Stagger, StaggerItem } from "@/components/motion/Stagger";
 
 const CAPABILITIES = [
   {
@@ -37,9 +38,12 @@ export function LandingFeatures() {
           </p>
         </FadeIn>
 
-        <div className="mt-10 grid gap-px overflow-hidden rounded-xl border border-border/70 bg-border/60 sm:mt-12 sm:grid-cols-2">
-          {CAPABILITIES.map((item, index) => (
-            <FadeIn key={item.label} inView delay={index * 0.05} className="bg-card">
+        <Stagger
+          inView
+          className="mt-10 grid gap-px overflow-hidden rounded-xl border border-border/70 bg-border/60 sm:mt-12 sm:grid-cols-2"
+        >
+          {CAPABILITIES.map((item) => (
+            <StaggerItem key={item.label} className="bg-card">
               <div className="h-full p-6 transition-colors duration-[var(--motion-duration-fast)] hover:bg-[var(--grid-row-hover)] sm:p-8">
                 <span className="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-brand">
                   {item.label}
@@ -47,9 +51,9 @@ export function LandingFeatures() {
                 <p className="mt-4 text-base font-medium text-foreground">{item.title}</p>
                 <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
               </div>
-            </FadeIn>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </div>
     </section>
   );

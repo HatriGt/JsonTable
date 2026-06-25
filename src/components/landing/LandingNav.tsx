@@ -41,7 +41,11 @@ export function LandingNav() {
             Features
           </a>
           <LandingThemeToggle />
-          <Button asChild size="sm" className="cursor-pointer gap-1.5">
+          <Button
+            asChild
+            size="sm"
+            className="cursor-pointer gap-1.5 transition-transform duration-[var(--motion-duration-fast)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+          >
             <Link to="/workspace">
               Open workspace
               <ArrowRight className="h-3.5 w-3.5" />
