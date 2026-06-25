@@ -24,8 +24,12 @@ export async function pasteFromClipboard({
       });
       return;
     }
+    // Kick off the load first so the store flips to `parsing` synchronously,
+    // then navigate. The workspace mounts on the parsing shell instead of
+    // flashing the empty state during the route transition.
+    const loadPromise = loadJson(fileName, text);
     onStart?.();
-    const ok = await loadJson(fileName, text);
+    const ok = await loadPromise;
     if (ok) {
       toast.success("JSON loaded from clipboard");
       onSuccess?.();

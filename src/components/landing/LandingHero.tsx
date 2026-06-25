@@ -1,9 +1,10 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { ArrowRight, ClipboardPaste, Sparkles } from "lucide-react";
 import { PreviewMock } from "./PreviewMock";
 import { Button } from "@/components/ui/button";
 import { useWorkspace } from "@/store/workspace";
+import { SAMPLE_JSON } from "@/lib/json/sample";
 import { pasteFromClipboard } from "@/lib/json/pasteFromClipboard";
 import { Stagger, StaggerItem } from "@/components/motion/Stagger";
 import { m, useMotionValue, useReducedMotion, useSpring, useTransform } from "@/lib/motion/framer";
@@ -57,6 +58,14 @@ export function LandingHero({ onOpenPasteDialog }: Props) {
       onStart: () => navigate({ to: "/workspace" }),
     });
   }, [loadJson, navigate, onOpenPasteDialog]);
+
+  // Load the sample into the store first, then navigate, so the workspace mounts
+  // with the document already present (no empty-state flash during the route
+  // transition).
+  const openSample = useCallback(async () => {
+    await loadJson("sample.json", SAMPLE_JSON);
+    navigate({ to: "/workspace" });
+  }, [loadJson, navigate]);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -113,18 +122,13 @@ export function LandingHero({ onOpenPasteDialog }: Props) {
                 <ArrowRight className="h-4 w-4" />
               </Button>
               <Button
-                asChild
                 size="lg"
                 variant="outline"
                 className="h-11 cursor-pointer gap-2 px-5 transition-transform duration-[var(--motion-duration-fast)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+                onClick={() => void openSample()}
               >
-                <Link
-                  to="/workspace"
-                  onClick={() => sessionStorage.setItem("json-table:pending-sample", "1")}
-                >
-                  <Sparkles className="h-4 w-4 text-brand" />
-                  Try a sample
-                </Link>
+                <Sparkles className="h-4 w-4 text-brand" />
+                Try a sample
               </Button>
             </div>
           </StaggerItem>
