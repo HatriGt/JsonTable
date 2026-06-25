@@ -35,7 +35,7 @@ export function LandingNav() {
         </Link>
         <nav className="flex items-center gap-2 sm:gap-3">
           <a
-            href="#features"
+            href="/#features"
             className="hidden text-sm text-muted-foreground transition-colors hover:text-foreground sm:inline"
           >
             Features

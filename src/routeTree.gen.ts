@@ -11,6 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkspaceRouteImport } from './routes/workspace'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as JsonViewerRouteImport } from './routes/json-viewer'
+import { Route as JsonToTableRouteImport } from './routes/json-to-table'
+import { Route as JsonFormatterRouteImport } from './routes/json-formatter'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WorkspaceLinkIdRouteImport } from './routes/workspace.link.$id'
 
@@ -22,6 +25,21 @@ const WorkspaceRoute = WorkspaceRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JsonViewerRoute = JsonViewerRouteImport.update({
+  id: '/json-viewer',
+  path: '/json-viewer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JsonToTableRoute = JsonToTableRouteImport.update({
+  id: '/json-to-table',
+  path: '/json-to-table',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JsonFormatterRoute = JsonFormatterRouteImport.update({
+  id: '/json-formatter',
+  path: '/json-formatter',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -37,12 +55,18 @@ const WorkspaceLinkIdRoute = WorkspaceLinkIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/json-formatter': typeof JsonFormatterRoute
+  '/json-to-table': typeof JsonToTableRoute
+  '/json-viewer': typeof JsonViewerRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/workspace': typeof WorkspaceRouteWithChildren
   '/workspace/link/$id': typeof WorkspaceLinkIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/json-formatter': typeof JsonFormatterRoute
+  '/json-to-table': typeof JsonToTableRoute
+  '/json-viewer': typeof JsonViewerRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/workspace': typeof WorkspaceRouteWithChildren
   '/workspace/link/$id': typeof WorkspaceLinkIdRoute
@@ -50,20 +74,48 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/json-formatter': typeof JsonFormatterRoute
+  '/json-to-table': typeof JsonToTableRoute
+  '/json-viewer': typeof JsonViewerRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/workspace': typeof WorkspaceRouteWithChildren
   '/workspace/link/$id': typeof WorkspaceLinkIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/sitemap.xml' | '/workspace' | '/workspace/link/$id'
+  fullPaths:
+    | '/'
+    | '/json-formatter'
+    | '/json-to-table'
+    | '/json-viewer'
+    | '/sitemap.xml'
+    | '/workspace'
+    | '/workspace/link/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sitemap.xml' | '/workspace' | '/workspace/link/$id'
-  id: '__root__' | '/' | '/sitemap.xml' | '/workspace' | '/workspace/link/$id'
+  to:
+    | '/'
+    | '/json-formatter'
+    | '/json-to-table'
+    | '/json-viewer'
+    | '/sitemap.xml'
+    | '/workspace'
+    | '/workspace/link/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/json-formatter'
+    | '/json-to-table'
+    | '/json-viewer'
+    | '/sitemap.xml'
+    | '/workspace'
+    | '/workspace/link/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  JsonFormatterRoute: typeof JsonFormatterRoute
+  JsonToTableRoute: typeof JsonToTableRoute
+  JsonViewerRoute: typeof JsonViewerRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   WorkspaceRoute: typeof WorkspaceRouteWithChildren
 }
@@ -82,6 +134,27 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/json-viewer': {
+      id: '/json-viewer'
+      path: '/json-viewer'
+      fullPath: '/json-viewer'
+      preLoaderRoute: typeof JsonViewerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/json-to-table': {
+      id: '/json-to-table'
+      path: '/json-to-table'
+      fullPath: '/json-to-table'
+      preLoaderRoute: typeof JsonToTableRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/json-formatter': {
+      id: '/json-formatter'
+      path: '/json-formatter'
+      fullPath: '/json-formatter'
+      preLoaderRoute: typeof JsonFormatterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -115,6 +188,9 @@ const WorkspaceRouteWithChildren = WorkspaceRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  JsonFormatterRoute: JsonFormatterRoute,
+  JsonToTableRoute: JsonToTableRoute,
+  JsonViewerRoute: JsonViewerRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   WorkspaceRoute: WorkspaceRouteWithChildren,
 }
