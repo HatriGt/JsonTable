@@ -206,7 +206,7 @@ export function GridPane({ onHide }: Props) {
               title={`Zoom out (${gridZoom}%, ${mod}−)`}
               onClick={zoomOut}
               disabled={atMin}
-              className="h-9 w-9 min-h-[44px] min-w-[44px] sm:h-7 sm:min-h-0 sm:w-7 sm:min-w-0"
+              className="h-11 w-11 pointer-fine:h-7 pointer-fine:w-7"
             >
               <ZoomOut className="h-3.5 w-3.5" />
             </IconButton>
@@ -221,7 +221,7 @@ export function GridPane({ onHide }: Props) {
               title={`Zoom in (${gridZoom}%, ${mod}+)`}
               onClick={zoomIn}
               disabled={atMax}
-              className="h-9 w-9 min-h-[44px] min-w-[44px] sm:h-7 sm:min-h-0 sm:w-7 sm:min-w-0"
+              className="h-11 w-11 pointer-fine:h-7 pointer-fine:w-7"
             >
               <ZoomIn className="h-3.5 w-3.5" />
             </IconButton>
@@ -229,7 +229,7 @@ export function GridPane({ onHide }: Props) {
               title={`Reset zoom (${GRID_ZOOM_DEFAULT}%, ${mod}0)`}
               onClick={resetZoom}
               disabled={atDefault}
-              className="h-9 w-9 min-h-[44px] min-w-[44px] sm:h-7 sm:min-h-0 sm:w-7 sm:min-w-0"
+              className="h-11 w-11 pointer-fine:h-7 pointer-fine:w-7"
             >
               <RotateCcw className="h-3.5 w-3.5" />
             </IconButton>

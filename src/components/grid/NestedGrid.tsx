@@ -503,7 +503,7 @@ function ArrayTable({
             <button
               type="button"
               onClick={() => setModalOpen(true)}
-              className="inline-flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 sm:min-h-8 sm:min-w-8"
+              className="inline-flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 pointer-fine:min-h-8 pointer-fine:min-w-8"
               title="Open array in modal"
               aria-label="Open array in modal"
             >
