@@ -154,17 +154,22 @@ export const useWorkspace = create<State>((set, get) => ({
     }
 
     set({ parsing: true, error: null });
-    void parseJsonAsync(raw).then((result) => {
-      if (!get().doc) {
-        set({ parsing: false });
-        return;
-      }
-      if (!result.ok) {
-        set({ error: result.error, parsing: false });
-        return;
-      }
-      applyParsedEdit(set, raw, result.value);
-    });
+    // Capture the document identity; if it's replaced (a new file loaded) while
+    // this parse is in flight, drop the stale result instead of applying it.
+    const token = get().doc?.loadedAt;
+    void parseJsonAsync(raw)
+      .then((result) => {
+        const cur = get().doc;
+        if (!cur || cur.loadedAt !== token) return;
+        if (!result.ok) {
+          set({ error: result.error, parsing: false });
+          return;
+        }
+        applyParsedEdit(set, raw, result.value);
+      })
+      .catch(() => {
+        if (get().doc?.loadedAt === token) set({ parsing: false });
+      });
     return true;
   },
   updateAt: (path, value) => {

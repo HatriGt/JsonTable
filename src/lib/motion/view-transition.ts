@@ -29,14 +29,24 @@ export function runRouteViewTransition(direction: RouteDirection, updateDom: () 
   root.dataset.routeDir = direction;
   root.classList.add("route-transition-active");
 
-  routeTransitioning = true;
-  const transition = document.startViewTransition(() => {
-    flushSync(updateDom);
-  });
-
-  void transition.finished.finally(() => {
+  const cleanup = () => {
     routeTransitioning = false;
     root.classList.remove("route-transition-active");
     delete root.dataset.routeDir;
-  });
+  };
+
+  routeTransitioning = true;
+  let transition: { finished: Promise<unknown> };
+  try {
+    transition = document.startViewTransition(() => {
+      flushSync(updateDom);
+    });
+  } catch {
+    // startViewTransition threw synchronously — don't leave the flag stuck.
+    cleanup();
+    updateDom();
+    return;
+  }
+
+  void transition.finished.finally(cleanup);
 }

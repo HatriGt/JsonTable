@@ -34,6 +34,8 @@ import { FilterPopover } from "./FilterPopover";
 
 const VIRTUAL_ROW_THRESHOLD = 40;
 const GRID_ROW_HEIGHT = 36;
+/** Rows sampled to discover columns for an object-array (bounds huge arrays). */
+const COLUMN_SAMPLE_ROWS = 200;
 /**
  * Nested virtualizers all measure against the single outer scroll element, so deep
  * instances add scroll/resize listener contention and their offsets drift under the
@@ -271,9 +273,14 @@ function ArrayTable({
 
   const columns = useMemo(() => {
     if (!allObjects) return [] as string[];
+    // Sample the first N rows for column discovery so huge arrays don't block the
+    // main thread on every render. Columns that only appear in later rows of a
+    // very large array won't get a dedicated header (their cells stay reachable
+    // via the tree / source views).
     const keys = new Set<string>();
-    for (const row of value) {
-      for (const k of Object.keys(row as Record<string, unknown>)) keys.add(k);
+    const limit = Math.min(value.length, COLUMN_SAMPLE_ROWS);
+    for (let i = 0; i < limit; i++) {
+      for (const k of Object.keys(value[i] as Record<string, unknown>)) keys.add(k);
     }
     return Array.from(keys);
   }, [value, allObjects]);

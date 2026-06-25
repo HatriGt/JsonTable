@@ -55,11 +55,28 @@ function getParseWorker(): Worker {
   return worker;
 }
 
+/** If the worker errors, fails to post, or never replies, parse on the main
+ *  thread instead of hanging forever. */
+const WORKER_TIMEOUT_MS = 15_000;
+
 function parseInWorker(raw: string): Promise<ParseResult> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const id = ++workerReqId;
-    workerWaiters.set(id, { resolve, reject });
-    getParseWorker().postMessage({ id, raw });
+    let settled = false;
+    const timer = setTimeout(() => finish(parseJson(raw)), WORKER_TIMEOUT_MS);
+    const finish = (r: ParseResult) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      workerWaiters.delete(id);
+      resolve(r);
+    };
+    workerWaiters.set(id, { resolve: finish, reject: () => finish(parseJson(raw)) });
+    try {
+      getParseWorker().postMessage({ id, raw });
+    } catch {
+      finish(parseJson(raw));
+    }
   });
 }
 

@@ -59,10 +59,12 @@ export function moveColumn(arrayPath: string, defaultCols: string[], from: strin
     const base = s.orders[arrayPath] ?? defaultCols;
     const next = base.slice();
     const fi = next.indexOf(from);
-    const ti = next.indexOf(to);
-    if (fi < 0 || ti < 0) return s;
+    if (fi < 0 || next.indexOf(to) < 0) return s;
     next.splice(fi, 1);
-    next.splice(ti, 0, from);
+    // Recompute the target index after removal so the dragged column lands
+    // before `to` regardless of drag direction (avoids an off-by-one).
+    const insertAt = next.indexOf(to);
+    next.splice(insertAt, 0, from);
     return { orders: { ...s.orders, [arrayPath]: next } };
   });
 }

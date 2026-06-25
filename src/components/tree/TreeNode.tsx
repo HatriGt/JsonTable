@@ -5,6 +5,9 @@ import { pathEquals, type PathSegment } from "@/lib/json/path";
 
 type Matcher = ((key: string, value: unknown) => boolean) | null;
 
+/** How many array items to render per "Show more" step in the tree. */
+const ARRAY_CHUNK = 1000;
+
 export function TreeNode({
   name,
   value,
@@ -23,6 +26,7 @@ export function TreeNode({
   const isObj = value !== null && typeof value === "object";
   const isArr = Array.isArray(value);
   const [open, setOpen] = useState(defaultOpen || depth < 1);
+  const [visibleCount, setVisibleCount] = useState(ARRAY_CHUNK);
   const selection = useWorkspace((s) => s.selection);
   const setSelection = useWorkspace((s) => s.setSelection);
 
@@ -32,11 +36,11 @@ export function TreeNode({
     if (!isObj) return [] as Array<readonly [string | number, unknown]>;
     if (isArr) {
       const arr = value as unknown[];
-      const cap = Math.min(arr.length, 1000);
+      const cap = Math.min(arr.length, visibleCount);
       return Array.from({ length: cap }, (_, i) => [i, arr[i]] as const);
     }
     return Object.entries(value as Record<string, unknown>);
-  }, [value, isObj, isArr]);
+  }, [value, isObj, isArr, visibleCount]);
 
   const filtered = useMemo(() => {
     if (!matcher) return entries;
@@ -60,7 +64,12 @@ export function TreeNode({
       <div
         role="treeitem"
         tabIndex={0}
-        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(e as unknown as React.MouseEvent); } }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onClick(e as unknown as React.MouseEvent);
+          }
+        }}
         className={`group flex min-h-[28px] cursor-pointer items-center gap-1 rounded px-1.5 py-0.5 ${
           selected ? "bg-brand/15 text-foreground" : "hover:bg-accent/60"
         } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand/50`}
@@ -103,12 +112,19 @@ export function TreeNode({
             />
           ))}
           {matcher === null && isArr && (value as unknown[]).length > entries.length && (
-            <div
-              className="px-1.5 py-0.5 text-[11px] italic text-muted-foreground"
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setVisibleCount((c) => c + ARRAY_CHUNK);
+              }}
+              className="cursor-pointer rounded px-1.5 py-0.5 text-[11px] font-medium text-brand hover:bg-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand/50"
               style={{ paddingLeft: (depth + 1) * 12 + 18 }}
             >
-              … {(value as unknown[]).length - entries.length} more items
-            </div>
+              Show{" "}
+              {Math.min(ARRAY_CHUNK, (value as unknown[]).length - entries.length).toLocaleString()}{" "}
+              more of {(value as unknown[]).length.toLocaleString()}
+            </button>
           )}
         </div>
       )}
