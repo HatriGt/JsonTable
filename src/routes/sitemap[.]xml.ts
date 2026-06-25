@@ -7,6 +7,9 @@ interface SitemapEntry {
   priority?: string;
 }
 
+// Bump when site content/structure changes meaningfully so crawlers reschedule.
+const LAST_MODIFIED = "2026-06-25";
+
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
@@ -21,6 +24,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           [
             `  <url>`,
             `    <loc>${origin}${e.path}</loc>`,
+            `    <lastmod>${LAST_MODIFIED}</lastmod>`,
             e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
             e.priority ? `    <priority>${e.priority}</priority>` : null,
             `  </url>`,
