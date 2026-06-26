@@ -18,7 +18,7 @@ export type Prefs = {
 };
 
 const DEFAULTS: Prefs = {
-  theme: "dark",
+  theme: "light",
   panels: [30, 70],
   leftPaneTab: "source",
   gridZoom: GRID_ZOOM_DEFAULT,
