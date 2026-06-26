@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://jsontable.xyz/sitemap.xml
+Sitemap: https://www.jsontable.xyz/sitemap.xml

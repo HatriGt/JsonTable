@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
+import { getSiteUrl } from "@/lib/site";
 
 interface SitemapEntry {
   path: string;
@@ -8,13 +9,15 @@ interface SitemapEntry {
 }
 
 // Bump when site content/structure changes meaningfully so crawlers reschedule.
-const LAST_MODIFIED = "2026-06-25";
+const LAST_MODIFIED = "2026-06-26";
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
-      GET: async ({ request }) => {
-        const { origin } = new URL(request.url);
+      GET: async () => {
+        // Always emit the canonical host (www), regardless of which host served
+        // this request, so the sitemap can't disagree with the canonical tags.
+        const origin = getSiteUrl();
         const entries: SitemapEntry[] = [
           { path: "/", changefreq: "weekly", priority: "1.0" },
           { path: "/workspace", changefreq: "weekly", priority: "0.8" },
