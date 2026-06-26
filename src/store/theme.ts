@@ -15,7 +15,7 @@ type State = {
 };
 
 export const useTheme = create<State>((set) => ({
-  theme: "dark",
+  theme: "light",
   setTheme: (t, origin) => {
     savePrefs({ theme: t });
     applyTheme(t, origin);

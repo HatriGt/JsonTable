@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowRight, Braces } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import { LandingThemeToggle } from "./LandingThemeToggle";
 
 export function LandingNav() {
@@ -28,9 +29,7 @@ export function LandingNav() {
       </a>
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link to="/" className="group flex cursor-pointer items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-border/70 bg-card text-brand">
-            <Braces className="h-4 w-4" />
-          </div>
+          <BrandLogo className="h-8 w-8 rounded-lg" />
           <span className="text-sm font-semibold tracking-tight">JSON‑Table</span>
         </Link>
         <nav className="flex items-center gap-2 sm:gap-3">

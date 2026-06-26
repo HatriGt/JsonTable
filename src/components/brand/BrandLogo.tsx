@@ -1,0 +1,43 @@
+/** The JSON-Table brand mark: blue braces around a table, on a white disc.
+ *  Used in the nav, workspace toolbar, and empty state. Size via className. */
+export function BrandLogo({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 64 64"
+      className={className}
+      role="img"
+      aria-label="JSON-Table logo"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="32" cy="32" r="31" fill="#ffffff" stroke="#e6e8ee" strokeWidth="1" />
+      <rect x="25" y="20.5" width="14" height="4.6" rx="1.3" fill="#2f6bff" />
+      <g fill="#c8d6ff">
+        <rect x="25" y="26.4" width="4" height="3.7" rx="0.8" />
+        <rect x="30" y="26.4" width="4" height="3.7" rx="0.8" />
+        <rect x="35" y="26.4" width="4" height="3.7" rx="0.8" />
+        <rect x="25" y="31.1" width="4" height="3.7" rx="0.8" />
+        <rect x="30" y="31.1" width="4" height="3.7" rx="0.8" />
+        <rect x="35" y="31.1" width="4" height="3.7" rx="0.8" />
+        <rect x="25" y="35.8" width="4" height="3.7" rx="0.8" />
+        <rect x="30" y="35.8" width="4" height="3.7" rx="0.8" />
+        <rect x="35" y="35.8" width="4" height="3.7" rx="0.8" />
+      </g>
+      <path
+        d="M22 18c-3.5 0-5 1.6-5 5v3c0 2.6-1 3.6-3 3.6 2 0 3 1 3 3.6v3c0 3.4 1.5 5 5 5"
+        fill="none"
+        stroke="#2f6bff"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M42 18c3.5 0 5 1.6 5 5v3c0 2.6 1 3.6 3 3.6-2 0-3 1-3 3.6v3c0 3.4-1.5 5-5 5"
+        fill="none"
+        stroke="#2f6bff"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
