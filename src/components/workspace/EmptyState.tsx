@@ -1,26 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { m, useReducedMotion } from "@/lib/motion/framer";
-import {
-  AlertCircle,
-  ArrowRight,
-  ClipboardPaste,
-  FileJson,
-  Sparkles,
-  Trash2,
-  Upload,
-} from "lucide-react";
+import { AlertCircle, ArrowRight, ClipboardPaste, Sparkles, Upload } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { IconButton } from "@/components/ui/icon-button";
 import { PasteDialog } from "@/components/input/PasteDialog";
 import { pasteFromClipboard } from "@/lib/json/pasteFromClipboard";
 import { useWorkspace } from "@/store/workspace";
 import { SAMPLE_JSON } from "@/lib/json/sample";
-import { formatBytes } from "@/lib/format";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { motionTransition } from "@/lib/motion/presets";
-import { deleteRecent, listRecents, loadRecent, type RecentMeta } from "@/lib/storage/recents";
 import { useModKey } from "@/lib/platform";
 import { cn } from "@/lib/utils";
 
@@ -33,17 +22,6 @@ export function EmptyState() {
   const modKey = useModKey();
   const [over, setOver] = useState(false);
   const [pasteOpen, setPasteOpen] = useState(false);
-  const [recents, setRecents] = useState<RecentMeta[]>([]);
-
-  const refreshRecents = useCallback(() => {
-    listRecents()
-      .then(setRecents)
-      .catch(() => {});
-  }, []);
-
-  useEffect(() => {
-    refreshRecents();
-  }, [refreshRecents]);
 
   const onDrop = useCallback(
     async (e: React.DragEvent) => {
@@ -178,7 +156,6 @@ export function EmptyState() {
                 if (!f) return;
                 await loadJson(f.name, await f.text());
                 e.target.value = "";
-                refreshRecents();
               }}
             />
           </div>
@@ -208,57 +185,6 @@ export function EmptyState() {
           </p>
         </div>
       </FadeIn>
-
-      {recents.length > 0 && (
-        <FadeIn delay={0.08} className="empty-state-shell relative mt-12 w-full">
-          <div className="flex items-center justify-between px-1">
-            <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              Recent files
-            </h3>
-            <span className="text-[11px] text-muted-foreground/70">{recents.length} saved</span>
-          </div>
-          <ul className="empty-state-recent-list mt-2.5" role="list" aria-label="Recent JSON files">
-            {recents.map((r) => (
-              <li key={r.id} className="empty-state-recent-row group" role="listitem">
-                <button
-                  type="button"
-                  onClick={async () => {
-                    const raw = await loadRecent(r.id);
-                    if (raw) await loadJson(r.name, raw);
-                  }}
-                  className="flex min-h-11 min-w-0 flex-1 cursor-pointer items-center gap-3 px-3.5 py-3 text-left outline-none transition-colors duration-[var(--motion-duration-fast)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
-                  aria-label={`Open recent file ${r.name}`}
-                >
-                  <div className="empty-state-recent-icon" aria-hidden="true">
-                    <FileJson className="h-4 w-4" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm font-medium text-foreground">{r.name}</div>
-                    <div className="truncate text-xs text-muted-foreground">
-                      {formatBytes(r.sizeBytes)} · {new Date(r.savedAt).toLocaleString()}
-                    </div>
-                  </div>
-                  <ArrowRight
-                    className="h-3.5 w-3.5 shrink-0 text-muted-foreground/0 transition-all duration-[var(--motion-duration-fast)] group-hover:text-muted-foreground/60 sm:group-focus-within:text-muted-foreground/60"
-                    aria-hidden="true"
-                  />
-                </button>
-                <IconButton
-                  title="Remove recent file"
-                  aria-label={`Remove ${r.name} from recent files`}
-                  onClick={async () => {
-                    await deleteRecent(r.id);
-                    refreshRecents();
-                  }}
-                  className="mr-2 h-11 w-11 shrink-0 text-muted-foreground opacity-100 transition-opacity duration-[var(--motion-duration-fast)] hover:text-destructive sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </IconButton>
-              </li>
-            ))}
-          </ul>
-        </FadeIn>
-      )}
 
       <PasteDialog open={pasteOpen} onOpenChange={setPasteOpen} />
     </div>

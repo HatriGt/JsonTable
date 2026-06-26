@@ -12,6 +12,7 @@ import { BrandLogo } from "@/components/brand/BrandLogo";
 import { PasteDialog } from "@/components/input/PasteDialog";
 import { ShareButton } from "./ShareButton";
 import { ShortcutsOverlay } from "./ShortcutsOverlay";
+import { RecentsButton } from "./RecentsButton";
 import { pasteFromClipboard } from "@/lib/json/pasteFromClipboard";
 
 export function Toolbar() {
@@ -96,6 +97,7 @@ export function Toolbar() {
             <Upload className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">Open</span>
           </Button>
+          <RecentsButton />
         </div>
 
         <div className="flex items-center gap-0.5 rounded-lg border border-border/50 bg-background/50 p-0.5 backdrop-blur-sm">
