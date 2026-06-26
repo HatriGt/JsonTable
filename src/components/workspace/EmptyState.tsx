@@ -3,13 +3,13 @@ import { m, useReducedMotion } from "@/lib/motion/framer";
 import {
   AlertCircle,
   ArrowRight,
-  Braces,
   ClipboardPaste,
   FileJson,
   Sparkles,
   Trash2,
   Upload,
 } from "lucide-react";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { IconButton } from "@/components/ui/icon-button";
@@ -89,7 +89,7 @@ export function EmptyState() {
       <FadeIn className="empty-state-shell relative w-full">
         <div className="flex flex-col items-center text-center">
           <div className="empty-state-mark" aria-hidden="true">
-            <Braces className="h-6 w-6" />
+            <BrandLogo className="h-8 w-8" />
           </div>
 
           <h2
