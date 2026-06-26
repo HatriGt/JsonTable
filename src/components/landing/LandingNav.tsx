@@ -3,10 +3,12 @@ import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BrandLogo } from "@/components/brand/BrandLogo";
+import { useOpenSampleWorkspace } from "@/lib/workspace/use-open-sample";
 import { LandingThemeToggle } from "./LandingThemeToggle";
 
 export function LandingNav() {
   const [scrolled, setScrolled] = useState(false);
+  const openSample = useOpenSampleWorkspace();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -41,14 +43,12 @@ export function LandingNav() {
           </a>
           <LandingThemeToggle />
           <Button
-            asChild
             size="sm"
+            onClick={() => void openSample()}
             className="cursor-pointer gap-1.5 transition-transform duration-[var(--motion-duration-fast)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
           >
-            <Link to="/workspace">
-              Open workspace
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
+            Open workspace
+            <ArrowRight className="h-3.5 w-3.5" />
           </Button>
         </nav>
       </div>

@@ -4,8 +4,8 @@ import { ArrowRight, ClipboardPaste, Sparkles } from "lucide-react";
 import { PreviewMock } from "./PreviewMock";
 import { Button } from "@/components/ui/button";
 import { useWorkspace } from "@/store/workspace";
-import { SAMPLE_JSON } from "@/lib/json/sample";
 import { pasteFromClipboard } from "@/lib/json/pasteFromClipboard";
+import { useOpenSampleWorkspace } from "@/lib/workspace/use-open-sample";
 import { Stagger, StaggerItem } from "@/components/motion/Stagger";
 import { m, useMotionValue, useReducedMotion, useSpring, useTransform } from "@/lib/motion/framer";
 
@@ -59,13 +59,9 @@ export function LandingHero({ onOpenPasteDialog }: Props) {
     });
   }, [loadJson, navigate, onOpenPasteDialog]);
 
-  // Load the sample into the store first, then navigate, so the workspace mounts
-  // with the document already present (no empty-state flash during the route
-  // transition).
-  const openSample = useCallback(async () => {
-    await loadJson("sample.json", SAMPLE_JSON);
-    navigate({ to: "/workspace" });
-  }, [loadJson, navigate]);
+  // Loads the sample into the store first, then navigates, so the workspace
+  // mounts with the document already present (no empty-state flash).
+  const openSample = useOpenSampleWorkspace();
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
