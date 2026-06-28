@@ -73,6 +73,11 @@ const CONTENT: SeoLandingContent = {
       desc: "Beautify, minify, and validate JSON with inline error locations.",
     },
     {
+      href: "/json-diff",
+      label: "JSON Diff",
+      desc: "Compare two JSON documents and see what changed by path.",
+    },
+    {
       href: "/workspace",
       label: "Open the workspace",
       desc: "Jump straight into the grid and start building your table.",
