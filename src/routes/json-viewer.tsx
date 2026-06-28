@@ -74,6 +74,11 @@ const CONTENT: SeoLandingContent = {
       desc: "Turn arrays of objects into a sortable, filterable spreadsheet.",
     },
     {
+      href: "/json-diff",
+      label: "JSON Diff",
+      desc: "Compare two JSON documents and see what changed by path.",
+    },
+    {
       href: "/workspace",
       label: "Open the workspace",
       desc: "Jump straight into the full tree + grid workspace.",

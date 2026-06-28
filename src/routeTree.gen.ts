@@ -14,6 +14,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as JsonViewerRouteImport } from './routes/json-viewer'
 import { Route as JsonToTableRouteImport } from './routes/json-to-table'
 import { Route as JsonFormatterRouteImport } from './routes/json-formatter'
+import { Route as JsonDiffRouteImport } from './routes/json-diff'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WorkspaceLinkIdRouteImport } from './routes/workspace.link.$id'
 
@@ -42,6 +43,11 @@ const JsonFormatterRoute = JsonFormatterRouteImport.update({
   path: '/json-formatter',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JsonDiffRoute = JsonDiffRouteImport.update({
+  id: '/json-diff',
+  path: '/json-diff',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -55,6 +61,7 @@ const WorkspaceLinkIdRoute = WorkspaceLinkIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/json-diff': typeof JsonDiffRoute
   '/json-formatter': typeof JsonFormatterRoute
   '/json-to-table': typeof JsonToTableRoute
   '/json-viewer': typeof JsonViewerRoute
@@ -64,6 +71,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/json-diff': typeof JsonDiffRoute
   '/json-formatter': typeof JsonFormatterRoute
   '/json-to-table': typeof JsonToTableRoute
   '/json-viewer': typeof JsonViewerRoute
@@ -74,6 +82,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/json-diff': typeof JsonDiffRoute
   '/json-formatter': typeof JsonFormatterRoute
   '/json-to-table': typeof JsonToTableRoute
   '/json-viewer': typeof JsonViewerRoute
@@ -85,6 +94,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/json-diff'
     | '/json-formatter'
     | '/json-to-table'
     | '/json-viewer'
@@ -94,6 +104,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/json-diff'
     | '/json-formatter'
     | '/json-to-table'
     | '/json-viewer'
@@ -103,6 +114,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/json-diff'
     | '/json-formatter'
     | '/json-to-table'
     | '/json-viewer'
@@ -113,6 +125,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  JsonDiffRoute: typeof JsonDiffRoute
   JsonFormatterRoute: typeof JsonFormatterRoute
   JsonToTableRoute: typeof JsonToTableRoute
   JsonViewerRoute: typeof JsonViewerRoute
@@ -157,6 +170,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JsonFormatterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/json-diff': {
+      id: '/json-diff'
+      path: '/json-diff'
+      fullPath: '/json-diff'
+      preLoaderRoute: typeof JsonDiffRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -188,6 +208,7 @@ const WorkspaceRouteWithChildren = WorkspaceRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  JsonDiffRoute: JsonDiffRoute,
   JsonFormatterRoute: JsonFormatterRoute,
   JsonToTableRoute: JsonToTableRoute,
   JsonViewerRoute: JsonViewerRoute,

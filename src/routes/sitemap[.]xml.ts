@@ -24,6 +24,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/json-viewer", changefreq: "monthly", priority: "0.7" },
           { path: "/json-formatter", changefreq: "monthly", priority: "0.7" },
           { path: "/json-to-table", changefreq: "monthly", priority: "0.7" },
+          { path: "/json-diff", changefreq: "monthly", priority: "0.7" },
         ];
 
         const urls = entries.map((e) =>
