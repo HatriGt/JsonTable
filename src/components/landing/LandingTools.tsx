@@ -61,9 +61,7 @@ export function LandingTools() {
                   href={tool.href}
                   className="group relative flex h-full items-center gap-3.5 overflow-hidden rounded-2xl border border-border/70 bg-card p-4 transition-[border-color,transform,box-shadow] duration-[var(--motion-duration-fast)] hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-landing-demo"
                 >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand transition-colors duration-[var(--motion-duration-fast)] group-hover:bg-brand/15">
-                    <Icon className="h-5 w-5" />
-                  </span>
+                  <Icon className="h-6 w-6 shrink-0 text-brand" strokeWidth={1.75} />
                   <span className="min-w-0 flex-1">
                     <span className="flex items-center gap-1.5">
                       <span className="truncate text-[15px] font-semibold text-foreground">
