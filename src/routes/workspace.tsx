@@ -12,11 +12,11 @@ const PENDING_SAMPLE_KEY = "json-table:pending-sample";
 export const Route = createFileRoute("/workspace")({
   head: () => ({
     meta: [
-      { title: "Workspace \u2014 JSON\u2011Table" },
+      { title: "JSON Workspace \u2014 Tree, Grid, Search & Edit | JSON\u2011Table" },
       {
         name: "description",
         content:
-          "Explore, search, sort, and filter JSON as a navigable tree plus a fast spreadsheet grid.",
+          "Explore JSON as a navigable tree plus a fast spreadsheet grid \u2014 search, sort, per-column filters, and inline editing. Local-first, free, no uploads.",
       },
       { property: "og:title", content: "JSON\u2011Table Workspace" },
       {
