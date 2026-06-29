@@ -1,6 +1,15 @@
 import { useEffect, useRef } from "react";
 
-type Dot = { x: number; y: number; r: number; vx: number; vy: number; a: number };
+type Dot = {
+  x: number;
+  y: number;
+  r: number;
+  vx: number;
+  vy: number;
+  a: number;
+  phase: number;
+  tw: number;
+};
 
 // Dots within this many px of each other get linked; the line fades out as they
 // approach the limit, so the network feels alive rather than a static mesh.
@@ -52,16 +61,20 @@ export function LandingDots() {
       c.canvas.style.width = `${w}px`;
       c.canvas.style.height = `${h}px`;
       c.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const count = Math.min(80, Math.max(22, Math.round((w * h) / 24000)));
+      const count = Math.min(150, Math.max(40, Math.round((w * h) / 13000)));
       dots = Array.from({ length: count }, () => ({
         x: Math.random() * w,
         y: Math.random() * h,
-        r: Math.random() * 1.4 + 0.9,
-        vx: (Math.random() - 0.5) * 0.22,
-        vy: (Math.random() - 0.5) * 0.22,
-        a: Math.random() * 0.4 + 0.25,
+        r: Math.random() * 1.3 + 0.8,
+        vx: (Math.random() - 0.5) * 0.18,
+        vy: (Math.random() - 0.5) * 0.18,
+        a: Math.random() * 0.35 + 0.25,
+        phase: Math.random() * Math.PI * 2,
+        tw: Math.random() * 0.6 + 0.4,
       }));
     }
+
+    let t = 0;
 
     function paint() {
       c.clearRect(0, 0, w, h);
@@ -74,9 +87,9 @@ export function LandingDots() {
           const b = dots[j];
           const dx = a.x - b.x;
           const dy = a.y - b.y;
-          const dist = Math.hypot(dx, dy);
-          if (dist > LINK_DIST) continue;
-          const alpha = (1 - dist / LINK_DIST) * 0.32;
+          const d2 = dx * dx + dy * dy;
+          if (d2 > LINK_DIST * LINK_DIST) continue;
+          const alpha = (1 - Math.sqrt(d2) / LINK_DIST) * 0.3;
           c.strokeStyle = `rgba(${base}, ${alpha})`;
           c.beginPath();
           c.moveTo(a.x, a.y);
@@ -86,15 +99,18 @@ export function LandingDots() {
       }
 
       for (const d of dots) {
+        // Gentle twinkle: ease the alpha up and down so dots feel alive.
+        const alpha = d.a * (0.62 + 0.38 * Math.sin(d.phase + t * d.tw));
         c.beginPath();
         c.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-        c.fillStyle = `rgba(${base}, ${d.a})`;
+        c.fillStyle = `rgba(${base}, ${alpha})`;
         c.fill();
       }
     }
 
     let raf = 0;
     function frame() {
+      t += 0.016;
       for (const d of dots) {
         d.x += d.vx;
         d.y += d.vy;
