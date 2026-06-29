@@ -23,6 +23,22 @@ export const FAQ_ITEMS = [
     q: "Which browsers are supported?",
     a: "Any modern browser — Chrome, Edge, Firefox, or Safari. It is a client-side web app with nothing to install.",
   },
+  {
+    q: "How do I view JSON as a tree?",
+    a: "Open the JSON Viewer & Formatter, paste your JSON, and it renders as a collapsible, color-coded tree. Expand and collapse nodes to explore deeply nested objects and arrays, or open it in the workspace for a virtualized tree plus a filterable grid built for very large documents.",
+  },
+  {
+    q: "How do I format, beautify, or minify JSON?",
+    a: "The JSON Formatter beautifies your JSON with clean 2-space indentation and color-coded syntax highlighting, or minifies it to a single compact line. Invalid JSON is flagged inline with the exact line and column so you can fix it fast.",
+  },
+  {
+    q: "How do I convert JSON to a table?",
+    a: "Paste an array of objects into JSON to Table and the keys become sortable columns automatically. Filter per column, reorder columns by dragging, and edit cells inline — no conversion step and no upload.",
+  },
+  {
+    q: "How do I compare two JSON files?",
+    a: "Use JSON Diff to compare two documents side by side. It highlights exactly what was added, removed, or changed by path, so you can spot differences between API responses, config files, or versions at a glance.",
+  },
 ] as const;
 
 export function LandingFaq() {
