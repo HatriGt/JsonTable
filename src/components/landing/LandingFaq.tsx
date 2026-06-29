@@ -59,11 +59,11 @@ export function LandingFaq() {
         </FadeIn>
 
         <FadeIn inView>
-          <dl className="mt-8 divide-y divide-border/70 overflow-hidden rounded-xl border border-border/70 sm:mt-10">
+          <div className="mt-8 divide-y divide-border/70 overflow-hidden rounded-xl border border-border/70 sm:mt-10">
             {FAQ_ITEMS.map((item) => (
               <details key={item.q} className="group bg-card">
                 <summary className="flex cursor-pointer items-center justify-between gap-4 px-5 py-4 text-left text-[15px] font-medium text-foreground transition-colors duration-[var(--motion-duration-fast)] hover:bg-[var(--grid-row-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand/50 sm:px-6">
-                  <dt>{item.q}</dt>
+                  <h3 className="text-[15px] font-medium">{item.q}</h3>
                   <span
                     aria-hidden="true"
                     className="text-muted-foreground transition-transform duration-[var(--motion-duration-fast)] group-open:rotate-45"
@@ -71,12 +71,12 @@ export function LandingFaq() {
                     +
                   </span>
                 </summary>
-                <dd className="px-5 pb-4 text-sm leading-relaxed text-muted-foreground sm:px-6">
+                <div className="px-5 pb-4 text-sm leading-relaxed text-muted-foreground sm:px-6">
                   {item.a}
-                </dd>
+                </div>
               </details>
             ))}
-          </dl>
+          </div>
         </FadeIn>
       </div>
     </section>

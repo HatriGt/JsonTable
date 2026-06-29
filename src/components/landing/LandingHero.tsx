@@ -18,9 +18,14 @@ const tiltSpring = { stiffness: 150, damping: 18, mass: 0.4 };
 /** Subtle cursor-tracking 3D tilt. Off on touch / reduced-motion. */
 function PreviewTilt({ children }: { children: ReactNode }) {
   const reduced = useReducedMotion();
-  const [enabled] = useState(
-    () => typeof window !== "undefined" && window.matchMedia("(pointer: fine)").matches,
-  );
+  // Enable the tilt only after mount. Doing this in a useState initializer would
+  // branch on `window` during hydration and render different markup on the
+  // client than the server (a hydration mismatch); useEffect keeps the first
+  // client render identical to the SSR output, then upgrades.
+  const [enabled, setEnabled] = useState(false);
+  useEffect(() => {
+    setEnabled(window.matchMedia("(pointer: fine)").matches);
+  }, []);
   const px = useMotionValue(0);
   const py = useMotionValue(0);
   const rotateX = useSpring(useTransform(py, [-0.5, 0.5], [5, -5]), tiltSpring);
