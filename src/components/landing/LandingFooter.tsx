@@ -1,8 +1,7 @@
 const YEAR = new Date().getFullYear();
 
 const TOOL_LINKS = [
-  { href: "/json-viewer", label: "JSON Viewer" },
-  { href: "/json-formatter", label: "JSON Formatter" },
+  { href: "/json-viewer", label: "JSON Viewer & Formatter" },
   { href: "/json-to-table", label: "JSON to Table" },
   { href: "/json-diff", label: "JSON Diff" },
   { href: "/workspace", label: "Workspace" },
