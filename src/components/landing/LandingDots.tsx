@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 
+type RGB = [number, number, number];
 type Dot = {
   x: number;
   y: number;
@@ -9,18 +10,30 @@ type Dot = {
   a: number;
   phase: number;
   tw: number;
+  ci: number;
 };
 
 // Dots within this many px of each other get linked; the line fades out as they
 // approach the limit, so the network feels alive rather than a static mesh.
 const LINK_DIST = 140;
 
+// The app's JSON syntax palette — keys, strings, numbers, booleans, null. Using
+// these ties the background network to the product's signature look.
+const PALETTE_VARS = [
+  "--json-key",
+  "--json-string",
+  "--json-number",
+  "--json-bool",
+  "--brand",
+] as const;
+
 /**
  * Subtle "constellation" network painted behind the landing content: drifting
- * dots connected by lines that fade with distance. Canvas-based so it stays
- * cheap (one layer, rAF), viewport-fixed so the canvas never grows with the
- * page. Honors prefers-reduced-motion (renders a single static frame) and
- * pauses while the tab is hidden.
+ * dots connected by lines that fade with distance. Dots are colored with the
+ * app's JSON token palette and each link blends its two endpoints' colors, so
+ * the field reads as the same color-coded JSON the product renders. Canvas-based
+ * (one layer, rAF), viewport-fixed, honors prefers-reduced-motion and pauses
+ * while the tab is hidden.
  */
 export function LandingDots() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -35,19 +48,23 @@ export function LandingDots() {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-    // Read the brand color as rgb so the canvas fill matches the theme (and
-    // re-read it when the light/dark class flips).
-    let base = "37, 99, 235";
-    function readBrand() {
+    // Resolve the JSON palette to rgb tuples (re-read when the theme flips).
+    let palette: RGB[] = [[37, 99, 235]];
+    function readPalette() {
       const probe = document.createElement("span");
-      probe.style.color = "var(--brand)";
       probe.style.display = "none";
       document.body.appendChild(probe);
-      const m = getComputedStyle(probe).color.match(/\d+/g);
+      const next: RGB[] = [];
+      for (const v of PALETTE_VARS) {
+        probe.style.color = "";
+        probe.style.color = `var(${v})`;
+        const m = getComputedStyle(probe).color.match(/\d+(\.\d+)?/g);
+        if (m && m.length >= 3) next.push([+m[0], +m[1], +m[2]]);
+      }
       probe.remove();
-      if (m && m.length >= 3) base = `${m[0]}, ${m[1]}, ${m[2]}`;
+      if (next.length) palette = next;
     }
-    readBrand();
+    readPalette();
 
     let w = 0;
     let h = 0;
@@ -71,6 +88,7 @@ export function LandingDots() {
         a: Math.random() * 0.35 + 0.25,
         phase: Math.random() * Math.PI * 2,
         tw: Math.random() * 0.6 + 0.4,
+        ci: Math.floor(Math.random() * PALETTE_VARS.length),
       }));
     }
 
@@ -79,18 +97,24 @@ export function LandingDots() {
     function paint() {
       c.clearRect(0, 0, w, h);
 
-      // Links first, so the dots sit on top of the lines.
+      // Links first, so the dots sit on top of the lines. Each line is the
+      // blend of its two endpoints' JSON colors.
       c.lineWidth = 1;
       for (let i = 0; i < dots.length; i++) {
         const a = dots[i];
+        const ca = palette[a.ci % palette.length];
         for (let j = i + 1; j < dots.length; j++) {
           const b = dots[j];
           const dx = a.x - b.x;
           const dy = a.y - b.y;
           const d2 = dx * dx + dy * dy;
           if (d2 > LINK_DIST * LINK_DIST) continue;
-          const alpha = (1 - Math.sqrt(d2) / LINK_DIST) * 0.3;
-          c.strokeStyle = `rgba(${base}, ${alpha})`;
+          const cb = palette[b.ci % palette.length];
+          const alpha = (1 - Math.sqrt(d2) / LINK_DIST) * 0.28;
+          const r = (ca[0] + cb[0]) >> 1;
+          const g = (ca[1] + cb[1]) >> 1;
+          const bl = (ca[2] + cb[2]) >> 1;
+          c.strokeStyle = `rgba(${r}, ${g}, ${bl}, ${alpha})`;
           c.beginPath();
           c.moveTo(a.x, a.y);
           c.lineTo(b.x, b.y);
@@ -99,11 +123,12 @@ export function LandingDots() {
       }
 
       for (const d of dots) {
+        const col = palette[d.ci % palette.length];
         // Gentle twinkle: ease the alpha up and down so dots feel alive.
         const alpha = d.a * (0.62 + 0.38 * Math.sin(d.phase + t * d.tw));
         c.beginPath();
         c.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-        c.fillStyle = `rgba(${base}, ${alpha})`;
+        c.fillStyle = `rgba(${col[0]}, ${col[1]}, ${col[2]}, ${alpha})`;
         c.fill();
       }
     }
@@ -141,7 +166,7 @@ export function LandingDots() {
       else start();
     }
     const themeObserver = new MutationObserver(() => {
-      readBrand();
+      readPalette();
       if (reduced) paint();
     });
     themeObserver.observe(document.documentElement, {
