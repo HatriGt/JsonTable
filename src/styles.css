@@ -426,6 +426,27 @@ html.theme-transition-active::view-transition-new(root) {
     linear-gradient(to bottom, oklch(1 0 0 / 0.08) 1px, transparent 1px);
 }
 
+/* Drifting dot field (canvas) — sits above the page background, behind content,
+   faded toward the edges so it blends with the graph-paper grid. */
+.landing-dots {
+  z-index: 0;
+  opacity: 0.9;
+  -webkit-mask-image: radial-gradient(
+    ellipse 85% 70% at 50% 28%,
+    rgb(0 0 0 / 1) 0%,
+    rgb(0 0 0 / 0.6) 50%,
+    rgb(0 0 0 / 0.18) 74%,
+    transparent 90%
+  );
+  mask-image: radial-gradient(
+    ellipse 85% 70% at 50% 28%,
+    rgb(0 0 0 / 1) 0%,
+    rgb(0 0 0 / 0.6) 50%,
+    rgb(0 0 0 / 0.18) 74%,
+    transparent 90%
+  );
+}
+
 @utility text-gradient-spreadsheet {
   background: linear-gradient(
     90deg,
