@@ -64,13 +64,8 @@ const CONTENT: SeoLandingContent = {
   related: [
     {
       href: "/json-viewer",
-      label: "JSON Viewer",
-      desc: "Explore JSON as a collapsible tree and a filterable grid.",
-    },
-    {
-      href: "/json-formatter",
-      label: "JSON Formatter",
-      desc: "Beautify, minify, and validate JSON with inline error locations.",
+      label: "JSON Viewer & Formatter",
+      desc: "Explore JSON as a tree, or beautify, minify, and validate it.",
     },
     {
       href: "/json-diff",

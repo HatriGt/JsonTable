@@ -1,4 +1,4 @@
-import { AlignLeft, ArrowUpRight, GitCompare, ListTree, Table2 } from "lucide-react";
+import { ArrowUpRight, GitCompare, ListTree, Table2 } from "lucide-react";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { Stagger, StaggerItem } from "@/components/motion/Stagger";
 
@@ -6,15 +6,8 @@ const TOOLS = [
   {
     href: "/json-viewer",
     icon: ListTree,
-    title: "JSON Viewer",
-    body: "Explore JSON as a collapsible tree.",
-    badge: null,
-  },
-  {
-    href: "/json-formatter",
-    icon: AlignLeft,
-    title: "JSON Formatter",
-    body: "Beautify, minify, and validate.",
+    title: "JSON Viewer & Formatter",
+    body: "Tree view, beautify, minify, validate.",
     badge: null,
   },
   {
@@ -52,7 +45,7 @@ export function LandingTools() {
           </h2>
         </FadeIn>
 
-        <Stagger inView className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <Stagger inView className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {TOOLS.map((tool) => {
             const Icon = tool.icon;
             return (
