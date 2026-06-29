@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { parseJson } from "@/lib/json/parse";
 import { prettyPrint } from "@/lib/json/highlight";
+import { highlightJson } from "@/components/tools/JsonHighlight";
 import { cn } from "@/lib/utils";
 
 const EXAMPLE =
@@ -126,7 +127,9 @@ export function JsonFormatterTool() {
           </span>
           <div className="h-[420px] overflow-auto rounded-md border border-border bg-[var(--source-bg,var(--card))] p-3">
             {output ? (
-              <pre className="font-mono text-xs leading-relaxed text-foreground">{output}</pre>
+              <pre className="font-mono text-xs leading-relaxed text-foreground">
+                {highlightJson(output)}
+              </pre>
             ) : (
               <p className="px-1 py-2 text-xs text-muted-foreground">
                 {showError
