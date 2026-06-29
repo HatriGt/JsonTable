@@ -18,8 +18,8 @@ export function Landing() {
       <LandingNav />
       <main id="main-content" className="relative flex-1">
         <LandingHero onOpenPasteDialog={() => setPasteOpen(true)} />
-        <LandingFeatures />
         <LandingTools />
+        <LandingFeatures />
         <LandingFaq />
       </main>
       <LandingFooter />
