@@ -9,27 +9,30 @@ const TOKEN_RE =
 export function highlightJson(code: string): ReactNode[] {
   const nodes: ReactNode[] = [];
   let last = 0;
-  let key = 0;
   const re = new RegExp(TOKEN_RE);
   let m: RegExpExecArray | null;
 
+  // Keys are the token's character offset in the source, prefixed by kind. They
+  // are unique within a render and stable across renders for the same input, so
+  // React reuses nodes instead of rebuilding them every keystroke.
   while ((m = re.exec(code)) !== null) {
     if (m.index > last) {
-      nodes.push(<Fragment key={key++}>{code.slice(last, m.index)}</Fragment>);
+      nodes.push(<Fragment key={`g${last}`}>{code.slice(last, m.index)}</Fragment>);
     }
 
     const [, str, colon, keyword, num] = m;
+    const at = m.index;
     if (str !== undefined) {
       if (colon !== undefined) {
         nodes.push(
-          <span key={key++} className="text-json-key">
+          <span key={`k${at}`} className="text-json-key">
             {str}
           </span>,
         );
-        nodes.push(<Fragment key={key++}>{colon}</Fragment>);
+        nodes.push(<Fragment key={`c${at}`}>{colon}</Fragment>);
       } else {
         nodes.push(
-          <span key={key++} className="text-json-string">
+          <span key={`s${at}`} className="text-json-string">
             {str}
           </span>,
         );
@@ -37,7 +40,7 @@ export function highlightJson(code: string): ReactNode[] {
     } else if (keyword !== undefined) {
       nodes.push(
         <span
-          key={key++}
+          key={`w${at}`}
           className={keyword === "null" ? "text-json-null italic" : "text-json-bool"}
         >
           {keyword}
@@ -45,7 +48,7 @@ export function highlightJson(code: string): ReactNode[] {
       );
     } else if (num !== undefined) {
       nodes.push(
-        <span key={key++} className="text-json-number">
+        <span key={`n${at}`} className="text-json-number">
           {num}
         </span>,
       );
@@ -55,7 +58,7 @@ export function highlightJson(code: string): ReactNode[] {
   }
 
   if (last < code.length) {
-    nodes.push(<Fragment key={key++}>{code.slice(last)}</Fragment>);
+    nodes.push(<Fragment key={`g${last}`}>{code.slice(last)}</Fragment>);
   }
 
   return nodes;

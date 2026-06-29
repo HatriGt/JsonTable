@@ -49,19 +49,22 @@ export function LandingDots() {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
     // Resolve the JSON palette to rgb tuples (re-read when the theme flips).
+    // One probe per var so all style writes happen up front and all the
+    // getComputedStyle reads happen after — no interleaved write/read thrash.
     let palette: RGB[] = [[37, 99, 235]];
     function readPalette() {
-      const probe = document.createElement("span");
-      probe.style.display = "none";
-      document.body.appendChild(probe);
+      const probes = PALETTE_VARS.map((v) => {
+        const el = document.createElement("span");
+        el.style.cssText = `display:none;color:var(${v})`;
+        document.body.appendChild(el);
+        return el;
+      });
       const next: RGB[] = [];
-      for (const v of PALETTE_VARS) {
-        probe.style.color = "";
-        probe.style.color = `var(${v})`;
-        const m = getComputedStyle(probe).color.match(/\d+(\.\d+)?/g);
+      for (const el of probes) {
+        const m = getComputedStyle(el).color.match(/\d+(\.\d+)?/g);
         if (m && m.length >= 3) next.push([+m[0], +m[1], +m[2]]);
       }
-      probe.remove();
+      probes.forEach((el) => el.remove());
       if (next.length) palette = next;
     }
     readPalette();
@@ -185,11 +188,12 @@ export function LandingDots() {
     };
   }, []);
 
+  // aria-hidden sits on a display:contents wrapper (which adds no box) rather
+  // than directly on the canvas, so the decorative subtree stays out of the
+  // accessibility tree without flagging aria-hidden on the canvas element.
   return (
-    <canvas
-      ref={ref}
-      aria-hidden="true"
-      className="landing-dots pointer-events-none fixed inset-0"
-    />
+    <div aria-hidden="true" style={{ display: "contents" }}>
+      <canvas ref={ref} className="landing-dots pointer-events-none fixed inset-0" />
+    </div>
   );
 }
