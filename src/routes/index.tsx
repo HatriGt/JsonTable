@@ -3,26 +3,23 @@ import { Landing } from "@/components/landing/Landing";
 import { FAQ_ITEMS } from "@/components/landing/LandingFaq";
 import { getSiteUrl } from "@/lib/site";
 
+// Title 50–60 chars and description 120–160 chars, both carrying the core
+// keywords (viewer, formatter, table, tree, spreadsheet, diff) so search
+// engines see consistent keyword coverage across title/meta/headings.
+const TITLE = "JSON‑Table — Free Online JSON Viewer, Formatter & Table";
+const DESCRIPTION =
+  "Free online JSON viewer, formatter & table tool. View JSON as a tree or sortable spreadsheet, then beautify, minify, validate, or diff it. No uploads.";
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "JSON\u2011Table \u2014 The fastest way to read JSON" },
-      {
-        name: "description",
-        content:
-          "Turn any JSON into a navigable tree and a sortable, filterable spreadsheet. Local\u2011first, fast, free.",
-      },
-      { property: "og:title", content: "JSON\u2011Table \u2014 The fastest way to read JSON" },
-      {
-        property: "og:description",
-        content: "Turn any JSON into a navigable tree and a sortable, filterable spreadsheet.",
-      },
+      { title: TITLE },
+      { name: "description", content: DESCRIPTION },
+      { property: "og:title", content: TITLE },
+      { property: "og:description", content: DESCRIPTION },
       { property: "og:url", content: `${getSiteUrl()}/` },
-      { name: "twitter:title", content: "JSON\u2011Table \u2014 The fastest way to read JSON" },
-      {
-        name: "twitter:description",
-        content: "Turn any JSON into a navigable tree and a sortable, filterable spreadsheet.",
-      },
+      { name: "twitter:title", content: TITLE },
+      { name: "twitter:description", content: DESCRIPTION },
     ],
     links: [{ rel: "canonical", href: `${getSiteUrl()}/` }],
     scripts: [
