@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { formatBytes } from "@/lib/format";
 import { motionTransition } from "@/lib/motion/presets";
 import { ClipboardPaste, Upload, Sun, Moon, Trash2 } from "lucide-react";
-import { BrandLogo } from "@/components/brand/BrandLogo";
+import { BrandLogo, BrandWordmark } from "@/components/brand/BrandLogo";
 import { PasteDialog } from "@/components/input/PasteDialog";
 import { ShareButton } from "./ShareButton";
 import { ShortcutsOverlay } from "./ShortcutsOverlay";
@@ -39,10 +39,8 @@ export function Toolbar() {
     <div className="chrome-elevation relative z-10 flex h-12 shrink-0 items-center justify-between gap-2 border-b border-border/80 bg-[var(--pane-header)] px-3">
       <div className="flex min-w-0 items-center gap-2">
         <Link to="/" className="group flex cursor-pointer items-center gap-2.5">
-          <BrandLogo className="h-7 w-7 rounded-lg ring-1 ring-border/60 transition-transform duration-[var(--motion-duration-fast)] group-hover:scale-105" />
-          <span className="hidden text-[13px] font-semibold tracking-tight sm:inline">
-            JSON‑Table
-          </span>
+          <BrandLogo className="h-7 w-7 transition-transform duration-[var(--motion-duration-fast)] group-hover:scale-105" />
+          <BrandWordmark className="hidden text-[13px] font-semibold tracking-tight sm:inline" />
         </Link>
         <AnimatePresence mode="wait">
           {doc && (

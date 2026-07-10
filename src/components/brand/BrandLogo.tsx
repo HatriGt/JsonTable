@@ -1,6 +1,12 @@
-/** The JSON-Table brand mark: blue braces around a table, on a white disc.
- *  Used in the nav, workspace toolbar, and empty state. Size via className. */
+import { useId } from "react";
+
+/** The JSON-Table brand mark: a white spreadsheet glyph (header row + grid) on
+ *  a rounded, brand-gradient tile. Reads cleanly from 16px favicons up. Size
+ *  via className. */
 export function BrandLogo({ className }: { className?: string }) {
+  const id = useId();
+  const grad = `${id}-grad`;
+  const mask = `${id}-mask`;
   return (
     <svg
       viewBox="0 0 64 64"
@@ -9,35 +15,30 @@ export function BrandLogo({ className }: { className?: string }) {
       aria-label="JSON-Table logo"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <circle cx="32" cy="32" r="31" fill="#ffffff" stroke="#e6e8ee" strokeWidth="1" />
-      <rect x="25" y="20.5" width="14" height="4.6" rx="1.3" fill="#2f6bff" />
-      <g fill="#c8d6ff">
-        <rect x="25" y="26.4" width="4" height="3.7" rx="0.8" />
-        <rect x="30" y="26.4" width="4" height="3.7" rx="0.8" />
-        <rect x="35" y="26.4" width="4" height="3.7" rx="0.8" />
-        <rect x="25" y="31.1" width="4" height="3.7" rx="0.8" />
-        <rect x="30" y="31.1" width="4" height="3.7" rx="0.8" />
-        <rect x="35" y="31.1" width="4" height="3.7" rx="0.8" />
-        <rect x="25" y="35.8" width="4" height="3.7" rx="0.8" />
-        <rect x="30" y="35.8" width="4" height="3.7" rx="0.8" />
-        <rect x="35" y="35.8" width="4" height="3.7" rx="0.8" />
-      </g>
-      <path
-        d="M22 18c-3.5 0-5 1.6-5 5v3c0 2.6-1 3.6-3 3.6 2 0 3 1 3 3.6v3c0 3.4 1.5 5 5 5"
-        fill="none"
-        stroke="#2f6bff"
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M42 18c3.5 0 5 1.6 5 5v3c0 2.6 1 3.6 3 3.6-2 0-3 1-3 3.6v3c0 3.4-1.5 5-5 5"
-        fill="none"
-        stroke="#2f6bff"
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <defs>
+        <linearGradient id={grad} x1="6" y1="4" x2="58" y2="60" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#5b86ff" />
+          <stop offset="1" stopColor="#2551e0" />
+        </linearGradient>
+        <mask id={mask}>
+          <rect x="16" y="17" width="32" height="30" rx="4.5" fill="#fff" />
+          <rect x="16" y="25.5" width="32" height="2.4" fill="#000" />
+          <rect x="30.8" y="27.9" width="2.4" height="19.1" fill="#000" />
+          <rect x="16" y="36.5" width="32" height="2.4" fill="#000" />
+        </mask>
+      </defs>
+      <rect x="2" y="2" width="60" height="60" rx="16" fill={`url(#${grad})`} />
+      <rect x="16" y="17" width="32" height="30" rx="4.5" fill="#ffffff" mask={`url(#${mask})`} />
     </svg>
+  );
+}
+
+/** Wordmark: "JSON" in brand, "‑Table" in the current text color. */
+export function BrandWordmark({ className }: { className?: string }) {
+  return (
+    <span className={className}>
+      <span className="text-brand">JSON</span>
+      <span>‑Table</span>
+    </span>
   );
 }

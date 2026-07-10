@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { BrandLogo } from "@/components/brand/BrandLogo";
+import { BrandLogo, BrandWordmark } from "@/components/brand/BrandLogo";
 import { useOpenSampleWorkspace } from "@/lib/workspace/use-open-sample";
 import { LandingThemeToggle } from "./LandingThemeToggle";
 
@@ -33,8 +33,8 @@ export function LandingNav() {
       </a>
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link to="/" className="group flex cursor-pointer items-center gap-2.5">
-          <BrandLogo className="h-8 w-8 rounded-lg" />
-          <span className="text-sm font-semibold tracking-tight">JSON‑Table</span>
+          <BrandLogo className="h-8 w-8" />
+          <BrandWordmark className="text-sm font-semibold tracking-tight" />
         </Link>
         <nav className="flex items-center gap-2 sm:gap-3">
           <a
