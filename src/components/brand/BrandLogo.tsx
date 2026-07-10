@@ -16,8 +16,8 @@ export function BrandLogo({ className }: { className?: string }) {
     >
       <defs>
         <linearGradient id={grad} x1="6" y1="4" x2="58" y2="60" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#3aa3f0" />
-          <stop offset="1" stopColor="#57a84e" />
+          <stop stopColor="#5b86ff" />
+          <stop offset="1" stopColor="#2551e0" />
         </linearGradient>
       </defs>
       <rect x="2" y="2" width="60" height="60" rx="16" fill={`url(#${grad})`} />
@@ -31,9 +31,9 @@ export function BrandLogo({ className }: { className?: string }) {
         <path d="M24 18c-4 0-5.6 1.8-5.6 5.6v3.4c0 2.9-1.3 4.4-3.4 4.4 2.1 0 3.4 1.5 3.4 4.4v3.4c0 3.8 1.6 5.6 5.6 5.6" />
         <path d="M40 18c4 0 5.6 1.8 5.6 5.6v3.4c0 2.9 1.3 4.4 3.4 4.4-2.1 0-3.4 1.5-3.4 4.4v3.4c0 3.8-1.6 5.6-5.6 5.6" />
       </g>
-      <circle cx="26.5" cy="32" r="2.6" fill="#ffd36b" />
-      <circle cx="32" cy="32" r="2.6" fill="#ff9db1" />
-      <circle cx="37.5" cy="32" r="2.6" fill="#8fe9ff" />
+      <circle cx="26.5" cy="32" r="2.6" fill="#7cf3c2" />
+      <circle cx="32" cy="32" r="2.6" fill="#ffd36b" />
+      <circle cx="37.5" cy="32" r="2.6" fill="#ff9db1" />
     </svg>
   );
 }
