@@ -16,8 +16,8 @@ export function BrandLogo({ className }: { className?: string }) {
     >
       <defs>
         <linearGradient id={grad} x1="6" y1="4" x2="58" y2="60" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#5b86ff" />
-          <stop offset="1" stopColor="#2551e0" />
+          <stop stopColor="#3f6fff" />
+          <stop offset="1" stopColor="#1b3fb8" />
         </linearGradient>
       </defs>
       <rect x="2" y="2" width="60" height="60" rx="16" fill={`url(#${grad})`} />
