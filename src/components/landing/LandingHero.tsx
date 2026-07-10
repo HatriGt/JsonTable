@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { useWorkspace } from "@/store/workspace";
 import { pasteFromClipboard } from "@/lib/json/pasteFromClipboard";
 import { useOpenSampleWorkspace } from "@/lib/workspace/use-open-sample";
-import { Stagger, StaggerItem } from "@/components/motion/Stagger";
 
 type Props = {
   onOpenPasteDialog: () => void;
@@ -50,63 +49,67 @@ export function LandingHero({ onOpenPasteDialog }: Props) {
         aria-hidden="true"
       />
 
-      <Stagger className="relative max-w-3xl">
-        <StaggerItem>
+      <div className="relative max-w-3xl">
+        <div className="rise-in" style={{ animationDelay: "0s" }}>
           <span className="inline-flex items-center gap-2 rounded-full border border-white/50 bg-white/55 px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/80 shadow-sm backdrop-blur-sm dark:border-white/15 dark:bg-white/10">
             <span className="soft-pulse h-1.5 w-1.5 rounded-full bg-brand" aria-hidden="true" />
             Local-first JSON viewer
           </span>
-        </StaggerItem>
+        </div>
 
-        <StaggerItem>
-          <h1 className="mt-6 text-balance text-[2.75rem] font-semibold leading-[1.05] tracking-[-0.03em] text-foreground [text-shadow:0_2px_24px_rgb(255_255_255/0.75)] sm:text-6xl lg:text-7xl dark:[text-shadow:0_2px_28px_rgb(0_0_0/0.6)]">
-            Read JSON like a <span className="headline-accent [text-shadow:none]">spreadsheet</span>
-          </h1>
-        </StaggerItem>
+        <h1
+          className="rise-in mt-6 text-balance text-[2.75rem] font-semibold leading-[1.05] tracking-[-0.03em] text-foreground [text-shadow:0_2px_24px_rgb(255_255_255/0.75)] sm:text-6xl lg:text-7xl dark:[text-shadow:0_2px_28px_rgb(0_0_0/0.6)]"
+          style={{ animationDelay: "0.07s" }}
+        >
+          Read JSON like a <span className="headline-accent [text-shadow:none]">spreadsheet</span>
+        </h1>
 
-        <StaggerItem>
-          <p className="mx-auto mt-6 max-w-[36rem] text-pretty text-base leading-relaxed text-foreground/80 [text-shadow:0_1px_14px_rgb(255_255_255/0.85)] sm:text-lg dark:text-foreground/75 dark:[text-shadow:0_1px_16px_rgb(0_0_0/0.7)]">
-            Nested payloads become a navigable tree and a filterable grid. Find any value in
-            seconds, not scroll-minutes.
-          </p>
-        </StaggerItem>
+        <p
+          className="rise-in mx-auto mt-6 max-w-[36rem] text-pretty text-base leading-relaxed text-foreground/80 [text-shadow:0_1px_14px_rgb(255_255_255/0.85)] sm:text-lg dark:text-foreground/75 dark:[text-shadow:0_1px_16px_rgb(0_0_0/0.7)]"
+          style={{ animationDelay: "0.14s" }}
+        >
+          Nested payloads become a navigable tree and a filterable grid. Find any value in seconds,
+          not scroll-minutes.
+        </p>
 
-        <StaggerItem>
-          <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-            <Button
-              size="lg"
-              className="h-12 cursor-pointer gap-2 px-6 text-[15px] shadow-lg shadow-brand/20 transition-transform duration-[var(--motion-duration-fast)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
-              onClick={pasteAndOpen}
+        <div
+          className="rise-in mt-9 flex flex-wrap items-center justify-center gap-3"
+          style={{ animationDelay: "0.21s" }}
+        >
+          <Button
+            size="lg"
+            className="h-12 cursor-pointer gap-2 px-6 text-[15px] shadow-lg shadow-brand/20 transition-transform duration-[var(--motion-duration-fast)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+            onClick={pasteAndOpen}
+          >
+            <ClipboardPaste className="h-4 w-4" />
+            Paste JSON
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            className="h-12 cursor-pointer gap-2 border-white/60 bg-white/70 px-6 text-[15px] backdrop-blur-sm transition-transform duration-[var(--motion-duration-fast)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] dark:border-white/15 dark:bg-white/10"
+            onClick={() => void openSample()}
+          >
+            <Sparkles className="h-4 w-4 text-brand" />
+            Try a sample
+          </Button>
+        </div>
+
+        <ul
+          className="rise-in mt-7 flex flex-wrap items-center justify-center gap-2.5 text-[12px] font-medium text-foreground/75"
+          style={{ animationDelay: "0.28s" }}
+        >
+          {["No uploads", "Up to 10 MB", "Free — no account"].map((label) => (
+            <li
+              key={label}
+              className="rounded-full border border-white/50 bg-white/45 px-3 py-1 backdrop-blur-sm dark:border-white/12 dark:bg-white/8"
             >
-              <ClipboardPaste className="h-4 w-4" />
-              Paste JSON
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="h-12 cursor-pointer gap-2 border-white/60 bg-white/70 px-6 text-[15px] backdrop-blur-sm transition-transform duration-[var(--motion-duration-fast)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] dark:border-white/15 dark:bg-white/10"
-              onClick={() => void openSample()}
-            >
-              <Sparkles className="h-4 w-4 text-brand" />
-              Try a sample
-            </Button>
-          </div>
-        </StaggerItem>
-
-        <StaggerItem>
-          <ul className="mt-7 flex flex-wrap items-center justify-center gap-2.5 text-[12px] font-medium text-foreground/75">
-            {["No uploads", "Up to 10 MB", "Free — no account"].map((label) => (
-              <li
-                key={label}
-                className="rounded-full border border-white/50 bg-white/45 px-3 py-1 backdrop-blur-sm dark:border-white/12 dark:bg-white/8"
-              >
-                {label}
-              </li>
-            ))}
-          </ul>
-        </StaggerItem>
-      </Stagger>
+              {label}
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
   );
 }
