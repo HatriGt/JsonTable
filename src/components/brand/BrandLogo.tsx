@@ -1,12 +1,11 @@
 import { useId } from "react";
 
-/** The JSON-Table brand mark: a white spreadsheet glyph (header row + grid) on
- *  a rounded, brand-gradient tile. Reads cleanly from 16px favicons up. Size
- *  via className. */
+/** The JSON-Table brand mark: white braces framing three JSON-token-colored
+ *  dots (string/number/other) on a rounded brand-gradient tile. Reads cleanly
+ *  from 16px favicons up. Size via className. */
 export function BrandLogo({ className }: { className?: string }) {
   const id = useId();
   const grad = `${id}-grad`;
-  const mask = `${id}-mask`;
   return (
     <svg
       viewBox="0 0 64 64"
@@ -20,15 +19,21 @@ export function BrandLogo({ className }: { className?: string }) {
           <stop stopColor="#5b86ff" />
           <stop offset="1" stopColor="#2551e0" />
         </linearGradient>
-        <mask id={mask}>
-          <rect x="16" y="17" width="32" height="30" rx="4.5" fill="#fff" />
-          <rect x="16" y="25.5" width="32" height="2.4" fill="#000" />
-          <rect x="30.8" y="27.9" width="2.4" height="19.1" fill="#000" />
-          <rect x="16" y="36.5" width="32" height="2.4" fill="#000" />
-        </mask>
       </defs>
       <rect x="2" y="2" width="60" height="60" rx="16" fill={`url(#${grad})`} />
-      <rect x="16" y="17" width="32" height="30" rx="4.5" fill="#ffffff" mask={`url(#${mask})`} />
+      <g
+        fill="none"
+        stroke="#ffffff"
+        strokeWidth="3.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M24 18c-4 0-5.6 1.8-5.6 5.6v3.4c0 2.9-1.3 4.4-3.4 4.4 2.1 0 3.4 1.5 3.4 4.4v3.4c0 3.8 1.6 5.6 5.6 5.6" />
+        <path d="M40 18c4 0 5.6 1.8 5.6 5.6v3.4c0 2.9 1.3 4.4 3.4 4.4-2.1 0-3.4 1.5-3.4 4.4v3.4c0 3.8-1.6 5.6-5.6 5.6" />
+      </g>
+      <circle cx="26.5" cy="32" r="2.6" fill="#7cf3c2" />
+      <circle cx="32" cy="32" r="2.6" fill="#ffd36b" />
+      <circle cx="37.5" cy="32" r="2.6" fill="#ff9db1" />
     </svg>
   );
 }
