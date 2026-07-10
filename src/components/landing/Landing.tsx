@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { useNavigate, useRouter } from "@tanstack/react-router";
+import { parseJsonAsync } from "@/lib/json/parse";
 import { LandingNav } from "./LandingNav";
 import { LandingBackdrop } from "./LandingBackdrop";
 import { LandingDots } from "./LandingDots";
@@ -13,7 +14,17 @@ import { PasteDialog } from "@/components/input/PasteDialog";
 
 export function Landing() {
   const navigate = useNavigate();
+  const router = useRouter();
   const [pasteOpen, setPasteOpen] = useState(false);
+
+  // The CTAs navigate via buttons, so the router never preloads /workspace on
+  // intent — the first click then cold-loads the lazy chunk (a visible flash).
+  // Warm the route chunk and the parse worker on mount so the first open is as
+  // instant as later ones.
+  useEffect(() => {
+    void router.preloadRoute({ to: "/workspace" });
+    void parseJsonAsync("0");
+  }, [router]);
 
   return (
     <div className="landing-page landing-page--scenic relative flex min-h-dvh flex-col text-foreground">
