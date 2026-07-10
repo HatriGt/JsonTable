@@ -414,6 +414,25 @@ html.theme-transition-active::view-transition-new(root) {
   );
 }
 
+/* Gentle scroll-cue nudge (smooth ease, not a spring bounce). */
+@keyframes hero-scroll-nudge {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+.hero-scroll-cue {
+  animation: hero-scroll-nudge 1.8s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll-cue {
+    animation: none;
+  }
+}
+
 /* Soft radial glow behind the hero headline — lifts text off the sky without a box. */
 .hero-glow {
   background: radial-gradient(

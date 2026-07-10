@@ -100,7 +100,7 @@ export function LandingHero({ onOpenPasteDialog }: Props) {
         className="group absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-1 text-foreground/60 transition-colors hover:text-foreground sm:flex"
       >
         <span className="text-[10px] font-medium uppercase tracking-[0.18em]">Scroll</span>
-        <ChevronDown className="h-4 w-4 animate-bounce" />
+        <ChevronDown className="hero-scroll-cue h-4 w-4" />
       </a>
     </section>
   );
