@@ -61,9 +61,13 @@ export function LandingDemo() {
           </h2>
         </FadeIn>
 
-        <FadeIn inView>
+        <FadeIn inView className="relative">
+          <div
+            className="demo-glow pointer-events-none absolute inset-x-6 -inset-y-6"
+            aria-hidden="true"
+          />
           <PreviewTilt>
-            <div className="glass-panel overflow-hidden rounded-2xl p-1.5 sm:p-2">
+            <div className="glass-panel relative overflow-hidden rounded-2xl p-1.5 sm:p-2">
               <div className="overflow-hidden rounded-xl border border-border/70 bg-card shadow-landing-demo">
                 <PreviewMock />
               </div>

@@ -414,6 +414,52 @@ html.theme-transition-active::view-transition-new(root) {
   );
 }
 
+/* Animated shimmer on the headline accent word (stays blue for legibility). */
+.headline-accent {
+  background: linear-gradient(90deg, var(--brand) 0%, oklch(0.74 0.13 250) 50%, var(--brand) 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: headline-shimmer 7s ease-in-out infinite;
+}
+@keyframes headline-shimmer {
+  0%,
+  100% {
+    background-position: 0% 0;
+  }
+  50% {
+    background-position: 100% 0;
+  }
+}
+
+/* Soft opacity pulse for the status dot. */
+@keyframes soft-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.soft-pulse {
+  animation: soft-pulse 2.4s ease-in-out infinite;
+}
+
+/* Brand glow that lifts the demo frame off the illustration. */
+.demo-glow {
+  background: radial-gradient(ellipse 68% 62% at 50% 46%, oklch(0.6 0.18 258 / 0.4), transparent 70%);
+  filter: blur(44px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .headline-accent,
+  .soft-pulse {
+    animation: none;
+  }
+}
+
 /* Gentle scroll-cue nudge (smooth ease, not a spring bounce). */
 @keyframes hero-scroll-nudge {
   0%,

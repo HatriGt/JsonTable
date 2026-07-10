@@ -52,14 +52,15 @@ export function LandingHero({ onOpenPasteDialog }: Props) {
 
       <Stagger className="relative max-w-3xl">
         <StaggerItem>
-          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-brand [text-shadow:0_1px_10px_rgb(255_255_255/0.8)] dark:[text-shadow:0_1px_12px_rgb(0_0_0/0.7)]">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/50 bg-white/55 px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/80 shadow-sm backdrop-blur-sm dark:border-white/15 dark:bg-white/10">
+            <span className="soft-pulse h-1.5 w-1.5 rounded-full bg-brand" aria-hidden="true" />
             Local-first JSON viewer
-          </p>
+          </span>
         </StaggerItem>
 
         <StaggerItem>
           <h1 className="mt-6 text-balance text-[2.75rem] font-semibold leading-[1.05] tracking-[-0.03em] text-foreground [text-shadow:0_2px_24px_rgb(255_255_255/0.75)] sm:text-6xl lg:text-7xl dark:[text-shadow:0_2px_28px_rgb(0_0_0/0.6)]">
-            Read JSON like a <span className="text-brand">spreadsheet</span>
+            Read JSON like a <span className="headline-accent [text-shadow:none]">spreadsheet</span>
           </h1>
         </StaggerItem>
 
@@ -91,6 +92,19 @@ export function LandingHero({ onOpenPasteDialog }: Props) {
               Try a sample
             </Button>
           </div>
+        </StaggerItem>
+
+        <StaggerItem>
+          <ul className="mt-7 flex flex-wrap items-center justify-center gap-2.5 text-[12px] font-medium text-foreground/75">
+            {["No uploads", "Up to 10 MB", "Free — no account"].map((label) => (
+              <li
+                key={label}
+                className="rounded-full border border-white/50 bg-white/45 px-3 py-1 backdrop-blur-sm dark:border-white/12 dark:bg-white/8"
+              >
+                {label}
+              </li>
+            ))}
+          </ul>
         </StaggerItem>
       </Stagger>
 
