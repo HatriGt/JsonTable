@@ -1,6 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect } from "react";
-import { ArrowRight, ChevronDown, ClipboardPaste, Sparkles } from "lucide-react";
+import { ArrowRight, ClipboardPaste, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWorkspace } from "@/store/workspace";
 import { pasteFromClipboard } from "@/lib/json/pasteFromClipboard";
@@ -43,7 +43,7 @@ export function LandingHero({ onOpenPasteDialog }: Props) {
   }, [pasteAndOpen]);
 
   return (
-    <section className="relative flex min-h-[82vh] flex-col items-center px-5 pt-[15vh] text-center sm:px-6">
+    <section className="relative flex min-h-[58vh] flex-col items-center px-5 pt-[8vh] text-center sm:px-6">
       {/* Soft glow lifts the headline off the busy sky without a hard box. */}
       <div
         className="hero-glow pointer-events-none absolute inset-x-0 top-0 h-[62%]"
@@ -107,15 +107,6 @@ export function LandingHero({ onOpenPasteDialog }: Props) {
           </ul>
         </StaggerItem>
       </Stagger>
-
-      <a
-        href="#demo-heading"
-        aria-label="See the workspace"
-        className="group absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-1 text-foreground/60 transition-colors hover:text-foreground sm:flex"
-      >
-        <span className="text-[10px] font-medium uppercase tracking-[0.18em]">Scroll</span>
-        <ChevronDown className="hero-scroll-cue h-4 w-4" />
-      </a>
     </section>
   );
 }

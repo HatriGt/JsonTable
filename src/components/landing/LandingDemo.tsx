@@ -1,44 +1,5 @@
-import { useEffect, useState, type ReactNode } from "react";
 import { PreviewMock } from "./PreviewMock";
 import { FadeIn } from "@/components/motion/FadeIn";
-import { m, useMotionValue, useReducedMotion, useSpring, useTransform } from "@/lib/motion/framer";
-
-const tiltSpring = { stiffness: 150, damping: 18, mass: 0.4 };
-
-/** Subtle cursor-tracking 3D tilt. Off on touch / reduced-motion. */
-function PreviewTilt({ children }: { children: ReactNode }) {
-  const reduced = useReducedMotion();
-  // Enable only after mount so SSR and the first client render match (avoids a
-  // hydration mismatch from branching on `window` during render).
-  const [enabled, setEnabled] = useState(false);
-  useEffect(() => {
-    setEnabled(window.matchMedia("(pointer: fine)").matches);
-  }, []);
-  const px = useMotionValue(0);
-  const py = useMotionValue(0);
-  const rotateX = useSpring(useTransform(py, [-0.5, 0.5], [4, -4]), tiltSpring);
-  const rotateY = useSpring(useTransform(px, [-0.5, 0.5], [-5, 5]), tiltSpring);
-
-  if (reduced || !enabled) return <>{children}</>;
-
-  return (
-    <m.div
-      onPointerMove={(e) => {
-        const r = e.currentTarget.getBoundingClientRect();
-        px.set((e.clientX - r.left) / r.width - 0.5);
-        py.set((e.clientY - r.top) / r.height - 0.5);
-      }}
-      onPointerLeave={() => {
-        px.set(0);
-        py.set(0);
-      }}
-      style={{ rotateX, rotateY, transformPerspective: 1400 }}
-      className="will-change-transform [transform-style:preserve-3d]"
-    >
-      {children}
-    </m.div>
-  );
-}
 
 /**
  * The product demo, shown on its own below the hero (pitch first, proof second)
@@ -66,13 +27,11 @@ export function LandingDemo() {
             className="demo-glow pointer-events-none absolute inset-x-6 -inset-y-6"
             aria-hidden="true"
           />
-          <PreviewTilt>
-            <div className="glass-panel relative overflow-hidden rounded-2xl p-1.5 sm:p-2">
-              <div className="overflow-hidden rounded-xl border border-border/70 bg-card shadow-landing-demo">
-                <PreviewMock />
-              </div>
+          <div className="glass-panel relative overflow-hidden rounded-2xl p-1.5 sm:p-2">
+            <div className="overflow-hidden rounded-xl border border-border/70 bg-card shadow-landing-demo">
+              <PreviewMock />
             </div>
-          </PreviewTilt>
+          </div>
         </FadeIn>
       </div>
     </section>
