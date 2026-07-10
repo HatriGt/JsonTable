@@ -1,56 +1,15 @@
 import { useNavigate } from "@tanstack/react-router";
-import { useCallback, useEffect, useState, type ReactNode } from "react";
-import { ArrowRight, ClipboardPaste, Sparkles } from "lucide-react";
-import { PreviewMock } from "./PreviewMock";
+import { useCallback, useEffect } from "react";
+import { ArrowRight, ChevronDown, ClipboardPaste, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWorkspace } from "@/store/workspace";
 import { pasteFromClipboard } from "@/lib/json/pasteFromClipboard";
 import { useOpenSampleWorkspace } from "@/lib/workspace/use-open-sample";
 import { Stagger, StaggerItem } from "@/components/motion/Stagger";
-import { m, useMotionValue, useReducedMotion, useSpring, useTransform } from "@/lib/motion/framer";
 
 type Props = {
   onOpenPasteDialog: () => void;
 };
-
-const tiltSpring = { stiffness: 150, damping: 18, mass: 0.4 };
-
-/** Subtle cursor-tracking 3D tilt. Off on touch / reduced-motion. */
-function PreviewTilt({ children }: { children: ReactNode }) {
-  const reduced = useReducedMotion();
-  // Enable the tilt only after mount. Doing this in a useState initializer would
-  // branch on `window` during hydration and render different markup on the
-  // client than the server (a hydration mismatch); useEffect keeps the first
-  // client render identical to the SSR output, then upgrades.
-  const [enabled, setEnabled] = useState(false);
-  useEffect(() => {
-    setEnabled(window.matchMedia("(pointer: fine)").matches);
-  }, []);
-  const px = useMotionValue(0);
-  const py = useMotionValue(0);
-  const rotateX = useSpring(useTransform(py, [-0.5, 0.5], [5, -5]), tiltSpring);
-  const rotateY = useSpring(useTransform(px, [-0.5, 0.5], [-7, 7]), tiltSpring);
-
-  if (reduced || !enabled) return <>{children}</>;
-
-  return (
-    <m.div
-      onPointerMove={(e) => {
-        const r = e.currentTarget.getBoundingClientRect();
-        px.set((e.clientX - r.left) / r.width - 0.5);
-        py.set((e.clientY - r.top) / r.height - 0.5);
-      }}
-      onPointerLeave={() => {
-        px.set(0);
-        py.set(0);
-      }}
-      style={{ rotateX, rotateY, transformPerspective: 1200 }}
-      className="will-change-transform [transform-style:preserve-3d]"
-    >
-      {children}
-    </m.div>
-  );
-}
 
 export function LandingHero({ onOpenPasteDialog }: Props) {
   const navigate = useNavigate();
@@ -84,64 +43,65 @@ export function LandingHero({ onOpenPasteDialog }: Props) {
   }, [pasteAndOpen]);
 
   return (
-    <section className="relative overflow-hidden">
-      <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-5 pb-8 pt-16 sm:px-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-14 lg:pb-16 lg:pt-24">
-        {/* Left: copy, orchestrated stagger, on a frosted glass panel */}
-        <Stagger className="glass-panel rounded-3xl p-7 text-center sm:p-9 lg:p-10 lg:text-left">
-          <StaggerItem>
-            <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-              Local-first JSON viewer
-            </p>
-          </StaggerItem>
+    <section className="relative flex min-h-[82vh] flex-col items-center px-5 pt-[15vh] text-center sm:px-6">
+      {/* Soft glow lifts the headline off the busy sky without a hard box. */}
+      <div
+        className="hero-glow pointer-events-none absolute inset-x-0 top-0 h-[62%]"
+        aria-hidden="true"
+      />
 
-          <StaggerItem>
-            <h1 className="mt-5 text-balance text-[2.5rem] font-semibold leading-[1.08] tracking-[-0.03em] text-foreground sm:text-5xl lg:text-[3.5rem]">
-              Read JSON like a <span className="font-mono font-medium text-brand">spreadsheet</span>
-            </h1>
-          </StaggerItem>
+      <Stagger className="relative max-w-3xl">
+        <StaggerItem>
+          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-brand [text-shadow:0_1px_10px_rgb(255_255_255/0.8)] dark:[text-shadow:0_1px_12px_rgb(0_0_0/0.7)]">
+            Local-first JSON viewer
+          </p>
+        </StaggerItem>
 
-          <StaggerItem>
-            <p className="mx-auto mt-5 max-w-[34rem] text-pretty text-[15px] leading-relaxed text-muted-foreground sm:text-base lg:mx-0">
-              Nested payloads become a navigable tree and a filterable grid. Find any value in
-              seconds, not scroll-minutes.
-            </p>
-          </StaggerItem>
+        <StaggerItem>
+          <h1 className="mt-6 text-balance text-[2.75rem] font-semibold leading-[1.05] tracking-[-0.03em] text-foreground [text-shadow:0_2px_24px_rgb(255_255_255/0.75)] sm:text-6xl lg:text-7xl dark:[text-shadow:0_2px_28px_rgb(0_0_0/0.6)]">
+            Read JSON like a <span className="text-brand">spreadsheet</span>
+          </h1>
+        </StaggerItem>
 
-          <StaggerItem>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-2.5 lg:justify-start">
-              <Button
-                size="lg"
-                className="h-11 cursor-pointer gap-2 px-5 transition-transform duration-[var(--motion-duration-fast)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
-                onClick={pasteAndOpen}
-              >
-                <ClipboardPaste className="h-4 w-4" />
-                Paste JSON
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="h-11 cursor-pointer gap-2 px-5 transition-transform duration-[var(--motion-duration-fast)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
-                onClick={() => void openSample()}
-              >
-                <Sparkles className="h-4 w-4 text-brand" />
-                Try a sample
-              </Button>
-            </div>
-          </StaggerItem>
-        </Stagger>
+        <StaggerItem>
+          <p className="mx-auto mt-6 max-w-[36rem] text-pretty text-base leading-relaxed text-foreground/80 [text-shadow:0_1px_14px_rgb(255_255_255/0.85)] sm:text-lg dark:text-foreground/75 dark:[text-shadow:0_1px_16px_rgb(0_0_0/0.7)]">
+            Nested payloads become a navigable tree and a filterable grid. Find any value in
+            seconds, not scroll-minutes.
+          </p>
+        </StaggerItem>
 
-        {/* Right: real component preview with subtle tilt */}
-        <Stagger className="relative w-full">
-          <StaggerItem>
-            <PreviewTilt>
-              <div className="overflow-hidden rounded-xl border border-border/70 bg-card shadow-landing-demo">
-                <PreviewMock />
-              </div>
-            </PreviewTilt>
-          </StaggerItem>
-        </Stagger>
-      </div>
+        <StaggerItem>
+          <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+            <Button
+              size="lg"
+              className="h-12 cursor-pointer gap-2 px-6 text-[15px] shadow-lg shadow-brand/20 transition-transform duration-[var(--motion-duration-fast)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+              onClick={pasteAndOpen}
+            >
+              <ClipboardPaste className="h-4 w-4" />
+              Paste JSON
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="h-12 cursor-pointer gap-2 border-white/60 bg-white/70 px-6 text-[15px] backdrop-blur-sm transition-transform duration-[var(--motion-duration-fast)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] dark:border-white/15 dark:bg-white/10"
+              onClick={() => void openSample()}
+            >
+              <Sparkles className="h-4 w-4 text-brand" />
+              Try a sample
+            </Button>
+          </div>
+        </StaggerItem>
+      </Stagger>
+
+      <a
+        href="#demo-heading"
+        aria-label="See the workspace"
+        className="group absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-1 text-foreground/60 transition-colors hover:text-foreground sm:flex"
+      >
+        <span className="text-[10px] font-medium uppercase tracking-[0.18em]">Scroll</span>
+        <ChevronDown className="h-4 w-4 animate-bounce" />
+      </a>
     </section>
   );
 }

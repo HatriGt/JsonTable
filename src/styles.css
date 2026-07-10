@@ -414,6 +414,24 @@ html.theme-transition-active::view-transition-new(root) {
   );
 }
 
+/* Soft radial glow behind the hero headline — lifts text off the sky without a box. */
+.hero-glow {
+  background: radial-gradient(
+    ellipse 58% 60% at 50% 40%,
+    rgb(247 251 255 / 0.85) 0%,
+    rgb(247 251 255 / 0.45) 42%,
+    rgb(247 251 255 / 0) 74%
+  );
+}
+.dark .hero-glow {
+  background: radial-gradient(
+    ellipse 58% 60% at 50% 40%,
+    rgb(6 10 18 / 0.72) 0%,
+    rgb(6 10 18 / 0.4) 44%,
+    rgb(6 10 18 / 0) 76%
+  );
+}
+
 /* Frosted panel used for the hero + section cards. */
 .glass-panel {
   background: rgb(255 255 255 / 0.62);

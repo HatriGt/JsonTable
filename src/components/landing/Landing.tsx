@@ -4,6 +4,7 @@ import { LandingNav } from "./LandingNav";
 import { LandingBackdrop } from "./LandingBackdrop";
 import { LandingDots } from "./LandingDots";
 import { LandingHero } from "./LandingHero";
+import { LandingDemo } from "./LandingDemo";
 import { LandingFeatures } from "./LandingFeatures";
 import { LandingTools } from "./LandingTools";
 import { LandingFaq } from "./LandingFaq";
@@ -21,6 +22,7 @@ export function Landing() {
       <LandingNav />
       <main id="main-content" className="relative flex-1">
         <LandingHero onOpenPasteDialog={() => setPasteOpen(true)} />
+        <LandingDemo />
         <LandingTools />
         <LandingFeatures />
         <LandingFaq />
