@@ -11,7 +11,7 @@ export function LandingFooter() {
   return (
     <footer
       aria-label="Site footer"
-      className="mt-auto border-t border-border/60 py-8 text-center text-xs text-muted-foreground"
+      className="mt-auto border-t border-border/40 bg-background/60 py-8 text-center text-xs text-muted-foreground backdrop-blur-md"
     >
       <nav aria-label="JSON tools" className="mb-4">
         <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 px-4">

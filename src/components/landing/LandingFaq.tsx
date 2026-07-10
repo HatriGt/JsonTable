@@ -43,12 +43,8 @@ export const FAQ_ITEMS = [
 
 export function LandingFaq() {
   return (
-    <section
-      id="faq"
-      aria-labelledby="faq-heading"
-      className="border-t border-border/60 bg-card/30"
-    >
-      <div className="mx-auto max-w-3xl px-5 py-16 sm:px-6 sm:py-20">
+    <section id="faq" aria-labelledby="faq-heading" className="px-4 py-6 sm:px-6 sm:py-8">
+      <div className="glass-panel mx-auto max-w-3xl rounded-3xl px-6 py-12 sm:px-10 sm:py-14">
         <FadeIn inView>
           <h2
             id="faq-heading"

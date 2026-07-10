@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { LandingNav } from "./LandingNav";
+import { LandingBackdrop } from "./LandingBackdrop";
 import { LandingDots } from "./LandingDots";
 import { LandingHero } from "./LandingHero";
 import { LandingFeatures } from "./LandingFeatures";
@@ -14,8 +15,8 @@ export function Landing() {
   const [pasteOpen, setPasteOpen] = useState(false);
 
   return (
-    <div className="landing-page relative flex min-h-dvh flex-col text-foreground">
-      <div className="landing-grid-layer pointer-events-none absolute inset-0" aria-hidden="true" />
+    <div className="landing-page landing-page--scenic relative flex min-h-dvh flex-col text-foreground">
+      <LandingBackdrop />
       <LandingDots />
       <LandingNav />
       <main id="main-content" className="relative flex-1">

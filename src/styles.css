@@ -360,6 +360,78 @@ html.theme-transition-active::view-transition-new(root) {
   background-color: var(--background);
 }
 
+/* Full-page illustration backdrop + frosted-glass panel system ------------- */
+/* Page itself must be transparent so the fixed backdrop (below) shows through. */
+.landing-page.landing-page--scenic {
+  background-color: transparent;
+}
+
+.landing-backdrop {
+  z-index: -10;
+  background-color: #bfe3f5; /* sky tone shown before the image decodes */
+  /* Blurred low-quality placeholder paints immediately under the real image. */
+  background-image: url("data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAABQBQCdASoYABEAPuVgpU2pJaOiMAwBIByJagCdMtU3J0eCVt15GyHqaYAiaVjpccpRkMAA+bFHax797lnl8LVVHLcsNJhjTP60yzAVTB/yUPXG4MFEAitG4mhO0Nu/78UurExtpTgljJgC0Os9VNfuQSUdNtVACXTamCzsXCoo4TwfMYwAAA==");
+  background-size: cover;
+  background-position: center;
+}
+.dark .landing-backdrop {
+  background-color: #0a0f1a;
+}
+.landing-backdrop img {
+  animation: landing-backdrop-in 0.7s ease-out both;
+}
+@keyframes landing-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-backdrop img {
+    animation: none;
+  }
+}
+
+/* Scrim: keep glass panels + text legible without washing out the art. */
+.landing-scrim {
+  background: linear-gradient(
+    to bottom,
+    rgb(244 250 255 / 0.28) 0%,
+    rgb(244 250 255 / 0.06) 26%,
+    rgb(240 246 252 / 0.34) 68%,
+    rgb(236 242 248 / 0.66) 100%
+  );
+}
+.dark .landing-scrim {
+  background: linear-gradient(
+    to bottom,
+    rgb(6 10 18 / 0.66) 0%,
+    rgb(6 10 18 / 0.52) 32%,
+    rgb(6 10 18 / 0.66) 72%,
+    rgb(4 7 13 / 0.86) 100%
+  );
+}
+
+/* Frosted panel used for the hero + section cards. */
+.glass-panel {
+  background: rgb(255 255 255 / 0.62);
+  backdrop-filter: blur(16px) saturate(1.35);
+  -webkit-backdrop-filter: blur(16px) saturate(1.35);
+  border: 1px solid rgb(255 255 255 / 0.55);
+  box-shadow:
+    0 1px 0 0 rgb(255 255 255 / 0.6) inset,
+    0 18px 48px -18px rgb(15 40 80 / 0.35);
+}
+.dark .glass-panel {
+  background: rgb(13 18 28 / 0.58);
+  border: 1px solid rgb(255 255 255 / 0.1);
+  box-shadow:
+    0 1px 0 0 rgb(255 255 255 / 0.06) inset,
+    0 18px 48px -18px rgb(0 0 0 / 0.6);
+}
+
 /* Landing graph paper — wide spacing, faint lines, radial fade at corners + demo */
 .landing-grid-layer {
   background-image:
@@ -430,7 +502,7 @@ html.theme-transition-active::view-transition-new(root) {
    faded toward the edges so it blends with the graph-paper grid. */
 .landing-dots {
   z-index: 0;
-  opacity: 0.9;
+  opacity: 0.5;
   animation: landing-dots-in 1.2s ease-out both;
   -webkit-mask-image: radial-gradient(
     ellipse 85% 70% at 50% 28%,

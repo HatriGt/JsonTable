@@ -19,8 +19,10 @@ export function LandingNav() {
 
   return (
     <header
-      className={`sticky top-0 z-40 border-b transition-[background-color,border-color] duration-[var(--motion-duration-normal)] ${
-        scrolled ? "border-border bg-background" : "border-transparent bg-background"
+      className={`sticky top-0 z-40 border-b transition-[background-color,border-color,backdrop-filter] duration-[var(--motion-duration-normal)] ${
+        scrolled
+          ? "border-border/40 bg-background/70 backdrop-blur-md"
+          : "border-transparent bg-transparent"
       }`}
     >
       <a

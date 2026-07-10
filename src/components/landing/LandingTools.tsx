@@ -28,8 +28,8 @@ const TOOLS = [
 
 export function LandingTools() {
   return (
-    <section id="tools" aria-labelledby="tools-heading" className="border-t border-border/60">
-      <div className="mx-auto max-w-6xl px-5 py-16 sm:px-6 sm:py-20">
+    <section id="tools" aria-labelledby="tools-heading" className="px-4 py-6 sm:px-6 sm:py-8">
+      <div className="glass-panel mx-auto max-w-6xl rounded-3xl px-6 py-12 sm:px-10 sm:py-14">
         <FadeIn inView>
           <span className="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-brand">
             toolkit

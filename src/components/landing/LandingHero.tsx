@@ -85,13 +85,9 @@ export function LandingHero({ onOpenPasteDialog }: Props) {
 
   return (
     <section className="relative overflow-hidden">
-      <div
-        className="landing-grid-layer-headline pointer-events-none absolute inset-x-0 top-0 h-[520px]"
-        aria-hidden="true"
-      />
-      <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-5 pb-4 pt-12 sm:px-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-14 lg:pb-8 lg:pt-20">
-        {/* Left: copy, orchestrated stagger */}
-        <Stagger className="text-center lg:text-left">
+      <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-5 pb-8 pt-16 sm:px-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-14 lg:pb-16 lg:pt-24">
+        {/* Left: copy, orchestrated stagger, on a frosted glass panel */}
+        <Stagger className="glass-panel rounded-3xl p-7 text-center sm:p-9 lg:p-10 lg:text-left">
           <StaggerItem>
             <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
               Local-first JSON viewer
