@@ -26,6 +26,23 @@ export function Landing() {
     void parseJsonAsync("0");
   }, [router]);
 
+  // Play the entrance animation only once fonts are ready, so the headline
+  // doesn't swap font mid-animation (which looks janky). Fallback timer ensures
+  // it always runs even if the Font Loading API is unavailable or slow.
+  useEffect(() => {
+    const root = document.documentElement;
+    let done = false;
+    const reveal = () => {
+      if (done) return;
+      done = true;
+      root.classList.add("landing-ready");
+    };
+    const fonts = (document as Document & { fonts?: FontFaceSet }).fonts;
+    void (fonts?.ready ?? Promise.resolve()).then(reveal);
+    const timer = window.setTimeout(reveal, 700);
+    return () => window.clearTimeout(timer);
+  }, []);
+
   return (
     <div className="landing-page landing-page--scenic relative flex min-h-dvh flex-col text-foreground">
       <LandingBackdrop />
