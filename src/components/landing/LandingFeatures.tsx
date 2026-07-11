@@ -26,8 +26,8 @@ const CAPABILITIES = [
 
 export function LandingFeatures() {
   return (
-    <section id="features" className="border-t border-border/60 bg-card/30">
-      <div className="mx-auto max-w-6xl px-5 py-16 sm:px-6 sm:py-20">
+    <section id="features" className="px-4 py-6 sm:px-6 sm:py-8">
+      <div className="glass-panel mx-auto max-w-6xl rounded-3xl px-6 py-12 sm:px-10 sm:py-14">
         <FadeIn inView>
           <h2 className="max-w-xl text-balance text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
             Built for inspection, not pretty-printing

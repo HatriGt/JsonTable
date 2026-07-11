@@ -1,5 +1,6 @@
-/** The JSON-Table brand mark: blue braces around a table, on a white disc.
- *  Used in the nav, workspace toolbar, and empty state. Size via className. */
+/** The JSON-Table brand mark: white braces framing three JSON-token-colored
+ *  dots (string/number/other) on a rounded tile in the primary brand color
+ *  (matches the "Open workspace" button). Reads cleanly from 16px up. */
 export function BrandLogo({ className }: { className?: string }) {
   return (
     <svg
@@ -9,35 +10,30 @@ export function BrandLogo({ className }: { className?: string }) {
       aria-label="JSON-Table logo"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <circle cx="32" cy="32" r="31" fill="#ffffff" stroke="#e6e8ee" strokeWidth="1" />
-      <rect x="25" y="20.5" width="14" height="4.6" rx="1.3" fill="#2f6bff" />
-      <g fill="#c8d6ff">
-        <rect x="25" y="26.4" width="4" height="3.7" rx="0.8" />
-        <rect x="30" y="26.4" width="4" height="3.7" rx="0.8" />
-        <rect x="35" y="26.4" width="4" height="3.7" rx="0.8" />
-        <rect x="25" y="31.1" width="4" height="3.7" rx="0.8" />
-        <rect x="30" y="31.1" width="4" height="3.7" rx="0.8" />
-        <rect x="35" y="31.1" width="4" height="3.7" rx="0.8" />
-        <rect x="25" y="35.8" width="4" height="3.7" rx="0.8" />
-        <rect x="30" y="35.8" width="4" height="3.7" rx="0.8" />
-        <rect x="35" y="35.8" width="4" height="3.7" rx="0.8" />
+      <rect x="2" y="2" width="60" height="60" rx="16" fill="#156cdd" />
+      <g
+        fill="none"
+        stroke="#ffffff"
+        strokeWidth="3.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M24 18c-4 0-5.6 1.8-5.6 5.6v3.4c0 2.9-1.3 4.4-3.4 4.4 2.1 0 3.4 1.5 3.4 4.4v3.4c0 3.8 1.6 5.6 5.6 5.6" />
+        <path d="M40 18c4 0 5.6 1.8 5.6 5.6v3.4c0 2.9 1.3 4.4 3.4 4.4-2.1 0-3.4 1.5-3.4 4.4v3.4c0 3.8-1.6 5.6-5.6 5.6" />
       </g>
-      <path
-        d="M22 18c-3.5 0-5 1.6-5 5v3c0 2.6-1 3.6-3 3.6 2 0 3 1 3 3.6v3c0 3.4 1.5 5 5 5"
-        fill="none"
-        stroke="#2f6bff"
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M42 18c3.5 0 5 1.6 5 5v3c0 2.6 1 3.6 3 3.6-2 0-3 1-3 3.6v3c0 3.4-1.5 5-5 5"
-        fill="none"
-        stroke="#2f6bff"
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <circle cx="26.5" cy="32" r="2.6" fill="#7cf3c2" />
+      <circle cx="32" cy="32" r="2.6" fill="#ffd36b" />
+      <circle cx="37.5" cy="32" r="2.6" fill="#ff9db1" />
     </svg>
+  );
+}
+
+/** Wordmark: "JSON" in brand, "‑Table" in the current text color. */
+export function BrandWordmark({ className }: { className?: string }) {
+  return (
+    <span className={className}>
+      <span className="text-brand">JSON</span>
+      <span>‑Table</span>
+    </span>
   );
 }

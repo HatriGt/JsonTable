@@ -147,6 +147,11 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
+        {/* Without JS the readiness class is never added, so reveal the
+            entrance-animated content immediately. */}
+        <noscript>
+          <style>{".rise-in{opacity:1}"}</style>
+        </noscript>
       </head>
       <body>
         {children}

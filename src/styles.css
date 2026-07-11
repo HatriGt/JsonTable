@@ -360,6 +360,191 @@ html.theme-transition-active::view-transition-new(root) {
   background-color: var(--background);
 }
 
+/* Full-page illustration backdrop + frosted-glass panel system ------------- */
+/* Page itself must be transparent so the fixed backdrop (below) shows through. */
+.landing-page.landing-page--scenic {
+  background-color: transparent;
+}
+
+.landing-backdrop {
+  z-index: -10;
+  background-color: #bfe3f5; /* sky tone shown before the image decodes */
+  background-size: cover;
+  background-position: center;
+  /* Real image layered over a blurred LQIP that paints instantly. The plain
+     url() line is the fallback; the image-set() line wins where supported and
+     serves AVIF. Only the theme-matched image is fetched. */
+  background-image:
+    url("/hero/park-2560.webp"),
+    url("data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAABQBQCdASoYABEAPuVgpU2pJaOiMAwBIByJagCdMtU3J0eCVt15GyHqaYAiaVjpccpRkMAA+bFHax797lnl8LVVHLcsNJhjTP60yzAVTB/yUPXG4MFEAitG4mhO0Nu/78UurExtpTgljJgC0Os9VNfuQSUdNtVACXTamCzsXCoo4TwfMYwAAA==");
+  background-image:
+    image-set(url("/hero/park-2560.avif") type("image/avif"), url("/hero/park-2560.webp") type("image/webp")),
+    url("data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAABQBQCdASoYABEAPuVgpU2pJaOiMAwBIByJagCdMtU3J0eCVt15GyHqaYAiaVjpccpRkMAA+bFHax797lnl8LVVHLcsNJhjTP60yzAVTB/yUPXG4MFEAitG4mhO0Nu/78UurExtpTgljJgC0Os9VNfuQSUdNtVACXTamCzsXCoo4TwfMYwAAA==");
+}
+.dark .landing-backdrop {
+  background-color: #0a0f1a;
+  background-image:
+    url("/hero/night-1484.webp"),
+    url("data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAACwBACdASoYABEAPu1sq1EppaOiqAqpMB2JYwC7ISABhH4gt9QG+mrNP2ujeTAAAP7ymtvAX4nzOwAC/U8aFF5zam7cKxHWYFCVwRX2np2bLVQRIkB2Qbxp9A3AAAAA==");
+  background-image:
+    image-set(url("/hero/night-1484.avif") type("image/avif"), url("/hero/night-1484.webp") type("image/webp")),
+    url("data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAACwBACdASoYABEAPu1sq1EppaOiqAqpMB2JYwC7ISABhH4gt9QG+mrNP2ujeTAAAP7ymtvAX4nzOwAC/U8aFF5zam7cKxHWYFCVwRX2np2bLVQRIkB2Qbxp9A3AAAAA==");
+}
+
+/* Scrim: keep glass panels + text legible without washing out the art. */
+.landing-scrim {
+  background: linear-gradient(
+    to bottom,
+    rgb(244 250 255 / 0.28) 0%,
+    rgb(244 250 255 / 0.06) 26%,
+    rgb(240 246 252 / 0.34) 68%,
+    rgb(236 242 248 / 0.66) 100%
+  );
+}
+.dark .landing-scrim {
+  background: linear-gradient(
+    to bottom,
+    rgb(6 10 18 / 0.66) 0%,
+    rgb(6 10 18 / 0.52) 32%,
+    rgb(6 10 18 / 0.66) 72%,
+    rgb(4 7 13 / 0.86) 100%
+  );
+}
+
+/* CSS entrance for above-the-fold landing content. Because it's pure CSS, the
+   very first paint is already the animation's start (opacity 0) — there's no
+   SSR-visible-then-hide flash the way a JS/Framer mount swap causes. Works
+   without JS (ends visible via fill-mode) and is disabled for reduced-motion. */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+/* Hidden until the page signals it's ready (fonts loaded) — the entrance then
+   plays once, in the final font, GPU-composited. Gating on readiness avoids a
+   font swap mid-animation, which is what made the entrance look janky. */
+.rise-in {
+  opacity: 0;
+}
+.landing-ready .rise-in {
+  animation: rise-in 0.66s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: transform, opacity;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rise-in {
+    opacity: 1;
+  }
+  .landing-ready .rise-in {
+    animation: none;
+  }
+}
+
+/* Animated shimmer on the headline accent word (stays blue for legibility). */
+.headline-accent {
+  background: linear-gradient(90deg, var(--brand) 0%, oklch(0.74 0.13 250) 50%, var(--brand) 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: headline-shimmer 7s ease-in-out infinite;
+}
+@keyframes headline-shimmer {
+  0%,
+  100% {
+    background-position: 0% 0;
+  }
+  50% {
+    background-position: 100% 0;
+  }
+}
+
+/* Soft opacity pulse for the status dot. */
+@keyframes soft-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.soft-pulse {
+  animation: soft-pulse 2.4s ease-in-out infinite;
+}
+
+/* Brand glow that lifts the demo frame off the illustration. */
+.demo-glow {
+  background: radial-gradient(ellipse 68% 62% at 50% 46%, oklch(0.6 0.18 258 / 0.4), transparent 70%);
+  filter: blur(44px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .headline-accent,
+  .soft-pulse {
+    animation: none;
+  }
+}
+
+/* Gentle scroll-cue nudge (smooth ease, not a spring bounce). */
+@keyframes hero-scroll-nudge {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+.hero-scroll-cue {
+  animation: hero-scroll-nudge 1.8s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll-cue {
+    animation: none;
+  }
+}
+
+/* Soft radial glow behind the hero headline — lifts text off the sky without a box. */
+.hero-glow {
+  background: radial-gradient(
+    ellipse 58% 60% at 50% 40%,
+    rgb(247 251 255 / 0.85) 0%,
+    rgb(247 251 255 / 0.45) 42%,
+    rgb(247 251 255 / 0) 74%
+  );
+}
+.dark .hero-glow {
+  background: radial-gradient(
+    ellipse 58% 60% at 50% 40%,
+    rgb(6 10 18 / 0.72) 0%,
+    rgb(6 10 18 / 0.4) 44%,
+    rgb(6 10 18 / 0) 76%
+  );
+}
+
+/* Frosted panel used for the hero + section cards. */
+.glass-panel {
+  background: rgb(255 255 255 / 0.62);
+  backdrop-filter: blur(16px) saturate(1.35);
+  -webkit-backdrop-filter: blur(16px) saturate(1.35);
+  border: 1px solid rgb(255 255 255 / 0.55);
+  box-shadow:
+    0 1px 0 0 rgb(255 255 255 / 0.6) inset,
+    0 18px 48px -18px rgb(15 40 80 / 0.35);
+}
+.dark .glass-panel {
+  background: rgb(13 18 28 / 0.58);
+  border: 1px solid rgb(255 255 255 / 0.1);
+  box-shadow:
+    0 1px 0 0 rgb(255 255 255 / 0.06) inset,
+    0 18px 48px -18px rgb(0 0 0 / 0.6);
+}
+
 /* Landing graph paper — wide spacing, faint lines, radial fade at corners + demo */
 .landing-grid-layer {
   background-image:
@@ -430,7 +615,7 @@ html.theme-transition-active::view-transition-new(root) {
    faded toward the edges so it blends with the graph-paper grid. */
 .landing-dots {
   z-index: 0;
-  opacity: 0.9;
+  opacity: 0.5;
   animation: landing-dots-in 1.2s ease-out both;
   -webkit-mask-image: radial-gradient(
     ellipse 85% 70% at 50% 28%,
