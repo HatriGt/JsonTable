@@ -1,7 +1,5 @@
 import { useMemo, useState } from "react";
 import { ArrowLeftRight, Sparkles } from "lucide-react";
-import { LandingNav } from "@/components/landing/LandingNav";
-import { LandingFooter } from "@/components/landing/LandingFooter";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { parseJson } from "@/lib/json/parse";
@@ -95,108 +93,86 @@ export function JsonDiffTool() {
   const hasInput = left.trim() !== "" || right.trim() !== "";
 
   return (
-    <div className="landing-page relative flex min-h-dvh flex-col text-foreground">
-      <div className="landing-grid-layer pointer-events-none absolute inset-0" aria-hidden="true" />
-      <LandingNav />
+    <>
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        <Button
+          size="sm"
+          variant="outline"
+          className="h-9 cursor-pointer gap-1.5 text-xs"
+          onClick={loadExample}
+        >
+          <Sparkles className="h-3.5 w-3.5 text-brand" />
+          Load example
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          className="h-9 cursor-pointer gap-1.5 text-xs"
+          onClick={swap}
+          disabled={!hasInput}
+        >
+          <ArrowLeftRight className="h-3.5 w-3.5" />
+          Swap sides
+        </Button>
+      </div>
 
-      <main id="main-content" className="relative flex-1">
-        <div className="mx-auto max-w-6xl px-5 pb-16 pt-10 sm:px-6">
-          <div className="text-center">
-            <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-              JSON diff checker
-            </p>
-            <h1 className="mt-3 text-balance text-[2rem] font-semibold leading-[1.1] tracking-[-0.03em] text-foreground sm:text-4xl">
-              Compare two JSON files
-            </h1>
-            <p className="mx-auto mt-3 max-w-2xl text-pretty text-sm leading-relaxed text-muted-foreground sm:text-base">
-              Paste an original and a changed document to see exactly what was added, removed, and
-              updated — by path. Runs entirely in your browser; nothing is uploaded.
-            </p>
-          </div>
+      <div className="mt-6 flex flex-col gap-4 sm:flex-row">
+        <Panel
+          label="Original"
+          value={left}
+          onChange={setLeft}
+          error={leftParsed.ok ? null : "Invalid JSON"}
+        />
+        <Panel
+          label="Changed"
+          value={right}
+          onChange={setRight}
+          error={rightParsed.ok ? null : "Invalid JSON"}
+        />
+      </div>
 
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              className="h-9 cursor-pointer gap-1.5 text-xs"
-              onClick={loadExample}
-            >
-              <Sparkles className="h-3.5 w-3.5 text-brand" />
-              Load example
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              className="h-9 cursor-pointer gap-1.5 text-xs"
-              onClick={swap}
-              disabled={!hasInput}
-            >
-              <ArrowLeftRight className="h-3.5 w-3.5" />
-              Swap sides
-            </Button>
-          </div>
-
-          <div className="mt-6 flex flex-col gap-4 sm:flex-row">
-            <Panel
-              label="Original"
-              value={left}
-              onChange={setLeft}
-              error={leftParsed.ok ? null : "Invalid JSON"}
-            />
-            <Panel
-              label="Changed"
-              value={right}
-              onChange={setRight}
-              error={rightParsed.ok ? null : "Invalid JSON"}
-            />
-          </div>
-
-          {/* Result */}
-          <section className="mt-8" aria-live="polite">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-sm font-semibold text-foreground">Differences</h2>
-              {summary && (
-                <div className="flex items-center gap-3 text-xs">
-                  <span className="diff-row-added rounded px-2 py-0.5 font-medium">
-                    +{summary.added} added
-                  </span>
-                  <span className="diff-row-removed rounded px-2 py-0.5 font-medium">
-                    −{summary.removed} removed
-                  </span>
-                  <span className="diff-row-updated rounded px-2 py-0.5 font-medium">
-                    ~{summary.changed} changed
-                  </span>
-                  <label className="ml-1 flex cursor-pointer items-center gap-1.5 text-muted-foreground">
-                    <input
-                      type="checkbox"
-                      checked={hideUnchanged}
-                      onChange={(e) => setHideUnchanged(e.target.checked)}
-                      className="h-3.5 w-3.5 cursor-pointer accent-brand"
-                    />
-                    Hide unchanged
-                  </label>
-                </div>
-              )}
+      {/* Result */}
+      <section className="mt-8" aria-live="polite">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-sm font-semibold text-foreground">Differences</h2>
+          {summary && (
+            <div className="flex items-center gap-3 text-xs">
+              <span className="diff-row-added rounded px-2 py-0.5 font-medium">
+                +{summary.added} added
+              </span>
+              <span className="diff-row-removed rounded px-2 py-0.5 font-medium">
+                −{summary.removed} removed
+              </span>
+              <span className="diff-row-updated rounded px-2 py-0.5 font-medium">
+                ~{summary.changed} changed
+              </span>
+              <label className="ml-1 flex cursor-pointer items-center gap-1.5 text-muted-foreground">
+                <input
+                  type="checkbox"
+                  checked={hideUnchanged}
+                  onChange={(e) => setHideUnchanged(e.target.checked)}
+                  className="h-3.5 w-3.5 cursor-pointer accent-brand"
+                />
+                Hide unchanged
+              </label>
             </div>
-
-            <div className="mt-3 overflow-x-auto rounded-xl border border-border/70 bg-card">
-              {!hasInput ? (
-                <p className="px-3 py-10 text-center text-sm text-muted-foreground">
-                  Paste JSON in both panels (or load the example) to see the diff.
-                </p>
-              ) : !bothValid ? (
-                <p className="px-3 py-10 text-center text-sm text-muted-foreground">
-                  Waiting for valid JSON in both panels…
-                </p>
-              ) : (
-                diff && <JsonDiffView diff={diff} hideUnchanged={hideUnchanged} />
-              )}
-            </div>
-          </section>
+          )}
         </div>
-      </main>
 
-      <LandingFooter />
-    </div>
+        <div className="mt-3 overflow-x-auto rounded-xl border border-border/70 bg-card">
+          {!hasInput ? (
+            <p className="px-3 py-10 text-center text-sm text-muted-foreground">
+              Paste JSON in both panels (or load the example) to see the diff.
+            </p>
+          ) : !bothValid ? (
+            <p className="px-3 py-10 text-center text-sm text-muted-foreground">
+              Waiting for valid JSON in both panels…
+            </p>
+          ) : (
+            diff && <JsonDiffView diff={diff} hideUnchanged={hideUnchanged} />
+          )}
+        </div>
+      </section>
+    </>
   );
 }

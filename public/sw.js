@@ -4,11 +4,11 @@
  * Asset filenames are content-hashed, so we cache at fetch time rather than
  * from a build-time precache manifest:
  *   - navigations:   network-first, fall back to cached page, then cached "/"
- *   - static assets: stale-while-revalidate (hashed assets are immutable)
- *   - Google Fonts:  stale-while-revalidate (opaque responses accepted)
+ *   - static assets: stale-while-revalidate (hashed assets + self-hosted fonts
+ *                    are immutable)
  * Only GET is handled; POST server functions / share creation hit the network.
  */
-const VERSION = "v1";
+const VERSION = "v2";
 const STATIC_CACHE = `jt-static-${VERSION}`;
 const PAGE_CACHE = `jt-pages-${VERSION}`;
 const KEEP = new Set([STATIC_CACHE, PAGE_CACHE]);
@@ -27,7 +27,6 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-const FONT_ORIGINS = new Set(["https://fonts.googleapis.com", "https://fonts.gstatic.com"]);
 const ASSET_RE = /\.(?:js|mjs|css|woff2?|png|svg|ico|webmanifest|json)$/;
 
 self.addEventListener("fetch", (event) => {
@@ -63,17 +62,17 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Static assets + fonts: stale-while-revalidate.
-  const isAsset = sameOrigin && (url.pathname.startsWith("/assets/") || ASSET_RE.test(url.pathname));
-  const isFont = FONT_ORIGINS.has(url.origin);
-  if (isAsset || isFont) {
+  // Static assets (incl. self-hosted fonts): stale-while-revalidate.
+  const isAsset =
+    sameOrigin && (url.pathname.startsWith("/assets/") || ASSET_RE.test(url.pathname));
+  if (isAsset) {
     event.respondWith(
       (async () => {
         const cache = await caches.open(STATIC_CACHE);
         const cached = await cache.match(request);
         const network = fetch(request)
           .then((res) => {
-            if (res && (res.ok || res.type === "opaque")) cache.put(request, res.clone());
+            if (res && res.ok) cache.put(request, res.clone());
             return res;
           })
           .catch(() => cached);
