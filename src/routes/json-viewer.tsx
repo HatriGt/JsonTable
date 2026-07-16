@@ -35,7 +35,7 @@ export const Route = createFileRoute("/json-viewer")({
     seoLandingHead({
       path: "/json-viewer",
       name: "JSON Viewer & Formatter",
-      title: "JSON Viewer & Formatter Online — Tree, Beautify, Validate",
+      title: "JSON Viewer & Formatter — Tree, Beautify, Validate",
       description:
         "Free online JSON viewer & formatter. Explore JSON as a collapsible tree, or beautify, minify, and validate it with inline error locations. No uploads.",
       faqs: FAQS,

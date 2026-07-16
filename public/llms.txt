@@ -1,10 +1,18 @@
 # JSON-Table
 
-> Turn any JSON into a navigable tree and a sortable, filterable spreadsheet. Local-first, fast, free.
+> Free, local-first tools to read and work with JSON: view it as a collapsible tree, format/beautify/minify/validate it, convert arrays of objects into a sortable spreadsheet, and diff two documents. Everything runs in your browser — files never leave your machine.
 
-JSON-Table is a browser-based developer utility with a two-pane workspace: a tree navigator (with optional source view) on the left and a nested or flat virtualized grid on the right. Files never leave the browser.
+JSON-Table is a browser-based developer utility. The workspace is a two-pane view: a tree navigator (with an optional source view) on the left and a nested or flat virtualized grid on the right, with global search, per-column filters, column reordering, and inline editing.
 
-## Pages
+## Tools
 
-- [Home](/): Minimal landing page with paste-to-open entry point and product preview.
-- [Workspace](/workspace): Interactive JSON viewer with tree navigation, per-column filters, column reordering, inline cell editing, flat virtualized grid mode, and global search (⌘F).
+- [JSON Viewer & Formatter](/json-viewer): Paste JSON to explore it as a collapsible, color-coded tree, or beautify, minify, and validate it with inline error locations.
+- [JSON to Table](/json-to-table): Turn an array of objects into a sortable, filterable spreadsheet grid; keys become columns automatically, with inline editing.
+- [JSON Diff](/json-diff): Compare two JSON documents and see exactly what was added, removed, or changed, by path.
+- [Workspace](/workspace): The full interactive workspace — tree + virtualized grid, global search (⌘F), filters, column reordering, and inline cell editing.
+
+## About
+
+- Local-first: all parsing and rendering happen client-side; no uploads, no account.
+- Free and open to use. Handles files up to 10 MB.
+- [Home](/): Overview and quick entry point.
