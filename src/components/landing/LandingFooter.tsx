@@ -1,3 +1,5 @@
+import { Link } from "@tanstack/react-router";
+
 const YEAR = new Date().getFullYear();
 
 const TOOL_LINKS = [
@@ -5,6 +7,7 @@ const TOOL_LINKS = [
   { href: "/json-to-table", label: "JSON to Table" },
   { href: "/json-diff", label: "JSON Diff" },
   { href: "/workspace", label: "Workspace" },
+  { href: "/guides", label: "Guides" },
 ];
 
 export function LandingFooter() {
@@ -17,9 +20,9 @@ export function LandingFooter() {
         <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 px-4">
           {TOOL_LINKS.map((link) => (
             <li key={link.href}>
-              <a href={link.href} className="transition-colors hover:text-foreground">
+              <Link to={link.href} className="transition-colors hover:text-foreground">
                 {link.label}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>

@@ -1307,3 +1307,102 @@ html.theme-transition-active::view-transition-new(root) {
 .dark .diff-new {
   color: #4ade80;
 }
+
+/*
+ * Long-form article/guide prose (content cluster under /guides). Scoped so it
+ * never leaks into the app or tool UIs. Uses the design-system tokens for
+ * consistent light/dark rendering without a typography plugin.
+ */
+.article-prose {
+  color: var(--muted-foreground);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+.article-prose > * + * {
+  margin-top: 1.15rem;
+}
+.article-prose h2 {
+  margin-top: 2.5rem;
+  margin-bottom: 0.25rem;
+  color: var(--foreground);
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+.article-prose h3 {
+  margin-top: 1.75rem;
+  margin-bottom: 0.25rem;
+  color: var(--foreground);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.article-prose h2 + *,
+.article-prose h3 + * {
+  margin-top: 0.5rem;
+}
+.article-prose strong {
+  color: var(--foreground);
+  font-weight: 600;
+}
+.article-prose a {
+  color: var(--brand);
+  font-weight: 500;
+  text-decoration: none;
+}
+.article-prose a:hover {
+  text-decoration: underline;
+}
+.article-prose ul,
+.article-prose ol {
+  padding-left: 1.4rem;
+}
+.article-prose ul {
+  list-style: disc;
+}
+.article-prose ol {
+  list-style: decimal;
+}
+.article-prose li + li {
+  margin-top: 0.4rem;
+}
+.article-prose li::marker {
+  color: color-mix(in oklab, var(--brand) 60%, transparent);
+}
+.article-prose code {
+  border-radius: 0.35rem;
+  border: 1px solid var(--border);
+  background: var(--card);
+  padding: 0.1rem 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  color: var(--foreground);
+}
+.article-prose pre {
+  overflow-x: auto;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  background: var(--card);
+  padding: 1rem 1.15rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+.article-prose pre code {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+  color: var(--foreground);
+}
+.article-prose blockquote {
+  border-left: 3px solid color-mix(in oklab, var(--brand) 55%, transparent);
+  padding-left: 1rem;
+  color: var(--muted-foreground);
+  font-style: italic;
+}
+.article-prose :is(h2, h3) + p {
+  margin-top: 0.5rem;
+}

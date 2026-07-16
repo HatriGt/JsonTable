@@ -43,6 +43,12 @@ export function LandingNav() {
           >
             Features
           </a>
+          <Link
+            to="/guides"
+            className="hidden text-sm text-muted-foreground transition-colors hover:text-foreground sm:inline"
+          >
+            Guides
+          </Link>
           <LandingThemeToggle />
           <Button
             size="sm"
