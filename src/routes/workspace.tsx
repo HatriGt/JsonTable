@@ -26,6 +26,38 @@ export const Route = createFileRoute("/workspace")({
       { property: "og:url", content: `${getSiteUrl()}/workspace` },
     ],
     links: [{ rel: "canonical", href: `${getSiteUrl()}/workspace` }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          name: "JSON‑Table Workspace",
+          applicationCategory: "DeveloperApplication",
+          operatingSystem: "Web",
+          url: `${getSiteUrl()}/workspace`,
+          description:
+            "Interactive JSON workspace: a navigable tree plus a fast, filterable spreadsheet grid with search and inline editing. Local-first, no uploads.",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "JSON‑Table", item: `${getSiteUrl()}/` },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: "Workspace",
+              item: `${getSiteUrl()}/workspace`,
+            },
+          ],
+        }),
+      },
+    ],
   }),
   component: WorkspacePage,
 });
