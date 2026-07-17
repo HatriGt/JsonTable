@@ -69,6 +69,30 @@ export const GUIDES: readonly GuideMeta[] = [
     kicker: "Performance",
     published: "2026-07-17",
   },
+  {
+    slug: "how-to-minify-json",
+    title: "How to Minify JSON",
+    summary:
+      "Strip whitespace to shrink JSON to the smallest valid payload, when to do it, and how to expand it again.",
+    kicker: "Formatting",
+    published: "2026-07-17",
+  },
+  {
+    slug: "json-vs-xml",
+    title: "JSON vs XML: Differences & When to Use Each",
+    summary:
+      "How JSON and XML compare on syntax, size, and tooling — and why JSON became the default for web APIs.",
+    kicker: "Comparison",
+    published: "2026-07-17",
+  },
+  {
+    slug: "escape-characters-in-json",
+    title: "Escaping Characters in JSON Strings",
+    summary:
+      "Which characters must be escaped in JSON, the full escape list, and how to handle quotes, newlines, and Unicode.",
+    kicker: "Reference",
+    published: "2026-07-17",
+  },
 ] as const;
 
 export function guidePath(slug: string) {
