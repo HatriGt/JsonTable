@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { getSiteUrl } from "@/lib/site";
+import { GUIDES, guidePath } from "@/lib/content/guides";
 
 interface SitemapEntry {
   path: string;
@@ -9,7 +10,7 @@ interface SitemapEntry {
 }
 
 // Bump when site content/structure changes meaningfully so crawlers reschedule.
-const LAST_MODIFIED = "2026-06-26";
+const LAST_MODIFIED = "2026-07-16";
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
@@ -24,6 +25,14 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/json-viewer", changefreq: "monthly", priority: "0.7" },
           { path: "/json-to-table", changefreq: "monthly", priority: "0.7" },
           { path: "/json-diff", changefreq: "monthly", priority: "0.7" },
+          { path: "/guides", changefreq: "monthly", priority: "0.6" },
+          ...GUIDES.map(
+            (g): SitemapEntry => ({
+              path: guidePath(g.slug),
+              changefreq: "monthly",
+              priority: "0.5",
+            }),
+          ),
         ];
 
         const urls = entries.map((e) =>

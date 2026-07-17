@@ -16,6 +16,11 @@ import { Route as JsonToTableRouteImport } from './routes/json-to-table'
 import { Route as JsonFormatterRouteImport } from './routes/json-formatter'
 import { Route as JsonDiffRouteImport } from './routes/json-diff'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as GuidesIndexRouteImport } from './routes/guides.index'
+import { Route as GuidesViewJsonAsTableRouteImport } from './routes/guides.view-json-as-table'
+import { Route as GuidesJsonSyntaxExplainedRouteImport } from './routes/guides.json-syntax-explained'
+import { Route as GuidesHowToFormatJsonRouteImport } from './routes/guides.how-to-format-json'
+import { Route as GuidesHowToCompareJsonFilesRouteImport } from './routes/guides.how-to-compare-json-files'
 import { Route as WorkspaceLinkIdRouteImport } from './routes/workspace.link.$id'
 
 const WorkspaceRoute = WorkspaceRouteImport.update({
@@ -53,6 +58,33 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GuidesIndexRoute = GuidesIndexRouteImport.update({
+  id: '/guides/',
+  path: '/guides/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuidesViewJsonAsTableRoute = GuidesViewJsonAsTableRouteImport.update({
+  id: '/guides/view-json-as-table',
+  path: '/guides/view-json-as-table',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuidesJsonSyntaxExplainedRoute =
+  GuidesJsonSyntaxExplainedRouteImport.update({
+    id: '/guides/json-syntax-explained',
+    path: '/guides/json-syntax-explained',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const GuidesHowToFormatJsonRoute = GuidesHowToFormatJsonRouteImport.update({
+  id: '/guides/how-to-format-json',
+  path: '/guides/how-to-format-json',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuidesHowToCompareJsonFilesRoute =
+  GuidesHowToCompareJsonFilesRouteImport.update({
+    id: '/guides/how-to-compare-json-files',
+    path: '/guides/how-to-compare-json-files',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const WorkspaceLinkIdRoute = WorkspaceLinkIdRouteImport.update({
   id: '/link/$id',
   path: '/link/$id',
@@ -67,6 +99,11 @@ export interface FileRoutesByFullPath {
   '/json-viewer': typeof JsonViewerRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/workspace': typeof WorkspaceRouteWithChildren
+  '/guides/how-to-compare-json-files': typeof GuidesHowToCompareJsonFilesRoute
+  '/guides/how-to-format-json': typeof GuidesHowToFormatJsonRoute
+  '/guides/json-syntax-explained': typeof GuidesJsonSyntaxExplainedRoute
+  '/guides/view-json-as-table': typeof GuidesViewJsonAsTableRoute
+  '/guides/': typeof GuidesIndexRoute
   '/workspace/link/$id': typeof WorkspaceLinkIdRoute
 }
 export interface FileRoutesByTo {
@@ -77,6 +114,11 @@ export interface FileRoutesByTo {
   '/json-viewer': typeof JsonViewerRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/workspace': typeof WorkspaceRouteWithChildren
+  '/guides/how-to-compare-json-files': typeof GuidesHowToCompareJsonFilesRoute
+  '/guides/how-to-format-json': typeof GuidesHowToFormatJsonRoute
+  '/guides/json-syntax-explained': typeof GuidesJsonSyntaxExplainedRoute
+  '/guides/view-json-as-table': typeof GuidesViewJsonAsTableRoute
+  '/guides': typeof GuidesIndexRoute
   '/workspace/link/$id': typeof WorkspaceLinkIdRoute
 }
 export interface FileRoutesById {
@@ -88,6 +130,11 @@ export interface FileRoutesById {
   '/json-viewer': typeof JsonViewerRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/workspace': typeof WorkspaceRouteWithChildren
+  '/guides/how-to-compare-json-files': typeof GuidesHowToCompareJsonFilesRoute
+  '/guides/how-to-format-json': typeof GuidesHowToFormatJsonRoute
+  '/guides/json-syntax-explained': typeof GuidesJsonSyntaxExplainedRoute
+  '/guides/view-json-as-table': typeof GuidesViewJsonAsTableRoute
+  '/guides/': typeof GuidesIndexRoute
   '/workspace/link/$id': typeof WorkspaceLinkIdRoute
 }
 export interface FileRouteTypes {
@@ -100,6 +147,11 @@ export interface FileRouteTypes {
     | '/json-viewer'
     | '/sitemap.xml'
     | '/workspace'
+    | '/guides/how-to-compare-json-files'
+    | '/guides/how-to-format-json'
+    | '/guides/json-syntax-explained'
+    | '/guides/view-json-as-table'
+    | '/guides/'
     | '/workspace/link/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -110,6 +162,11 @@ export interface FileRouteTypes {
     | '/json-viewer'
     | '/sitemap.xml'
     | '/workspace'
+    | '/guides/how-to-compare-json-files'
+    | '/guides/how-to-format-json'
+    | '/guides/json-syntax-explained'
+    | '/guides/view-json-as-table'
+    | '/guides'
     | '/workspace/link/$id'
   id:
     | '__root__'
@@ -120,6 +177,11 @@ export interface FileRouteTypes {
     | '/json-viewer'
     | '/sitemap.xml'
     | '/workspace'
+    | '/guides/how-to-compare-json-files'
+    | '/guides/how-to-format-json'
+    | '/guides/json-syntax-explained'
+    | '/guides/view-json-as-table'
+    | '/guides/'
     | '/workspace/link/$id'
   fileRoutesById: FileRoutesById
 }
@@ -131,6 +193,11 @@ export interface RootRouteChildren {
   JsonViewerRoute: typeof JsonViewerRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   WorkspaceRoute: typeof WorkspaceRouteWithChildren
+  GuidesHowToCompareJsonFilesRoute: typeof GuidesHowToCompareJsonFilesRoute
+  GuidesHowToFormatJsonRoute: typeof GuidesHowToFormatJsonRoute
+  GuidesJsonSyntaxExplainedRoute: typeof GuidesJsonSyntaxExplainedRoute
+  GuidesViewJsonAsTableRoute: typeof GuidesViewJsonAsTableRoute
+  GuidesIndexRoute: typeof GuidesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -184,6 +251,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/guides/': {
+      id: '/guides/'
+      path: '/guides'
+      fullPath: '/guides/'
+      preLoaderRoute: typeof GuidesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/view-json-as-table': {
+      id: '/guides/view-json-as-table'
+      path: '/guides/view-json-as-table'
+      fullPath: '/guides/view-json-as-table'
+      preLoaderRoute: typeof GuidesViewJsonAsTableRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/json-syntax-explained': {
+      id: '/guides/json-syntax-explained'
+      path: '/guides/json-syntax-explained'
+      fullPath: '/guides/json-syntax-explained'
+      preLoaderRoute: typeof GuidesJsonSyntaxExplainedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/how-to-format-json': {
+      id: '/guides/how-to-format-json'
+      path: '/guides/how-to-format-json'
+      fullPath: '/guides/how-to-format-json'
+      preLoaderRoute: typeof GuidesHowToFormatJsonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/how-to-compare-json-files': {
+      id: '/guides/how-to-compare-json-files'
+      path: '/guides/how-to-compare-json-files'
+      fullPath: '/guides/how-to-compare-json-files'
+      preLoaderRoute: typeof GuidesHowToCompareJsonFilesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/workspace/link/$id': {
       id: '/workspace/link/$id'
       path: '/link/$id'
@@ -214,6 +316,11 @@ const rootRouteChildren: RootRouteChildren = {
   JsonViewerRoute: JsonViewerRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   WorkspaceRoute: WorkspaceRouteWithChildren,
+  GuidesHowToCompareJsonFilesRoute: GuidesHowToCompareJsonFilesRoute,
+  GuidesHowToFormatJsonRoute: GuidesHowToFormatJsonRoute,
+  GuidesJsonSyntaxExplainedRoute: GuidesJsonSyntaxExplainedRoute,
+  GuidesViewJsonAsTableRoute: GuidesViewJsonAsTableRoute,
+  GuidesIndexRoute: GuidesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
