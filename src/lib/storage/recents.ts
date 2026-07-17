@@ -25,8 +25,9 @@ export async function listRecents(): Promise<RecentMeta[]> {
   const deduped = dedupeByName(idx);
 
   if (deduped.length !== idx.length) {
-    const removed = idx.filter((r) => !deduped.some((d) => d.id === r.id));
-    for (const old of removed) await del(PREFIX + old.id);
+    const keep = new Set(deduped.map((d) => d.id));
+    const removed = idx.filter((r) => !keep.has(r.id));
+    await Promise.all(removed.map((old) => del(PREFIX + old.id)));
     await set(INDEX_KEY, deduped);
   }
 
@@ -50,8 +51,9 @@ export async function saveRecent(name: string, raw: string): Promise<RecentMeta>
   const meta: RecentMeta = { id, name, sizeBytes, savedAt: Date.now() };
   await set(PREFIX + id, raw);
   const next = [meta, ...idx].slice(0, 8);
-  const removed = idx.filter((r) => !next.some((n) => n.id === r.id));
-  for (const old of removed) await del(PREFIX + old.id);
+  const keep = new Set(next.map((n) => n.id));
+  const removed = idx.filter((r) => !keep.has(r.id));
+  await Promise.all(removed.map((old) => del(PREFIX + old.id)));
   await set(INDEX_KEY, next);
   return meta;
 }
