@@ -28,7 +28,7 @@ export const Route = createFileRoute("/guides/how-to-validate-json")({
   head: () =>
     seoArticleHead({
       path: PATH,
-      title: "How to Validate JSON — Find & Fix Errors Fast | JSON‑Table",
+      title: "How to Validate JSON — Find & Fix Errors | JSON‑Table",
       description:
         "Learn how to validate JSON, read parser error messages, and fix the most common causes of invalid JSON — trailing commas, single quotes, and more. Free, no uploads.",
       datePublished: PUBLISHED,

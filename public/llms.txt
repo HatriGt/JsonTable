@@ -11,6 +11,20 @@ JSON-Table is a browser-based developer utility. The workspace is a two-pane vie
 - [JSON Diff](/json-diff): Compare two JSON documents and see exactly what was added, removed, or changed, by path.
 - [Workspace](/workspace): The full interactive workspace — tree + virtualized grid, global search (⌘F), filters, column reordering, and inline cell editing.
 
+## Guides
+
+- [JSON Guides](/guides): Index of practical how-to guides for working with JSON.
+- [How to Format (Beautify) JSON](/guides/how-to-format-json): Pretty-print minified JSON and minify it again.
+- [How to Minify JSON](/guides/how-to-minify-json): Strip whitespace to shrink JSON to the smallest valid payload.
+- [How to Validate JSON](/guides/how-to-validate-json): Check validity, read parser errors, and fix common causes of invalid JSON.
+- [How to Compare Two JSON Files](/guides/how-to-compare-json-files): Structural diff that ignores key order and formatting.
+- [How to View JSON as a Table](/guides/view-json-as-table): Map an array of objects to rows and columns.
+- [How to Read Large JSON Files](/guides/read-large-json-files): Open huge JSON without freezing via virtualization and off-thread parsing.
+- [JSON Syntax Explained](/guides/json-syntax-explained): The six data types, object/array rules, and common mistakes.
+- [Escaping Characters in JSON Strings](/guides/escape-characters-in-json): The full escape list, Unicode, and double-encoding.
+- [JSON vs CSV](/guides/json-vs-csv): Differences and when to use each format.
+- [JSON vs XML](/guides/json-vs-xml): Syntax, size, and tooling comparison.
+
 ## About
 
 - Local-first: all parsing and rendering happen client-side; no uploads, no account.

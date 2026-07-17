@@ -28,7 +28,7 @@ export const Route = createFileRoute("/guides/json-syntax-explained")({
   head: () =>
     seoArticleHead({
       path: PATH,
-      title: "JSON Syntax Explained — Types, Rules & Common Errors | JSON‑Table",
+      title: "JSON Syntax Explained — Types & Rules | JSON‑Table",
       description:
         "A clear reference for JSON syntax: the six data types, object and array rules, valid strings and numbers, and the mistakes that make JSON invalid. With examples.",
       datePublished: PUBLISHED,
