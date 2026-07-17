@@ -45,6 +45,30 @@ export const GUIDES: readonly GuideMeta[] = [
     kicker: "Reference",
     published: "2026-07-16",
   },
+  {
+    slug: "how-to-validate-json",
+    title: "How to Validate JSON",
+    summary:
+      "Check whether JSON is valid, read the error message, and jump to the exact line and column to fix it.",
+    kicker: "Validation",
+    published: "2026-07-17",
+  },
+  {
+    slug: "json-vs-csv",
+    title: "JSON vs CSV: Which Should You Use?",
+    summary:
+      "How JSON and CSV differ, when each format wins, and how to view tabular JSON as a spreadsheet.",
+    kicker: "Comparison",
+    published: "2026-07-17",
+  },
+  {
+    slug: "read-large-json-files",
+    title: "How to Read Large JSON Files",
+    summary:
+      "Open and explore huge JSON without your browser freezing — using a virtualized tree and a filterable grid.",
+    kicker: "Performance",
+    published: "2026-07-17",
+  },
 ] as const;
 
 export function guidePath(slug: string) {

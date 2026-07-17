@@ -18,7 +18,10 @@ import { Route as JsonDiffRouteImport } from './routes/json-diff'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as GuidesIndexRouteImport } from './routes/guides.index'
 import { Route as GuidesViewJsonAsTableRouteImport } from './routes/guides.view-json-as-table'
+import { Route as GuidesReadLargeJsonFilesRouteImport } from './routes/guides.read-large-json-files'
+import { Route as GuidesJsonVsCsvRouteImport } from './routes/guides.json-vs-csv'
 import { Route as GuidesJsonSyntaxExplainedRouteImport } from './routes/guides.json-syntax-explained'
+import { Route as GuidesHowToValidateJsonRouteImport } from './routes/guides.how-to-validate-json'
 import { Route as GuidesHowToFormatJsonRouteImport } from './routes/guides.how-to-format-json'
 import { Route as GuidesHowToCompareJsonFilesRouteImport } from './routes/guides.how-to-compare-json-files'
 import { Route as WorkspaceLinkIdRouteImport } from './routes/workspace.link.$id'
@@ -68,12 +71,28 @@ const GuidesViewJsonAsTableRoute = GuidesViewJsonAsTableRouteImport.update({
   path: '/guides/view-json-as-table',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GuidesReadLargeJsonFilesRoute =
+  GuidesReadLargeJsonFilesRouteImport.update({
+    id: '/guides/read-large-json-files',
+    path: '/guides/read-large-json-files',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const GuidesJsonVsCsvRoute = GuidesJsonVsCsvRouteImport.update({
+  id: '/guides/json-vs-csv',
+  path: '/guides/json-vs-csv',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GuidesJsonSyntaxExplainedRoute =
   GuidesJsonSyntaxExplainedRouteImport.update({
     id: '/guides/json-syntax-explained',
     path: '/guides/json-syntax-explained',
     getParentRoute: () => rootRouteImport,
   } as any)
+const GuidesHowToValidateJsonRoute = GuidesHowToValidateJsonRouteImport.update({
+  id: '/guides/how-to-validate-json',
+  path: '/guides/how-to-validate-json',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GuidesHowToFormatJsonRoute = GuidesHowToFormatJsonRouteImport.update({
   id: '/guides/how-to-format-json',
   path: '/guides/how-to-format-json',
@@ -101,7 +120,10 @@ export interface FileRoutesByFullPath {
   '/workspace': typeof WorkspaceRouteWithChildren
   '/guides/how-to-compare-json-files': typeof GuidesHowToCompareJsonFilesRoute
   '/guides/how-to-format-json': typeof GuidesHowToFormatJsonRoute
+  '/guides/how-to-validate-json': typeof GuidesHowToValidateJsonRoute
   '/guides/json-syntax-explained': typeof GuidesJsonSyntaxExplainedRoute
+  '/guides/json-vs-csv': typeof GuidesJsonVsCsvRoute
+  '/guides/read-large-json-files': typeof GuidesReadLargeJsonFilesRoute
   '/guides/view-json-as-table': typeof GuidesViewJsonAsTableRoute
   '/guides/': typeof GuidesIndexRoute
   '/workspace/link/$id': typeof WorkspaceLinkIdRoute
@@ -116,7 +138,10 @@ export interface FileRoutesByTo {
   '/workspace': typeof WorkspaceRouteWithChildren
   '/guides/how-to-compare-json-files': typeof GuidesHowToCompareJsonFilesRoute
   '/guides/how-to-format-json': typeof GuidesHowToFormatJsonRoute
+  '/guides/how-to-validate-json': typeof GuidesHowToValidateJsonRoute
   '/guides/json-syntax-explained': typeof GuidesJsonSyntaxExplainedRoute
+  '/guides/json-vs-csv': typeof GuidesJsonVsCsvRoute
+  '/guides/read-large-json-files': typeof GuidesReadLargeJsonFilesRoute
   '/guides/view-json-as-table': typeof GuidesViewJsonAsTableRoute
   '/guides': typeof GuidesIndexRoute
   '/workspace/link/$id': typeof WorkspaceLinkIdRoute
@@ -132,7 +157,10 @@ export interface FileRoutesById {
   '/workspace': typeof WorkspaceRouteWithChildren
   '/guides/how-to-compare-json-files': typeof GuidesHowToCompareJsonFilesRoute
   '/guides/how-to-format-json': typeof GuidesHowToFormatJsonRoute
+  '/guides/how-to-validate-json': typeof GuidesHowToValidateJsonRoute
   '/guides/json-syntax-explained': typeof GuidesJsonSyntaxExplainedRoute
+  '/guides/json-vs-csv': typeof GuidesJsonVsCsvRoute
+  '/guides/read-large-json-files': typeof GuidesReadLargeJsonFilesRoute
   '/guides/view-json-as-table': typeof GuidesViewJsonAsTableRoute
   '/guides/': typeof GuidesIndexRoute
   '/workspace/link/$id': typeof WorkspaceLinkIdRoute
@@ -149,7 +177,10 @@ export interface FileRouteTypes {
     | '/workspace'
     | '/guides/how-to-compare-json-files'
     | '/guides/how-to-format-json'
+    | '/guides/how-to-validate-json'
     | '/guides/json-syntax-explained'
+    | '/guides/json-vs-csv'
+    | '/guides/read-large-json-files'
     | '/guides/view-json-as-table'
     | '/guides/'
     | '/workspace/link/$id'
@@ -164,7 +195,10 @@ export interface FileRouteTypes {
     | '/workspace'
     | '/guides/how-to-compare-json-files'
     | '/guides/how-to-format-json'
+    | '/guides/how-to-validate-json'
     | '/guides/json-syntax-explained'
+    | '/guides/json-vs-csv'
+    | '/guides/read-large-json-files'
     | '/guides/view-json-as-table'
     | '/guides'
     | '/workspace/link/$id'
@@ -179,7 +213,10 @@ export interface FileRouteTypes {
     | '/workspace'
     | '/guides/how-to-compare-json-files'
     | '/guides/how-to-format-json'
+    | '/guides/how-to-validate-json'
     | '/guides/json-syntax-explained'
+    | '/guides/json-vs-csv'
+    | '/guides/read-large-json-files'
     | '/guides/view-json-as-table'
     | '/guides/'
     | '/workspace/link/$id'
@@ -195,7 +232,10 @@ export interface RootRouteChildren {
   WorkspaceRoute: typeof WorkspaceRouteWithChildren
   GuidesHowToCompareJsonFilesRoute: typeof GuidesHowToCompareJsonFilesRoute
   GuidesHowToFormatJsonRoute: typeof GuidesHowToFormatJsonRoute
+  GuidesHowToValidateJsonRoute: typeof GuidesHowToValidateJsonRoute
   GuidesJsonSyntaxExplainedRoute: typeof GuidesJsonSyntaxExplainedRoute
+  GuidesJsonVsCsvRoute: typeof GuidesJsonVsCsvRoute
+  GuidesReadLargeJsonFilesRoute: typeof GuidesReadLargeJsonFilesRoute
   GuidesViewJsonAsTableRoute: typeof GuidesViewJsonAsTableRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
 }
@@ -265,11 +305,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuidesViewJsonAsTableRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/guides/read-large-json-files': {
+      id: '/guides/read-large-json-files'
+      path: '/guides/read-large-json-files'
+      fullPath: '/guides/read-large-json-files'
+      preLoaderRoute: typeof GuidesReadLargeJsonFilesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/json-vs-csv': {
+      id: '/guides/json-vs-csv'
+      path: '/guides/json-vs-csv'
+      fullPath: '/guides/json-vs-csv'
+      preLoaderRoute: typeof GuidesJsonVsCsvRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/guides/json-syntax-explained': {
       id: '/guides/json-syntax-explained'
       path: '/guides/json-syntax-explained'
       fullPath: '/guides/json-syntax-explained'
       preLoaderRoute: typeof GuidesJsonSyntaxExplainedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/how-to-validate-json': {
+      id: '/guides/how-to-validate-json'
+      path: '/guides/how-to-validate-json'
+      fullPath: '/guides/how-to-validate-json'
+      preLoaderRoute: typeof GuidesHowToValidateJsonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/guides/how-to-format-json': {
@@ -318,7 +379,10 @@ const rootRouteChildren: RootRouteChildren = {
   WorkspaceRoute: WorkspaceRouteWithChildren,
   GuidesHowToCompareJsonFilesRoute: GuidesHowToCompareJsonFilesRoute,
   GuidesHowToFormatJsonRoute: GuidesHowToFormatJsonRoute,
+  GuidesHowToValidateJsonRoute: GuidesHowToValidateJsonRoute,
   GuidesJsonSyntaxExplainedRoute: GuidesJsonSyntaxExplainedRoute,
+  GuidesJsonVsCsvRoute: GuidesJsonVsCsvRoute,
+  GuidesReadLargeJsonFilesRoute: GuidesReadLargeJsonFilesRoute,
   GuidesViewJsonAsTableRoute: GuidesViewJsonAsTableRoute,
   GuidesIndexRoute: GuidesIndexRoute,
 }
