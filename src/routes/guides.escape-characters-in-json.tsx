@@ -28,7 +28,7 @@ export const Route = createFileRoute("/guides/escape-characters-in-json")({
   head: () =>
     seoArticleHead({
       path: PATH,
-      title: "Escaping Characters in JSON Strings — Full Guide | JSON‑Table",
+      title: "Escaping Characters in JSON Strings | JSON‑Table",
       description:
         "Which characters must be escaped in JSON, the complete escape sequence list, and how to handle quotes, backslashes, newlines, and Unicode. With examples.",
       datePublished: PUBLISHED,

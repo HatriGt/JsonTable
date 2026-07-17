@@ -28,7 +28,7 @@ export const Route = createFileRoute("/guides/how-to-compare-json-files")({
   head: () =>
     seoArticleHead({
       path: PATH,
-      title: "How to Compare Two JSON Files — A Practical Guide | JSON‑Table",
+      title: "How to Compare Two JSON Files | JSON‑Table",
       description:
         "Learn how to compare two JSON files and see exactly what changed. Understand structural vs. text diffs, why key order shouldn't matter, and how to diff JSON free in your browser.",
       datePublished: PUBLISHED,

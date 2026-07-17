@@ -4,7 +4,7 @@ import { LandingFooter } from "@/components/landing/LandingFooter";
 import { GUIDES, guidePath } from "@/lib/content/guides";
 import { getSiteUrl } from "@/lib/site";
 
-const TITLE = "JSON Guides — Format, Compare, View & Understand JSON | JSON‑Table";
+const TITLE = "JSON Guides: Format, Compare & Convert JSON | JSON‑Table";
 const DESCRIPTION =
   "Practical guides for working with JSON: how to format and minify it, compare two files, view it as a table, and understand JSON syntax. Free, no sign-up.";
 

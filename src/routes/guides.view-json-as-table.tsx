@@ -28,7 +28,7 @@ export const Route = createFileRoute("/guides/view-json-as-table")({
   head: () =>
     seoArticleHead({
       path: PATH,
-      title: "How to View JSON as a Table — A Practical Guide | JSON‑Table",
+      title: "How to View JSON as a Table | JSON‑Table",
       description:
         "Learn how to turn an array of JSON objects into a sortable, filterable spreadsheet. Understand which JSON shapes map to tables and how to handle nested data. Free, no uploads.",
       datePublished: PUBLISHED,

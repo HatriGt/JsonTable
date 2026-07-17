@@ -28,7 +28,7 @@ export const Route = createFileRoute("/guides/how-to-format-json")({
   head: () =>
     seoArticleHead({
       path: PATH,
-      title: "How to Format (Beautify) JSON — A Practical Guide | JSON‑Table",
+      title: "How to Format (Beautify) JSON | JSON‑Table",
       description:
         "Learn how to format and beautify JSON with proper indentation, minify it back to a compact line, and fix the errors that stop it from formatting. Free, no uploads.",
       datePublished: PUBLISHED,

@@ -28,7 +28,7 @@ export const Route = createFileRoute("/guides/read-large-json-files")({
   head: () =>
     seoArticleHead({
       path: PATH,
-      title: "How to Read Large JSON Files Without Freezing | JSON‑Table",
+      title: "How to Read Large JSON Files | JSON‑Table",
       description:
         "Open and explore huge JSON files without your browser locking up. Learn why big JSON is slow and how a virtualized tree, off-thread parsing, and a filterable grid keep it fast.",
       datePublished: PUBLISHED,

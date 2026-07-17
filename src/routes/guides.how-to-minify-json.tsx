@@ -28,7 +28,7 @@ export const Route = createFileRoute("/guides/how-to-minify-json")({
   head: () =>
     seoArticleHead({
       path: PATH,
-      title: "How to Minify JSON — Shrink Payloads Safely | JSON‑Table",
+      title: "How to Minify JSON — Shrink Payloads | JSON‑Table",
       description:
         "Learn how to minify JSON to the smallest valid payload, when minification is worth it, and how to expand it back. Runs in your browser — no uploads.",
       datePublished: PUBLISHED,

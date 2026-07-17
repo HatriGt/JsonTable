@@ -86,7 +86,7 @@ export const Route = createFileRoute("/json-to-table")({
     seoLandingHead({
       path: "/json-to-table",
       name: "JSON to Table",
-      title: "JSON to Table — Convert JSON to a Sortable Grid | JSON‑Table",
+      title: "JSON to Table — Convert JSON to a Grid | JSON‑Table",
       description:
         "Free online JSON to table converter. Turn an array of JSON objects into a sortable, filterable spreadsheet grid with inline editing. Local-first, no uploads.",
       faqs: CONTENT.faqs,
