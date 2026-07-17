@@ -44,9 +44,12 @@ export const JsonCodeEditor = forwardRef<JsonCodeEditorHandle, { className?: str
     const docId = doc?.loadedAt ?? 0;
 
     // Keep the latest editRaw reachable from editor callbacks without
-    // recreating the view.
+    // recreating the view. Write in an effect (not during render) so a
+    // replayed/discarded render can't leak a stale action into the ref.
     const editRawRef = useRef(editRaw);
-    editRawRef.current = editRaw;
+    useEffect(() => {
+      editRawRef.current = editRaw;
+    }, [editRaw]);
 
     const scheduleEdit = (value: string) => {
       if (debounceRef.current) clearTimeout(debounceRef.current);

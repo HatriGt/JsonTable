@@ -15,7 +15,8 @@ const useColumnOrder = create<State>((set, get) => ({
     if (!saved) return defaultCols;
     const known = new Set(defaultCols);
     const filtered = saved.filter((c) => known.has(c));
-    const missing = defaultCols.filter((c) => !filtered.includes(c));
+    const inFiltered = new Set(filtered);
+    const missing = defaultCols.filter((c) => !inFiltered.has(c));
     return [...filtered, ...missing];
   },
   move: (arrayPath, from, to) =>
@@ -47,7 +48,8 @@ export function useResolvedOrder(arrayPath: string, defaultCols: string[]) {
     if (!saved) return defaultCols;
     const known = new Set(defaultCols);
     const filtered = saved.filter((c) => known.has(c));
-    const missing = defaultCols.filter((c) => !filtered.includes(c));
+    const inFiltered = new Set(filtered);
+    const missing = defaultCols.filter((c) => !inFiltered.has(c));
     return [...filtered, ...missing];
   }, [saved, defaultCols]);
 }

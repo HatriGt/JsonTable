@@ -13,17 +13,23 @@ import { useWorkspace } from "@/store/workspace";
 import { formatBytes } from "@/lib/format";
 import { deleteRecent, listRecents, loadRecent, type RecentMeta } from "@/lib/storage/recents";
 
+type RecentRow = RecentMeta & { savedAtLabel: string };
+
 /** Toolbar button that opens a modal listing recently opened files. Replaces
  *  the old inline recents list on the empty state, so recents stay reachable
  *  whether or not a document is currently open. */
 export function RecentsButton() {
   const [open, setOpen] = useState(false);
-  const [recents, setRecents] = useState<RecentMeta[]>([]);
+  const [recents, setRecents] = useState<RecentRow[]>([]);
   const loadJson = useWorkspace((s) => s.loadJson);
 
   function refresh() {
     listRecents()
-      .then(setRecents)
+      // Format the locale/timezone-dependent timestamp here (post-mount async
+      // callback), not during render, so it never causes a hydration mismatch.
+      .then((rows) =>
+        setRecents(rows.map((r) => ({ ...r, savedAtLabel: new Date(r.savedAt).toLocaleString() }))),
+      )
       .catch(() => {});
   }
 
@@ -95,7 +101,7 @@ export function RecentsButton() {
                       {r.name}
                     </span>
                     <span className="block truncate text-xs text-muted-foreground">
-                      {formatBytes(r.sizeBytes)} · {new Date(r.savedAt).toLocaleString()}
+                      {formatBytes(r.sizeBytes)} · {r.savedAtLabel}
                     </span>
                   </span>
                   <ArrowRight
