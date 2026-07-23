@@ -80,6 +80,7 @@ type State = {
   source: SelectionSource;
   setSelection: (p: PathSegment[], source?: SelectionSource) => void;
   loadJson: (name: string, raw: string) => Promise<boolean>;
+  renameDoc: (name: string) => void;
   editRaw: (raw: string) => boolean;
   updateAt: (path: PathSegment[], value: unknown) => void;
   reset: () => void;
@@ -194,6 +195,15 @@ export const useWorkspace = create<State>((set, get) => ({
       set((s) => (s.doc && s.doc.value === nextValue ? { doc: { ...s.doc, stats } } : s));
     });
   },
+  renameDoc: (name) =>
+    set((s) => {
+      if (!s.doc) return s;
+      const trimmed = name.trim();
+      if (!trimmed || trimmed === s.doc.name) return s;
+      // Keep the recents entry in step so reopening reflects the new name.
+      if (s.doc.sizeBytes < HUGE_JSON_BYTES) saveRecent(trimmed, s.doc.raw).catch(() => {});
+      return { doc: { ...s.doc, name: trimmed } };
+    }),
   reset: () => set({ doc: null, error: null, parsing: false, selection: [], source: "tree" }),
   clearError: () => set({ error: null }),
 }));

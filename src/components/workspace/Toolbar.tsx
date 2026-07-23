@@ -5,7 +5,6 @@ import { useWorkspace } from "@/store/workspace";
 import { useTheme } from "@/store/theme";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { formatBytes } from "@/lib/format";
 import { motionTransition } from "@/lib/motion/presets";
 import { ClipboardPaste, Upload, Sun, Moon, Trash2 } from "lucide-react";
 import { BrandLogo, BrandWordmark } from "@/components/brand/BrandLogo";
@@ -13,12 +12,14 @@ import { PasteDialog } from "@/components/input/PasteDialog";
 import { ShareButton } from "./ShareButton";
 import { ShortcutsOverlay } from "./ShortcutsOverlay";
 import { RecentsButton } from "./RecentsButton";
+import { FileNameEditor } from "./FileNameEditor";
 import { pasteFromClipboard } from "@/lib/json/pasteFromClipboard";
 
 export function Toolbar() {
   const fileRef = useRef<HTMLInputElement>(null);
   const doc = useWorkspace((s) => s.doc);
   const loadJson = useWorkspace((s) => s.loadJson);
+  const renameDoc = useWorkspace((s) => s.renameDoc);
   const reset = useWorkspace((s) => s.reset);
   const theme = useTheme((s) => s.theme);
   const setTheme = useTheme((s) => s.setTheme);
@@ -45,7 +46,7 @@ export function Toolbar() {
         <AnimatePresence mode="wait">
           {doc && (
             <m.div
-              key={doc.name}
+              key={doc.loadedAt}
               initial={{ opacity: 0, x: -6 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -6 }}
@@ -53,18 +54,7 @@ export function Toolbar() {
               className="ml-1 flex min-w-0 items-center gap-2"
             >
               <Separator orientation="vertical" className="hidden h-5 sm:block" />
-              <span
-                title={doc.name}
-                className="flex min-w-0 items-center gap-1.5 rounded-md border border-border/60 bg-card/60 py-1 pl-2 pr-2.5"
-              >
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand" aria-hidden="true" />
-                <span className="max-w-[160px] truncate font-mono text-[11px] sm:max-w-xs">
-                  {doc.name}
-                </span>
-                <span className="hidden shrink-0 text-[10px] tabular-nums text-muted-foreground sm:inline">
-                  {formatBytes(doc.sizeBytes)}
-                </span>
-              </span>
+              <FileNameEditor name={doc.name} sizeBytes={doc.sizeBytes} onRename={renameDoc} />
             </m.div>
           )}
         </AnimatePresence>
